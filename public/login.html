@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voyage — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy-dark: #0A1628;
+      --navy:      #1B2E4B;
+      --gold:      #D4A847;
+      --gold-light:#F0C060;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0A1628 0%, #1B2E4B 50%, #0A1628 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(212,168,71,0.25);
+      border-radius: 24px;
+      padding: 52px 48px;
+      width: 100%;
+      max-width: 420px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .logo-icon {
+      font-size: 2.8rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .logo h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #D4A847;
+      letter-spacing: 0.05em;
+    }
+    .logo p {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.82rem;
+      margin-top: 6px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      color: rgba(255,255,255,0.55);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: rgba(212,168,71,0.6);
+      background: rgba(255,255,255,0.09);
+    }
+    input::placeholder { color: rgba(255,255,255,0.25); }
+    .error {
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(220,38,38,0.35);
+      border-radius: 10px;
+      color: #fca5a5;
+      padding: 11px 15px;
+      font-size: 0.85rem;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .error.show { display: block; }
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #D4A847, #F0C060);
+      border: none;
+      border-radius: 12px;
+      color: #0A1628;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 8px;
+    }
+    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .divider {
+      text-align: center;
+      color: rgba(255,255,255,0.2);
+      font-size: 0.75rem;
+      margin: 28px 0 0;
+      letter-spacing: 0.08em;
+    }
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <span class="logo-icon">✈️</span>
+      <h1>Voyage</h1>
+      <p>Premium Travel Search</p>
+    </div>
+    <div class="error" id="error">Invalid username or password. Please try again.</div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Enter username" autocomplete="username" autofocus />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn" id="submitBtn">Sign In →</button>
+    </form>
+    <p class="divider">PRIVATE ACCESS · DR. HANNA</p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const err = document.getElementById('error');
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+      err.classList.remove('show');
+
+      const res = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value
+        })
+      });
+
+      if (res.ok) {
+        window.location.href = '/';
+      } else {
+        err.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Sign In →';
+      }
+    });
+
+    // Enter key on password submits
+    document.getElementById('password').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+    });
+  </script>
+</body>
+</html>

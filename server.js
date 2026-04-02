@@ -4,7 +4,13 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const session = require('express-session');
 const path = require('path');
+
+// ─── Auth Config ──────────────────────────────────────────────────────────────
+const AUTH_USER = process.env.AUTH_USER || 'gh';
+const AUTH_PASS = process.env.AUTH_PASS || 'gh';
+const SESSION_SECRET = process.env.SESSION_SECRET || 'voyage-secret-2026-vip';
 
 const app = express();
 const PORT = process.env.PORT || 3030;
@@ -14,6 +20,42 @@ const DEMO_MODE = !process.env.AMADEUS_CLIENT_ID;
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(express.json());
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 8 * 60 * 60 * 1000 } // 8 hours
+}));
+
+// ─── Auth Middleware ──────────────────────────────────────────────────────────
+function requireAuth(req, res, next) {
+  if (req.session && req.session.authenticated) return next();
+  // Allow health check without auth
+  if (req.path === '/health') return next();
+  // Allow login page and auth route
+  if (req.path === '/login.html' || req.path.startsWith('/auth/')) return next();
+  // API calls get 401
+  if (req.path.startsWith('/api/')) return res.status(401).json({ error: 'Unauthorized' });
+  // Everything else → login page
+  return res.redirect('/login.html');
+}
+
+// ─── Auth Routes ──────────────────────────────────────────────────────────────
+app.post('/auth/login', (req, res) => {
+  const { username, password } = req.body || {};
+  if (username === AUTH_USER && password === AUTH_PASS) {
+    req.session.authenticated = true;
+    return res.json({ ok: true });
+  }
+  return res.status(401).json({ error: 'Invalid credentials' });
+});
+
+app.post('/auth/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/login.html');
+});
+
+app.use(requireAuth);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
