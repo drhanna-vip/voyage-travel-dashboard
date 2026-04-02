@@ -1351,12 +1351,302 @@
       #toast-container { bottom: 16px; right: 16px; }
     }
   </style>
+
+    /* ─── Top Nav ─────────────────────────────────────────── */
+    .top-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,22,40,0.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,168,71,0.18);height:60px;}
+    .nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--gold);letter-spacing:3px;text-transform:uppercase;}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .currency-select{background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.90);appearance:none;cursor:pointer;outline:none;transition:all 0.2s;min-width:110px;}
+    .currency-select option{background:var(--navy-dark);color:#fff;}
+    .currency-select:hover,.currency-select:focus{border-color:var(--gold);background:rgba(212,168,71,0.15);}
+    .wishlist-nav-btn{position:relative;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.90);display:flex;align-items:center;gap:6px;transition:all 0.2s;cursor:pointer;}
+    .wishlist-nav-btn:hover{border-color:#ef4444;background:rgba(239,68,68,0.15);}
+    .wishlist-badge{background:#ef4444;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;min-width:18px;}
+    .nav-logout-btn{background:none;border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.55);transition:all 0.2s;cursor:pointer;}
+    .nav-logout-btn:hover{color:#fff;border-color:rgba(255,255,255,0.4);}
+    #demo-banner{margin-top:60px;}
+    #hero{padding-top:100px;}
+    /* ─── Flexible dates toggle ────────────────────────────── */
+    .flex-dates-toggle{display:flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:20px;color:rgba(255,255,255,0.7);font-size:12.5px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .flex-dates-toggle:hover{border-color:var(--gold);color:var(--gold);}
+    .flex-dates-toggle.on{background:rgba(212,168,71,0.20);border-color:var(--gold);color:var(--gold);}
+    .toggle-switch{width:28px;height:16px;background:rgba(255,255,255,0.25);border-radius:8px;position:relative;transition:background 0.2s;flex-shrink:0;}
+    .toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:transform 0.2s;}
+    .flex-dates-toggle.on .toggle-switch{background:var(--gold);}
+    .flex-dates-toggle.on .toggle-switch::after{transform:translateX(12px);}
+    /* ─── Field tooltip ────────────────────────────────────── */
+    .field-tooltip{width:14px;height:14px;background:rgba(255,255,255,0.18);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,0.6);cursor:help;position:relative;}
+    .field-tooltip:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(10,22,40,0.96);color:#fff;font-size:11px;font-weight:500;padding:6px 10px;border-radius:8px;white-space:nowrap;border:1px solid rgba(212,168,71,0.3);z-index:1000;pointer-events:none;max-width:220px;white-space:normal;text-align:center;}
+    /* ─── Cars search grid ─────────────────────────────────── */
+    .search-grid.cars-grid{grid-template-columns:1fr 1fr 160px 160px auto;}
+    /* ─── Progress steps ───────────────────────────────────── */
+    .progress-steps{display:none;align-items:center;justify-content:center;gap:0;padding:20px 0;margin-bottom:8px;}
+    .progress-steps.visible{display:flex;}
+    .progress-step{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-muted);padding:8px 16px;border-radius:20px;transition:all 0.3s;}
+    .progress-step.active{color:var(--navy);background:rgba(27,46,75,0.08);}
+    .progress-step.done{color:var(--green);}
+    .progress-step-icon{font-size:16px;}
+    .progress-sep{width:40px;height:2px;background:var(--border);position:relative;overflow:hidden;}
+    .progress-sep::after{content:'';position:absolute;inset:0;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform 0.8s ease;}
+    .progress-sep.filled::after{transform:scaleX(1);}
+    /* ─── Bundle summary ───────────────────────────────────── */
+    #bundle-summary-card{display:none;background:linear-gradient(135deg,var(--navy-dark),var(--navy));border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;color:#fff;box-shadow:var(--shadow-md);position:relative;overflow:hidden;}
+    #bundle-summary-card.visible{display:block;}
+    #bundle-summary-card::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(212,168,71,0.15),transparent);border-radius:50%;}
+    .bsc-title{font-size:13px;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;}
+    .bsc-main-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:20px;align-items:start;}
+    .bsc-label{font-size:11px;color:rgba(255,255,255,0.55);margin-bottom:4px;}
+    .bsc-value{font-size:22px;font-weight:700;color:#fff;}
+    .bsc-value.gold{color:var(--gold-light);}
+    .bsc-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px;}
+    .bsc-rec{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.12);font-size:13px;color:rgba(255,255,255,0.75);display:flex;align-items:center;gap:8px;}
+    /* ─── Flex dates section ───────────────────────────────── */
+    #flex-dates-section{display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;box-shadow:var(--shadow);}
+    #flex-dates-section.visible{display:block;}
+    .flex-dates-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .flex-dates-title{font-size:14px;font-weight:700;color:var(--text);}
+    .flex-dates-subtitle{font-size:12px;color:var(--text-muted);margin-top:2px;}
+    .flex-dates-grid-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+    .flex-date-cell{border:1.5px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;transition:all 0.2s;}
+    .flex-date-cell:hover{border-color:var(--navy);background:#f0f4ff;}
+    .flex-date-cell.selected{border-color:var(--navy);background:var(--navy);color:#fff;}
+    .flex-date-cell.cheapest{border-color:var(--green);background:var(--green-bg);}
+    .flex-date-cell.cheapest .fdc-price{color:var(--green);font-weight:800;}
+    .flex-date-cell.priciest{border-color:#f87171;background:#fef2f2;}
+    .flex-date-cell.priciest .fdc-price{color:var(--red);}
+    .fdc-day{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:3px;}
+    .fdc-date{font-size:16px;font-weight:700;color:var(--text);line-height:1;margin-bottom:4px;}
+    .fdc-price{font-size:12px;font-weight:700;color:var(--text);}
+    .fdc-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-top:3px;}
+    .flex-date-cell.cheapest .fdc-badge{color:var(--green);}
+    .flex-date-cell.priciest .fdc-badge{color:var(--red);}
+    .flex-date-cell.selected .fdc-day,.flex-date-cell.selected .fdc-date,.flex-date-cell.selected .fdc-price{color:#fff;}
+    /* ─── Price alert banner ───────────────────────────────── */
+    #price-alert-banner{display:none;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fcd34d;border-radius:var(--radius);padding:14px 20px;margin-bottom:16px;align-items:center;justify-content:space-between;gap:16px;}
+    #price-alert-banner.visible{display:flex;}
+    .alert-banner-text{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:500;color:#92400e;}
+    .alert-banner-icon{font-size:20px;}
+    .alert-set-btn{background:var(--navy-dark);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;white-space:nowrap;transition:all 0.2s;cursor:pointer;flex-shrink:0;}
+    .alert-set-btn:hover{background:var(--navy);transform:translateY(-1px);}
+    /* ─── Modal ────────────────────────────────────────────── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+    .modal-overlay.open{display:flex;}
+    .price-alert-modal{background:#fff;border-radius:var(--radius-lg);padding:36px;max-width:420px;width:90%;box-shadow:var(--shadow-lg);animation:popIn 0.25s ease;}
+    @keyframes popIn{from{opacity:0;transform:scale(0.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .modal-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px;}
+    .modal-sub{font-size:14px;color:var(--text-muted);margin-bottom:24px;line-height:1.5;}
+    .modal-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;font-size:14px;color:var(--text);outline:none;transition:all 0.2s;display:block;}
+    .modal-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(27,46,75,0.10);}
+    .modal-submit-btn{width:100%;background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;transition:all 0.2s;cursor:pointer;display:block;}
+    .modal-submit-btn:hover{box-shadow:0 4px 18px rgba(27,46,75,0.35);transform:translateY(-1px);}
+    .modal-cancel-btn{width:100%;background:none;border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:500;color:var(--text-muted);transition:all 0.2s;cursor:pointer;display:block;}
+    .modal-cancel-btn:hover{border-color:var(--text);color:var(--text);}
+    /* ─── Amenity filter bar ───────────────────────────────── */
+    #amenity-filter-bar{display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;box-shadow:var(--shadow);}
+    #amenity-filter-bar.visible{display:block;}
+    .amenity-bar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .amenity-bar-title{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;}
+    .amenity-clear-btn{background:none;border:none;font-size:12px;font-weight:600;color:var(--navy);cursor:pointer;text-decoration:underline;}
+    .amenity-toggles{display:flex;flex-wrap:wrap;gap:8px;}
+    .amenity-toggle{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12.5px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;min-height:34px;}
+    .amenity-toggle:hover{border-color:var(--navy);color:var(--navy);}
+    .amenity-toggle.active{background:var(--navy-dark);border-color:var(--gold);color:var(--gold);}
+    /* ─── Heart / wishlist button ──────────────────────────── */
+    .heart-btn{background:none;border:none;padding:6px;font-size:20px;line-height:1;cursor:pointer;transition:all 0.2s;color:#d1d5db;flex-shrink:0;}
+    .heart-btn:hover{transform:scale(1.2);color:#ef4444;}
+    .heart-btn.wishlisted{color:#ef4444;}
+    /* ─── Deal score badges ────────────────────────────────── */
+    .deal-score-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:10px;font-size:10.5px;font-weight:700;margin-top:4px;}
+    .deal-score-badge.great-deal{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
+    .deal-score-badge.good-deal{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
+    .deal-score-badge.fair-price{background:#fefce8;color:#ca8a04;border:1px solid #fde68a;}
+    .deal-score-badge.pricey{background:#f9fafb;color:#6b7280;border:1px solid #e5e7eb;}
+    /* ─── Hotel image badges ───────────────────────────────── */
+    .hotel-img-wrap{position:relative;}
+    .hotel-img-badges{position:absolute;top:10px;left:10px;display:flex;flex-direction:column;gap:5px;}
+    .hotel-img-badge{background:rgba(255,255,255,0.95);border-radius:8px;padding:3px 9px;font-size:10.5px;font-weight:700;display:flex;align-items:center;gap:4px;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,0.12);}
+    .hotel-img-badge.cancel{color:var(--green);}
+    .hotel-img-badge.urgency{color:var(--red);}
+    .hotel-heart{position:absolute;top:10px;right:10px;}
+    .hotel-badges-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+    .badge.free-cancel{background:#f0fdf4;color:var(--green);}
+    .badge.urgency{background:#fef2f2;color:var(--red);}
+    /* ─── Car cards ────────────────────────────────────────── */
+    .cars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
+    .car-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;transition:all 0.28s;display:flex;flex-direction:column;}
+    .car-card:hover{box-shadow:var(--shadow-md);transform:translateY(-4px);}
+    .car-img-section{position:relative;padding:24px 20px 16px;display:flex;align-items:center;justify-content:center;min-height:130px;}
+    .car-emoji-display{font-size:64px;line-height:1;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.18));transition:transform 0.3s;}
+    .car-card:hover .car-emoji-display{transform:scale(1.08) rotate(-2deg);}
+    .car-type-badge{position:absolute;top:12px;left:12px;padding:4px 11px;border-radius:10px;font-size:11px;font-weight:700;letter-spacing:0.3px;}
+    .car-type-badge.Economy{background:#dbeafe;color:#1d4ed8;}
+    .car-type-badge.Compact{background:#dcfce7;color:#15803d;}
+    .car-type-badge.SUV{background:#ede9fe;color:#7c3aed;}
+    .car-type-badge.Luxury{background:#fef3c7;color:#92400e;}
+    .car-type-badge.Minivan{background:#fce7f3;color:#9d174d;}
+    .car-type-badge.Electric{background:#d1fae5;color:#065f46;}
+    .car-heart{position:absolute;top:12px;right:12px;}
+    .car-provider-badge{position:absolute;bottom:10px;right:12px;background:rgba(255,255,255,0.9);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;color:var(--text);backdrop-filter:blur(8px);border:1px solid var(--border);}
+    .car-body{padding:0 18px 18px;flex:1;display:flex;flex-direction:column;}
+    .car-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3;}
+    .car-description{font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.4;}
+    .car-specs-row{display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+    .car-spec{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px;}
+    .car-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+    .car-feature-tag{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:2px 8px;font-size:11px;color:var(--text-muted);font-weight:500;}
+    .car-footer{margin-top:auto;border-top:1px solid var(--border);padding-top:14px;display:flex;align-items:flex-end;justify-content:space-between;}
+    .car-price-per{font-size:11px;color:var(--text-muted);margin-bottom:2px;}
+    .car-price{font-size:26px;font-weight:700;color:var(--text);line-height:1;}
+    .car-price-day{font-size:12px;color:var(--text-muted);}
+    .car-total{font-size:11.5px;color:var(--text-muted);margin-top:3px;}
+    .car-rating{display:flex;align-items:center;gap:4px;margin-bottom:8px;}
+    .car-rating-score{font-size:15px;font-weight:700;color:var(--text);}
+    .car-rating-star{color:var(--gold);font-size:13px;}
+    .car-rating-count{font-size:11px;color:var(--text-muted);}
+    .car-book-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy-dark);border:none;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:700;transition:all 0.2s;cursor:pointer;box-shadow:0 2px 10px rgba(212,168,71,0.28);}
+    .car-book-btn:hover{transform:translateY(-2px);box-shadow:0 4px 18px rgba(212,168,71,0.50);}
+    /* ─── Wishlist drawer ──────────────────────────────────── */
+    .wishlist-overlay-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1500;display:none;backdrop-filter:blur(3px);}
+    .wishlist-overlay-bg.open{display:block;}
+    .wishlist-drawer{position:fixed;top:0;right:-460px;width:440px;height:100vh;background:#fff;z-index:1501;box-shadow:-8px 0 40px rgba(0,0,0,0.16);transition:right 0.35s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;display:flex;flex-direction:column;}
+    .wishlist-drawer.open{right:0;}
+    .wishlist-header{background:var(--navy-dark);padding:24px 24px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+    .wishlist-header-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+    .wishlist-close-btn{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.20);border-radius:8px;width:36px;height:36px;font-size:16px;color:rgba(255,255,255,0.8);display:flex;align-items:center;justify-content:center;transition:all 0.15s;cursor:pointer;}
+    .wishlist-close-btn:hover{background:rgba(255,255,255,0.22);color:#fff;}
+    .wishlist-body{padding:20px 24px;flex:1;}
+    .wishlist-empty{text-align:center;padding:60px 20px;}
+    .wishlist-item{background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;transition:all 0.2s;}
+    .wishlist-item:hover{border-color:var(--navy);box-shadow:var(--shadow);}
+    .wishlist-item-icon{font-size:28px;flex-shrink:0;}
+    .wishlist-item-body{flex:1;min-width:0;}
+    .wishlist-item-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .wishlist-item-meta{font-size:12px;color:var(--text-muted);}
+    .wishlist-item-price{font-size:17px;font-weight:700;color:var(--navy);white-space:nowrap;}
+    .wishlist-remove-btn{background:none;border:none;color:#d1d5db;font-size:18px;padding:4px;cursor:pointer;transition:color 0.15s;}
+    .wishlist-remove-btn:hover{color:var(--red);}
+    .wishlist-type-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin:14px 0 8px;}
+    /* ─── AI Planner ───────────────────────────────────────── */
+    .ai-fab{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,var(--navy),#2a4a7a);color:#fff;border:1px solid rgba(212,168,71,0.3);border-radius:28px;padding:14px 22px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;z-index:900;box-shadow:0 8px 32px rgba(27,46,75,0.45);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);cursor:pointer;}
+    .ai-fab:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 40px rgba(27,46,75,0.55);}
+    .ai-fab-icon{font-size:20px;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+    .ai-panel-overlay{position:fixed;inset:0;z-index:1200;display:none;}
+    .ai-panel-overlay.open{display:block;}
+    .ai-panel{position:fixed;bottom:90px;right:30px;width:390px;height:580px;background:var(--navy-dark);border-radius:var(--radius-lg);border:1px solid rgba(212,168,71,0.25);box-shadow:0 20px 60px rgba(0,0,0,0.45);z-index:1201;display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(20px) scale(0.96);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);pointer-events:none;}
+    .ai-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}
+    .ai-panel-header{padding:16px 18px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+    .ai-avatar{width:40px;height:40px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .ai-panel-title{font-size:15px;font-weight:700;color:#fff;}
+    .ai-panel-sub{font-size:11.5px;color:rgba(255,255,255,0.55);}
+    .ai-close-btn{margin-left:auto;background:rgba(255,255,255,0.08);border:none;border-radius:8px;width:32px;height:32px;font-size:14px;color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.15s;}
+    .ai-close-btn:hover{background:rgba(255,255,255,0.16);color:#fff;}
+    .ai-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+    .ai-messages::-webkit-scrollbar{width:4px;}
+    .ai-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px;}
+    .ai-msg{max-width:88%;padding:10px 14px;border-radius:16px;font-size:13.5px;line-height:1.5;animation:msgIn 0.25s ease;}
+    @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .ai-msg.user{background:rgba(212,168,71,0.22);color:#fff;border-radius:16px 16px 4px 16px;align-self:flex-end;border:1px solid rgba(212,168,71,0.3);}
+    .ai-msg.bot{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.92);border-radius:16px 16px 16px 4px;align-self:flex-start;border:1px solid rgba(255,255,255,0.08);}
+    .ai-msg.bot.rich{max-width:100%;padding:14px 16px;}
+    .ai-typing{background:rgba(255,255,255,0.07);border-radius:12px;padding:12px 16px;align-self:flex-start;display:none;gap:4px;align-items:center;}
+    .ai-typing.visible{display:flex;}
+    .ai-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.5);animation:aiDot 1.4s infinite ease;}
+    .ai-dot:nth-child(2){animation-delay:0.2s;}
+    .ai-dot:nth-child(3){animation-delay:0.4s;}
+    @keyframes aiDot{0%,80%,100%{transform:scale(0.7);opacity:0.4}40%{transform:scale(1);opacity:1}}
+    .ai-input-row{padding:12px 14px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:8px;flex-shrink:0;}
+    .ai-input{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;font-size:13.5px;color:#fff;outline:none;transition:all 0.2s;}
+    .ai-input::placeholder{color:rgba(255,255,255,0.35);}
+    .ai-input:focus{border-color:var(--gold);background:rgba(255,255,255,0.12);}
+    .ai-send-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy-dark);border:none;border-radius:10px;padding:0 14px;font-size:16px;font-weight:700;transition:all 0.2s;flex-shrink:0;cursor:pointer;}
+    .ai-send-btn:hover{transform:scale(1.05);}
+    .ai-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px;}
+    .ai-suggestion-chip{background:rgba(212,168,71,0.12);border:1px solid rgba(212,168,71,0.25);border-radius:14px;padding:5px 12px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.75);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+    .ai-suggestion-chip:hover{background:rgba(212,168,71,0.25);color:var(--gold-light);}
+    .ai-itinerary{font-size:13px;line-height:1.6;}
+    .ai-dest-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+    .ai-dest-header h3{font-size:15px;font-weight:700;color:var(--gold-light);}
+    .ai-dest-flag{font-size:22px;}
+    .ai-day{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .ai-day:last-of-type{border-bottom:none;margin-bottom:0;}
+    .ai-day-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:var(--gold);margin-bottom:6px;}
+    .ai-day-item{color:rgba(255,255,255,0.82);margin-bottom:3px;font-size:12.5px;}
+    .ai-budget{background:rgba(255,255,255,0.06);border-radius:10px;padding:12px 14px;margin-top:12px;}
+    .ai-budget-row{display:flex;justify-content:space-between;font-size:12.5px;color:rgba(255,255,255,0.75);padding:3px 0;}
+    .ai-budget-row strong{color:#fff;}
+    .ai-budget-row.total{border-top:1px solid rgba(255,255,255,0.12);margin-top:6px;padding-top:8px;font-weight:700;}
+    .ai-budget-row.total strong{color:var(--gold-light);font-size:14px;}
+    /* ─── Toast ────────────────────────────────────────────── */
+    .toast-container{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+    .toast{background:var(--navy-dark);color:#fff;border-radius:12px;padding:12px 20px;font-size:13.5px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,0.3);border:1px solid rgba(212,168,71,0.25);display:flex;align-items:center;gap:8px;animation:toastIn 0.3s ease,toastOut 0.3s ease 2.7s forwards;white-space:nowrap;}
+    @keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes toastOut{from{opacity:1}to{opacity:0}}
+    /* ─── Hero pattern ─────────────────────────────────────── */
+    .hero-pattern{position:absolute;inset:0;z-index:2;background-image:radial-gradient(rgba(212,168,71,0.12) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;}
+    /* ─── Empty state with suggestions ────────────────────── */
+    .empty-suggest{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px;}
+    .empty-dest-btn{background:var(--navy-dark);color:var(--gold);border:none;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .empty-dest-btn:hover{background:var(--navy);transform:translateY(-2px);}
+    /* ─── Responsive additions ─────────────────────────────── */
+    @media(max-width:1024px){.bsc-main-row{grid-template-columns:1fr 1fr;}}
+    @media(max-width:768px){.search-grid.cars-grid{grid-template-columns:1fr 1fr;}.ai-panel{width:calc(100vw - 20px);right:10px;bottom:80px;}.ai-fab{bottom:20px;right:16px;}.wishlist-drawer{width:100%;right:-100%;}.flex-dates-grid-wrap{grid-template-columns:repeat(4,1fr);}.nav-logout-btn{display:none;}.cars-grid{grid-template-columns:1fr;}}
+    @media(max-width:480px){.flex-dates-grid-wrap{grid-template-columns:repeat(3,1fr);}.currency-select{min-width:80px;font-size:12px;}.bsc-main-row{grid-template-columns:1fr;}}
+  </style>
 </head>
 <body>
 
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Wishlist overlay + drawer -->
+<div class="wishlist-overlay-bg" id="wishlist-overlay" onclick="closeWishlist()"></div>
+<div class="wishlist-drawer" id="wishlist-drawer">
+  <div class="wishlist-header">
+    <div class="wishlist-header-title">❤️ Saved Items</div>
+    <button class="wishlist-close-btn" onclick="closeWishlist()">✕</button>
+  </div>
+  <div class="wishlist-body"><div id="wishlist-items"></div></div>
+</div>
+
+<!-- Price Alert Modal -->
+<div class="modal-overlay" id="price-alert-modal" onclick="if(event.target===this)closePriceAlertModal()">
+  <div class="price-alert-modal">
+    <div class="modal-title">🔔 Set Price Alert</div>
+    <p class="modal-sub" id="price-alert-modal-sub">Get notified when prices drop to your target. We'll email you instantly.</p>
+    <input class="modal-input" type="email" id="alert-email-input" placeholder="your@email.com" />
+    <input class="modal-input" type="number" id="alert-price-input" placeholder="Target price (e.g. 250)" style="margin-top:8px" />
+    <button class="modal-submit-btn" onclick="submitPriceAlert()" style="margin-top:8px">Set Alert →</button>
+    <button class="modal-cancel-btn" onclick="closePriceAlertModal()" style="margin-top:8px">Cancel</button>
+  </div>
+</div>
+
+<!-- Top Nav -->
+<nav class="top-nav">
+  <div class="nav-inner">
+    <div class="nav-logo">✈ Voyage</div>
+    <div class="nav-right">
+      <select class="currency-select" id="currency-select">
+        <option value="USD">🇺🇸 USD</option>
+        <option value="EUR">🇪🇺 EUR</option>
+        <option value="GBP">🇬🇧 GBP</option>
+        <option value="CAD">🇨🇦 CAD</option>
+        <option value="AED">🇦🇪 AED</option>
+        <option value="JPY">🇯🇵 JPY</option>
+      </select>
+      <button class="wishlist-nav-btn" id="wishlist-btn" onclick="openWishlist()">
+        ❤️ Saved
+        <span class="wishlist-badge" id="wishlist-count" style="display:none">0</span>
+      </button>
+      <button class="nav-logout-btn" onclick="fetch('/auth/logout',{method:'POST'}).then(()=>location='/login.html')">Sign Out</button>
+    </div>
+  </div>
+</nav>
+
 <!-- Demo Banner -->
 <div id="demo-banner">
-  ⚡ <strong>DEMO MODE</strong> — Showing sample data · Connect Amadeus API key for live pricing across all major airlines &amp; hotels
+  ⚡ <strong>DEMO MODE</strong> — Showing sample data · Connect Amadeus API key for live pricing
 </div>
 
 <!-- Hero -->
@@ -1369,28 +1659,33 @@
     <div class="hero-img"         style="background-image:url('https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=1920&q=80')"></div>
     <div class="hero-img"         style="background-image:url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&q=80')"></div>
     <div class="hero-overlay"></div>
+    <div class="hero-pattern"></div>
   </div>
-
   <div class="hero-content">
     <div class="hero-logo">✈ Voyage</div>
     <h1 class="hero-title">Find Your Perfect Journey</h1>
-    <p class="hero-subtitle">Compare prices across every major airline, hotel &amp; booking platform — all in one place</p>
-
-    <!-- Search Card -->
+    <p class="hero-subtitle">Compare prices across every major airline, hotel, car rental &amp; booking platform — all in one place</p>
     <div class="search-card">
       <div class="search-tabs">
         <button class="tab-btn active" data-tab="flights">✈️ Flights</button>
         <button class="tab-btn" data-tab="hotels">🏨 Hotels</button>
         <button class="tab-btn" data-tab="bundles">✈️🏨 Bundles</button>
+        <button class="tab-btn" data-tab="cars">🚗 Cars</button>
       </div>
 
       <!-- FLIGHTS TAB -->
       <div class="tab-panel active" id="tab-flights">
-        <div class="trip-type">
-          <button class="trip-pill active" data-trip="roundtrip">⇄ Round Trip</button>
-          <button class="trip-pill" data-trip="oneway">→ One Way</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <div class="trip-type" style="margin-bottom:0">
+            <button class="trip-pill active" data-trip="roundtrip">⇄ Round Trip</button>
+            <button class="trip-pill" data-trip="oneway">→ One Way</button>
+          </div>
+          <button class="flex-dates-toggle" id="flex-dates-toggle" onclick="toggleFlexDates()">
+            <span class="toggle-switch" id="flex-toggle-sw"></span>
+            📅 Flexible Dates?
+          </button>
         </div>
-        <div class="search-grid" id="flight-search-grid">
+        <div class="search-grid">
           <div class="search-field" id="from-field">
             <label>From</label>
             <span class="field-icon">✈</span>
@@ -1443,7 +1738,7 @@
             </div>
           </div>
           <div class="search-field">
-            <label>Class</label>
+            <label>Class <span class="field-tooltip" data-tip="Economy: standard · Premium Economy: extra legroom · Business: lie-flat + lounge · First: ultimate luxury">?</span></label>
             <select class="search-select" id="class-select">
               <option value="ECONOMY">Economy</option>
               <option value="PREMIUM_ECONOMY">Premium Economy</option>
@@ -1454,11 +1749,6 @@
           <div class="search-field search-btn-wrap" style="display:flex;align-items:flex-end">
             <button class="search-btn" onclick="searchFlights()">Search →</button>
           </div>
-        </div>
-        <div class="fh-toggle-wrap">
-          <button class="fh-toggle-btn" onclick="switchToBundle()" title="Search flight + hotel together">
-            ✈️🏨 Add Hotel — Bundle &amp; Save
-          </button>
         </div>
       </div>
 
@@ -1495,47 +1785,26 @@
 
       <!-- BUNDLES TAB -->
       <div class="tab-panel" id="tab-bundles">
-        <div style="margin-bottom:14px">
-          <span style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:600;letter-spacing:0.4px">
-            🔥 Bundle &amp; Save — flights + hotels together for less
-          </span>
-        </div>
+        <div style="margin-bottom:14px"><span style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:600">🔥 Bundle &amp; Save — flights + hotels together for less</span></div>
         <div class="search-grid bundles-grid">
           <div class="search-field" id="b-from-field">
-            <label>From</label>
-            <span class="field-icon">✈</span>
+            <label>From</label><span class="field-icon">✈</span>
             <input class="search-input" id="b-from-input" type="text" placeholder="Origin city" autocomplete="off" />
             <div class="autocomplete-dropdown" id="b-from-ac"></div>
           </div>
           <div class="search-field" id="b-to-field">
-            <label>To</label>
-            <span class="field-icon">📍</span>
+            <label>To</label><span class="field-icon">📍</span>
             <input class="search-input" id="b-to-input" type="text" placeholder="Destination" autocomplete="off" />
             <div class="autocomplete-dropdown" id="b-to-ac"></div>
           </div>
-          <div class="search-field">
-            <label>Depart</label>
-            <input class="search-input no-icon" id="b-depart" type="date" />
-          </div>
-          <div class="search-field">
-            <label>Return (opt.)</label>
-            <input class="search-input no-icon" id="b-return" type="date" />
-          </div>
-          <div class="search-field">
-            <label>Check-in</label>
-            <input class="search-input no-icon" id="b-checkin" type="date" />
-          </div>
-          <div class="search-field">
-            <label>Check-out</label>
-            <input class="search-input no-icon" id="b-checkout" type="date" />
-          </div>
-          <div class="search-field">
-            <label>Guests</label>
+          <div class="search-field"><label>Depart</label><input class="search-input no-icon" id="b-depart" type="date" /></div>
+          <div class="search-field"><label>Return (opt.)</label><input class="search-input no-icon" id="b-return" type="date" /></div>
+          <div class="search-field"><label>Check-in</label><input class="search-input no-icon" id="b-checkin" type="date" /></div>
+          <div class="search-field"><label>Check-out</label><input class="search-input no-icon" id="b-checkout" type="date" /></div>
+          <div class="search-field"><label>Guests</label>
             <select class="search-select" id="b-guests">
-              <option value="1">1 Guest</option>
-              <option value="2" selected>2 Guests</option>
-              <option value="3">3 Guests</option>
-              <option value="4">4 Guests</option>
+              <option value="1">1 Guest</option><option value="2" selected>2 Guests</option>
+              <option value="3">3 Guests</option><option value="4">4 Guests</option>
             </select>
           </div>
           <div class="search-field search-btn-wrap" style="display:flex;align-items:flex-end">
@@ -1543,25 +1812,30 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Recently Searched -->
-    <div class="recently-searched" id="recently-searched" style="display:none">
-      <div class="recently-searched-title">🕐 Recently Searched</div>
-      <div class="recent-items" id="recent-items-list"></div>
-    </div>
-  </div>
+      <!-- CARS TAB -->
+      <div class="tab-panel" id="tab-cars">
+        <div style="margin-bottom:14px"><span style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:600">🚗 Compare rental rates from Enterprise, Hertz, Avis, Budget &amp; National</span></div>
+        <div class="search-grid cars-grid">
+          <div class="search-field">
+            <label>Pickup Location</label><span class="field-icon">📍</span>
+            <input class="search-input" id="car-pickup" type="text" placeholder="City, airport or address" autocomplete="off" />
+          </div>
+          <div class="search-field">
+            <label>Drop-off Location</label><span class="field-icon">🏁</span>
+            <input class="search-input" id="car-dropoff" type="text" placeholder="Same as pickup?" autocomplete="off" />
+          </div>
+          <div class="search-field"><label>Pickup Date</label><input class="search-input no-icon" id="car-pickup-date" type="date" /></div>
+          <div class="search-field"><label>Drop-off Date</label><input class="search-input no-icon" id="car-dropoff-date" type="date" /></div>
+          <div class="search-field search-btn-wrap" style="display:flex;align-items:flex-end">
+            <button class="search-btn" onclick="searchCars()">Search →</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /search-card -->
+  </div><!-- /hero-content -->
 </section>
-
-<!-- Toast Container -->
-<div id="toast-container"></div>
-
-<!-- Trending Ticker -->
-<div class="ticker-wrap" id="trending-ticker">
-  <div class="ticker">
-    <span>🔥 NYC → Paris from $489 &nbsp;·&nbsp; 🌊 NYC → Cancún from $279 &nbsp;·&nbsp; 🏯 JFK → Tokyo from $749 &nbsp;·&nbsp; ⛵ NYC → Santorini from $599 &nbsp;·&nbsp; 🎭 NYC → Rome from $399 &nbsp;·&nbsp; 🏝️ JFK → Bali from $899 &nbsp;·&nbsp; 🗽 BOS → NYC from $89 &nbsp;·&nbsp; 🌺 LAX → Honolulu from $349</span><span>🔥 NYC → Paris from $489 &nbsp;·&nbsp; 🌊 NYC → Cancún from $279 &nbsp;·&nbsp; 🏯 JFK → Tokyo from $749 &nbsp;·&nbsp; ⛵ NYC → Santorini from $599 &nbsp;·&nbsp; 🎭 NYC → Rome from $399 &nbsp;·&nbsp; 🏝️ JFK → Bali from $899 &nbsp;·&nbsp; 🗽 BOS → NYC from $89 &nbsp;·&nbsp; 🌺 LAX → Honolulu from $349</span>
-  </div>
-</div>
 
 <!-- Popular Destinations -->
 <section id="popular-destinations">
@@ -1570,65 +1844,91 @@
     <span class="section-subtitle">Trending now · Best deals this season</span>
   </div>
   <div class="destinations-grid">
-    <div class="dest-card" onclick="fillDestination('CDG','Paris','France','✈️ Flights','JFK')">
+    <div class="dest-card" onclick="fillDestination('CDG','Paris','France','flights','JFK')">
       <div class="dest-card-bg" style="background-image:url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80')"></div>
       <div class="dest-card-overlay"></div>
-      <div class="dest-card-content">
-        <span class="dest-flag">🇫🇷</span>
-        <div class="dest-name">Paris</div>
-        <div class="dest-price">From $614</div>
-      </div>
+      <div class="dest-card-content"><span class="dest-flag">🇫🇷</span><div class="dest-name">Paris</div><div class="dest-price">From $614</div></div>
     </div>
-    <div class="dest-card" onclick="fillDestination('NRT','Tokyo','Japan','✈️ Flights','LAX')">
+    <div class="dest-card" onclick="fillDestination('NRT','Tokyo','Japan','flights','LAX')">
       <div class="dest-card-bg" style="background-image:url('https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=600&q=80')"></div>
       <div class="dest-card-overlay"></div>
-      <div class="dest-card-content">
-        <span class="dest-flag">🇯🇵</span>
-        <div class="dest-name">Tokyo</div>
-        <div class="dest-price">From $769</div>
-      </div>
+      <div class="dest-card-content"><span class="dest-flag">🇯🇵</span><div class="dest-name">Tokyo</div><div class="dest-price">From $769</div></div>
     </div>
-    <div class="dest-card" onclick="fillDestination('CUN','Cancún','Mexico','✈️ Flights','JFK')">
+    <div class="dest-card" onclick="fillDestination('CUN','Cancún','Mexico','flights','JFK')">
       <div class="dest-card-bg" style="background-image:url('https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=600&q=80')"></div>
       <div class="dest-card-overlay"></div>
-      <div class="dest-card-content">
-        <span class="dest-flag">🇲🇽</span>
-        <div class="dest-name">Cancún</div>
-        <div class="dest-price">From $289</div>
-      </div>
+      <div class="dest-card-content"><span class="dest-flag">🇲🇽</span><div class="dest-name">Cancún</div><div class="dest-price">From $289</div></div>
     </div>
-    <div class="dest-card" onclick="fillDestination('DXB','Dubai','UAE','✈️ Flights','JFK')">
+    <div class="dest-card" onclick="fillDestination('DXB','Dubai','UAE','flights','JFK')">
       <div class="dest-card-bg" style="background-image:url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80')"></div>
       <div class="dest-card-overlay"></div>
-      <div class="dest-card-content">
-        <span class="dest-flag">🇦🇪</span>
-        <div class="dest-name">Dubai</div>
-        <div class="dest-price">From $812</div>
-      </div>
+      <div class="dest-card-content"><span class="dest-flag">🇦🇪</span><div class="dest-name">Dubai</div><div class="dest-price">From $812</div></div>
     </div>
-    <div class="dest-card" onclick="fillDestination('FCO','Rome','Italy','✈️ Flights','JFK')">
+    <div class="dest-card" onclick="fillDestination('FCO','Rome','Italy','flights','JFK')">
       <div class="dest-card-bg" style="background-image:url('https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&q=80')"></div>
       <div class="dest-card-overlay"></div>
-      <div class="dest-card-content">
-        <span class="dest-flag">🇮🇹</span>
-        <div class="dest-name">Rome</div>
-        <div class="dest-price">From $549</div>
-      </div>
+      <div class="dest-card-content"><span class="dest-flag">🇮🇹</span><div class="dest-name">Rome</div><div class="dest-price">From $549</div></div>
     </div>
-    <div class="dest-card" onclick="fillDestination('DPS','Bali','Indonesia','✈️ Flights','LAX')">
+    <div class="dest-card" onclick="fillDestination('DPS','Bali','Indonesia','flights','LAX')">
       <div class="dest-card-bg" style="background-image:url('https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80')"></div>
       <div class="dest-card-overlay"></div>
-      <div class="dest-card-content">
-        <span class="dest-flag">🇮🇩</span>
-        <div class="dest-name">Bali</div>
-        <div class="dest-price">From $890</div>
-      </div>
+      <div class="dest-card-content"><span class="dest-flag">🇮🇩</span><div class="dest-name">Bali</div><div class="dest-price">From $890</div></div>
     </div>
   </div>
 </section>
 
 <!-- Results Section -->
 <section id="results-section">
+  <!-- Bundle Progress Steps -->
+  <div class="progress-steps" id="progress-steps">
+    <div class="progress-step active" id="ps1"><span class="progress-step-icon">✈️</span> Finding Flights</div>
+    <div class="progress-sep" id="ps-sep1"></div>
+    <div class="progress-step" id="ps2"><span class="progress-step-icon">🏨</span> Matching Hotels</div>
+    <div class="progress-sep" id="ps-sep2"></div>
+    <div class="progress-step" id="ps3"><span class="progress-step-icon">💰</span> Calculating Savings</div>
+  </div>
+  <!-- Bundle Summary -->
+  <div id="bundle-summary-card">
+    <div class="bsc-title">📊 Trip Cost Summary</div>
+    <div class="bsc-main-row" id="bsc-main-row"></div>
+    <div class="bsc-rec" id="bsc-rec"></div>
+  </div>
+  <!-- Flexible Dates Grid -->
+  <div id="flex-dates-section">
+    <div class="flex-dates-header">
+      <div>
+        <div class="flex-dates-title">📅 Price Calendar — Cheapest days to fly</div>
+        <div class="flex-dates-subtitle">Click any date to update your search</div>
+      </div>
+    </div>
+    <div class="flex-dates-grid-wrap" id="flex-dates-grid"></div>
+  </div>
+  <!-- Price Alert Banner -->
+  <div id="price-alert-banner">
+    <div class="alert-banner-text">
+      <span class="alert-banner-icon">🔔</span>
+      <span id="price-alert-text">Set a price alert — get notified when prices drop</span>
+    </div>
+    <button class="alert-set-btn" onclick="openPriceAlertModal()">Set Alert</button>
+  </div>
+  <!-- Amenity Filter Bar -->
+  <div id="amenity-filter-bar">
+    <div class="amenity-bar-header">
+      <span class="amenity-bar-title">🔍 Filter by Amenities</span>
+      <button class="amenity-clear-btn" onclick="clearAmenityFilters()">Clear all</button>
+    </div>
+    <div class="amenity-toggles">
+      <button class="amenity-toggle" data-amenity="Pool" onclick="toggleAmenity(this)">🏊 Pool</button>
+      <button class="amenity-toggle" data-amenity="Gym" onclick="toggleAmenity(this)">💪 Gym</button>
+      <button class="amenity-toggle" data-amenity="Breakfast" onclick="toggleAmenity(this)">🍳 Breakfast</button>
+      <button class="amenity-toggle" data-amenity="Free Cancellation" onclick="toggleAmenity(this)">✅ Free Cancel</button>
+      <button class="amenity-toggle" data-amenity="Pet Friendly" onclick="toggleAmenity(this)">🐾 Pet Friendly</button>
+      <button class="amenity-toggle" data-amenity="Free Parking" onclick="toggleAmenity(this)">🚗 Free Parking</button>
+      <button class="amenity-toggle" data-amenity="Spa" onclick="toggleAmenity(this)">💆 Spa</button>
+      <button class="amenity-toggle" data-amenity="Bar" onclick="toggleAmenity(this)">🍸 Bar</button>
+    </div>
+  </div>
+  <!-- Sort Bar -->
   <div class="sort-bar">
     <div style="display:flex;align-items:center;gap:12px">
       <div class="sort-pills">
@@ -1638,18 +1938,13 @@
       </div>
       <span class="results-count-chip" id="results-count-chip" style="display:none"></span>
     </div>
-    <button class="filter-btn" id="mobile-filter-btn" onclick="openFilters()" style="display:none;background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:7px 18px;font-size:13px;font-weight:500;color:var(--text)">
-      ⚙ Filters
-    </button>
+    <button id="mobile-filter-btn" onclick="openFilters()" style="display:none;background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:7px 18px;font-size:13px;font-weight:500;color:var(--text)">⚙ Filters</button>
   </div>
-
   <div id="results-header" class="results-header" style="display:none">
     <h2 class="results-title" id="results-title">Results</h2>
     <p class="results-meta" id="results-meta"></p>
   </div>
-
   <div class="results-layout" id="results-layout">
-    <!-- Sidebar -->
     <aside class="filter-sidebar" id="filter-sidebar">
       <div class="sidebar-title">🔍 Filter Results</div>
       <div class="sidebar-section">
@@ -1664,35 +1959,16 @@
         <div class="sidebar-section-title">Price per person</div>
         <div class="price-range">
           <input type="range" id="price-range-slider" min="0" max="3000" value="3000" step="50" oninput="updatePriceLabel(this.value)" />
-          <div class="price-range-labels">
-            <span>$0</span>
-            <span id="price-range-label">Up to $3,000</span>
-          </div>
+          <div class="price-range-labels"><span>$0</span><span id="price-range-label">Up to $3,000</span></div>
         </div>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-section-title">Departure Time</div>
         <div class="depart-tiles">
-          <div class="depart-tile active" data-time="early">
-            <div class="depart-tile-icon">🌅</div>
-            <div class="depart-tile-label">Early</div>
-            <div class="depart-tile-time">12am–6am</div>
-          </div>
-          <div class="depart-tile active" data-time="morning">
-            <div class="depart-tile-icon">☀️</div>
-            <div class="depart-tile-label">Morning</div>
-            <div class="depart-tile-time">6am–12pm</div>
-          </div>
-          <div class="depart-tile active" data-time="afternoon">
-            <div class="depart-tile-icon">🌤</div>
-            <div class="depart-tile-label">Afternoon</div>
-            <div class="depart-tile-time">12pm–6pm</div>
-          </div>
-          <div class="depart-tile active" data-time="evening">
-            <div class="depart-tile-icon">🌙</div>
-            <div class="depart-tile-label">Evening</div>
-            <div class="depart-tile-time">6pm–12am</div>
-          </div>
+          <div class="depart-tile active" data-time="early"><div class="depart-tile-icon">🌅</div><div class="depart-tile-label">Early</div><div class="depart-tile-time">12am–6am</div></div>
+          <div class="depart-tile active" data-time="morning"><div class="depart-tile-icon">☀️</div><div class="depart-tile-label">Morning</div><div class="depart-tile-time">6am–12pm</div></div>
+          <div class="depart-tile active" data-time="afternoon"><div class="depart-tile-icon">🌤</div><div class="depart-tile-label">Afternoon</div><div class="depart-tile-time">12pm–6pm</div></div>
+          <div class="depart-tile active" data-time="evening"><div class="depart-tile-icon">🌙</div><div class="depart-tile-label">Evening</div><div class="depart-tile-time">6pm–12am</div></div>
         </div>
       </div>
       <div class="sidebar-section" id="airline-filters-section">
@@ -1702,8 +1978,6 @@
       <button class="apply-filters-btn" onclick="applyFilters()">Apply Filters</button>
       <button class="reset-filters-btn" onclick="resetFilters()">Reset</button>
     </aside>
-
-    <!-- Main results -->
     <div id="results-container"></div>
   </div>
 </section>
@@ -1711,995 +1985,631 @@
 <!-- Mobile Filter Drawer -->
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeFilters()"></div>
 <div class="filter-drawer" id="filter-drawer">
-  <div class="drawer-header">
-    <h3 class="drawer-title">Filters</h3>
-    <button class="drawer-close" onclick="closeFilters()">✕</button>
-  </div>
-  <div class="filter-section" style="margin-bottom:24px">
+  <div class="drawer-header"><h3 class="drawer-title">Filters</h3><button class="drawer-close" onclick="closeFilters()">✕</button></div>
+  <div style="margin-bottom:24px">
     <div class="sidebar-section-title" style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px">Stops</div>
     <div class="stop-options">
-      <label class="stop-option"><input type="checkbox" value="0" class="stop-filter-m" checked /> <span class="stop-option-label">Nonstop only</span></label>
-      <label class="stop-option"><input type="checkbox" value="1" class="stop-filter-m" checked /> <span class="stop-option-label">1 Stop</span></label>
-      <label class="stop-option"><input type="checkbox" value="2" class="stop-filter-m" checked /> <span class="stop-option-label">2+ Stops</span></label>
+      <label class="stop-option"><input type="checkbox" value="0" class="stop-filter-m" checked /><span class="stop-option-label">Nonstop only</span></label>
+      <label class="stop-option"><input type="checkbox" value="1" class="stop-filter-m" checked /><span class="stop-option-label">1 Stop</span></label>
+      <label class="stop-option"><input type="checkbox" value="2" class="stop-filter-m" checked /><span class="stop-option-label">2+ Stops</span></label>
     </div>
   </div>
   <button class="apply-filters-btn" onclick="applyFilters();closeFilters()">Apply Filters</button>
 </div>
 
+<!-- AI Trip Planner FAB -->
+<button class="ai-fab" id="ai-fab-btn" onclick="openAIPlanner()">
+  <span class="ai-fab-icon">🤖</span> AI Planner
+</button>
+
+<!-- AI Panel -->
+<div class="ai-panel-overlay" id="ai-panel-overlay" onclick="if(event.target===this)closeAIPlanner()"></div>
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-panel-header">
+    <div class="ai-avatar">🤖</div>
+    <div><div class="ai-panel-title">Voyage AI Planner</div><div class="ai-panel-sub">Personalized itineraries in seconds</div></div>
+    <button class="ai-close-btn" onclick="closeAIPlanner()">✕</button>
+  </div>
+  <div class="ai-messages" id="ai-messages">
+    <div class="ai-msg bot">👋 Hi! I'm your AI trip planner. Tell me your destination and how many days — I'll build a full itinerary with flights, hotels &amp; activities.<br><br>Try: <em>"Paris 5 days"</em> or <em>"Tokyo 7 days"</em></div>
+  </div>
+  <div class="ai-typing" id="ai-typing"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>
+  <div class="ai-suggestions" id="ai-suggestions">
+    <button class="ai-suggestion-chip" onclick="sendAIMessage('Paris 5 days')">🇫🇷 Paris</button>
+    <button class="ai-suggestion-chip" onclick="sendAIMessage('Tokyo 7 days')">🇯🇵 Tokyo</button>
+    <button class="ai-suggestion-chip" onclick="sendAIMessage('Dubai 4 days')">🇦🇪 Dubai</button>
+    <button class="ai-suggestion-chip" onclick="sendAIMessage('Bali 6 days')">🇮🇩 Bali</button>
+    <button class="ai-suggestion-chip" onclick="sendAIMessage('Rome 5 days')">🇮🇹 Rome</button>
+    <button class="ai-suggestion-chip" onclick="sendAIMessage('London 4 days')">🇬🇧 London</button>
+  </div>
+  <div class="ai-input-row">
+    <input class="ai-input" id="ai-input" type="text" placeholder="Where do you want to go?" onkeydown="if(event.key==='Enter')sendAIMessage()" />
+    <button class="ai-send-btn" onclick="sendAIMessage()">→</button>
+  </div>
+</div>
+
 <script>
+'use strict';
+// ─── Currency ─────────────────────────────────────────────────────────────────
+const CURRENCIES={USD:{rate:1,symbol:'$'},EUR:{rate:0.92,symbol:'€'},GBP:{rate:0.79,symbol:'£'},CAD:{rate:1.36,symbol:'CA$'},AED:{rate:3.67,symbol:'AED '},JPY:{rate:149.5,symbol:'¥'}};
+function formatPrice(usd){if(usd==null||isNaN(usd))return'—';const c=CURRENCIES[state.currency]||CURRENCIES.USD;return c.symbol+Math.round(usd*c.rate).toLocaleString();}
+function initCurrency(){
+  const saved=localStorage.getItem('voyage_currency')||'USD';
+  state.currency=saved;
+  const sel=document.getElementById('currency-select');
+  sel.value=saved;
+  sel.addEventListener('change',e=>{state.currency=e.target.value;localStorage.setItem('voyage_currency',state.currency);reRenderCurrent();});
+}
+function reRenderCurrent(){
+  const sort=document.querySelector('.sort-pill.active')?.dataset.sort||'best';
+  if(state.currentMode==='flights'&&state.rawFlights.length)sortAndRender(sort);
+  else if(state.currentMode==='hotels'&&state.rawHotels.length)renderHotels(state.rawHotels,state.searchParams);
+  else if(state.currentMode==='bundles'&&state.rawBundles.length)renderBundles(state.rawBundles,state.searchParams);
+  else if(state.currentMode==='cars'&&state.rawCars.length)renderCars(state.rawCars,state.searchParams);
+}
+
 // ─── State ────────────────────────────────────────────────────────────────────
-const state = {
-  pax:         { adults: 1, children: 0, infants: 0 },
-  tripType:    'roundtrip',
-  activeTab:   'flights',
-  fromIata:    '',
-  toIata:      '',
-  bFromIata:   '',
-  bToIata:     '',
-  currentMode: 'flights',
-  rawFlights:  [],
-  rawHotels:   [],
-  rawBundles:  [],
-  searchParams: {}
+const state={
+  pax:{adults:1,children:0,infants:0},tripType:'roundtrip',activeTab:'flights',
+  fromIata:'',toIata:'',bFromIata:'',bToIata:'',
+  currentMode:'flights',
+  rawFlights:[],rawHotels:[],rawBundles:[],rawCars:[],
+  searchParams:{},currency:'USD',flexDates:false,amenityFilters:[]
 };
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  setDefaultDates();
-  initTabs();
-  initTripType();
-  initPaxPicker();
-  initAutocomplete('from-input', 'from-ac', (iata) => { state.fromIata = iata; });
-  initAutocomplete('to-input',   'to-ac',   (iata) => { state.toIata   = iata; });
-  initAutocomplete('b-from-input', 'b-from-ac', (iata) => { state.bFromIata = iata; });
-  initAutocomplete('b-to-input',   'b-to-ac',   (iata) => { state.bToIata   = iata; });
-  initSortPills();
-  initDepartTiles();
-  checkDemoMode();
-  rotateHeroImages();
-  checkMobileFilters();
-  window.addEventListener('resize', checkMobileFilters);
+document.addEventListener('DOMContentLoaded',async()=>{
+  setDefaultDates();initCurrency();initTabs();initTripType();initPaxPicker();
+  initAutocomplete('from-input','from-ac',iata=>{state.fromIata=iata;});
+  initAutocomplete('to-input','to-ac',iata=>{state.toIata=iata;});
+  initAutocomplete('b-from-input','b-from-ac',iata=>{state.bFromIata=iata;});
+  initAutocomplete('b-to-input','b-to-ac',iata=>{state.bToIata=iata;});
+  initSortPills();initDepartTiles();initWishlist();
+  checkDemoMode();rotateHeroImages();checkMobileFilters();
+  window.addEventListener('resize',checkMobileFilters);
 });
 
-async function checkDemoMode() {
-  try {
-    const r = await fetch('/health');
-    const d = await r.json();
-    if (d.demo) document.getElementById('demo-banner').classList.add('visible');
-  } catch(e) {}
-}
+async function checkDemoMode(){try{const r=await fetch('/health');const d=await r.json();if(d.demo)document.getElementById('demo-banner').classList.add('visible');}catch(e){}}
 
-function setDefaultDates() {
-  const today = new Date();
-  const dep   = new Date(today); dep.setDate(dep.getDate() + 14);
-  const ret   = new Date(dep);   ret.setDate(ret.getDate() + 7);
-  const fmt   = d => d.toISOString().split('T')[0];
-  ['depart-input','hotel-checkin','b-depart','b-checkin'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.value = fmt(dep); el.min = fmt(today); }
-  });
-  ['return-input','hotel-checkout','b-return','b-checkout'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.value = fmt(ret); el.min = fmt(today); }
-  });
+function setDefaultDates(){
+  const today=new Date(),dep=new Date(today),ret=new Date();
+  dep.setDate(dep.getDate()+14);ret.setDate(dep.getDate()+7);
+  const fmt=d=>d.toISOString().split('T')[0];
+  ['depart-input','hotel-checkin','b-depart','b-checkin','car-pickup-date'].forEach(id=>{const el=document.getElementById(id);if(el){el.value=fmt(dep);el.min=fmt(today);}});
+  ['return-input','hotel-checkout','b-return','b-checkout','car-dropoff-date'].forEach(id=>{const el=document.getElementById(id);if(el){el.value=fmt(ret);el.min=fmt(today);}});
 }
+function checkMobileFilters(){const btn=document.getElementById('mobile-filter-btn');if(btn)btn.style.display=window.innerWidth<=900?'flex':'none';}
 
-function checkMobileFilters() {
-  const btn = document.getElementById('mobile-filter-btn');
-  if (!btn) return;
-  btn.style.display = window.innerWidth <= 900 ? 'flex' : 'none';
-}
-
-// ─── Hero Image Rotation ──────────────────────────────────────────────────────
-function rotateHeroImages() {
-  const imgs = document.querySelectorAll('.hero-img');
-  let cur = 0;
-  setInterval(() => {
-    imgs[cur].classList.remove('active');
-    cur = (cur + 1) % imgs.length;
-    imgs[cur].classList.add('active');
-  }, 8000);
-}
+// ─── Hero Rotation ────────────────────────────────────────────────────────────
+function rotateHeroImages(){const imgs=document.querySelectorAll('.hero-img');let cur=0;setInterval(()=>{imgs[cur].classList.remove('active');cur=(cur+1)%imgs.length;imgs[cur].classList.add('active');},8000);}
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
-function initTabs() {
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-      state.activeTab = btn.dataset.tab;
-    });
-  });
-}
+function initTabs(){document.querySelectorAll('.tab-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('tab-'+btn.dataset.tab).classList.add('active');state.activeTab=btn.dataset.tab;});});}
 
 // ─── Trip Type ────────────────────────────────────────────────────────────────
-function initTripType() {
-  document.querySelectorAll('.trip-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.trip-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.tripType = btn.dataset.trip;
-      const retField = document.getElementById('return-field');
-      retField.style.opacity = state.tripType === 'oneway' ? '0.4' : '1';
-      retField.style.pointerEvents = state.tripType === 'oneway' ? 'none' : '';
-    });
-  });
-}
+function initTripType(){document.querySelectorAll('.trip-pill').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.trip-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.tripType=btn.dataset.trip;const rf=document.getElementById('return-field');rf.style.opacity=state.tripType==='oneway'?'0.4':'1';rf.style.pointerEvents=state.tripType==='oneway'?'none':'';});});}
+function initDepartTiles(){document.querySelectorAll('.depart-tile').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('active')));}
 
-// ─── Departure Tiles ──────────────────────────────────────────────────────────
-function initDepartTiles() {
-  document.querySelectorAll('.depart-tile').forEach(tile => {
-    tile.addEventListener('click', () => tile.classList.toggle('active'));
-  });
+// ─── Pax Picker ───────────────────────────────────────────────────────────────
+function initPaxPicker(){
+  const trigger=document.getElementById('pax-trigger'),dropdown=document.getElementById('pax-dropdown');
+  trigger.addEventListener('click',e=>{e.stopPropagation();dropdown.classList.toggle('open');});
+  document.addEventListener('click',()=>dropdown.classList.remove('open'));
+  dropdown.addEventListener('click',e=>e.stopPropagation());
+  document.querySelectorAll('.pax-btn').forEach(btn=>{btn.addEventListener('click',()=>{const type=btn.dataset.type,action=btn.dataset.action;if(action==='plus')state.pax[type]=Math.min(9,state.pax[type]+1);if(action==='minus')state.pax[type]=Math.max(type==='adults'?1:0,state.pax[type]-1);document.getElementById(type+'-count').textContent=state.pax[type];updatePaxLabel();});});
 }
-
-// ─── Passenger Picker ─────────────────────────────────────────────────────────
-function initPaxPicker() {
-  const trigger  = document.getElementById('pax-trigger');
-  const dropdown = document.getElementById('pax-dropdown');
-  trigger.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.toggle('open'); });
-  document.addEventListener('click', () => dropdown.classList.remove('open'));
-  dropdown.addEventListener('click', e => e.stopPropagation());
-  document.querySelectorAll('.pax-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const type = btn.dataset.type, action = btn.dataset.action;
-      if (action === 'plus')  state.pax[type] = Math.min(9, state.pax[type] + 1);
-      if (action === 'minus') state.pax[type] = Math.max(type === 'adults' ? 1 : 0, state.pax[type] - 1);
-      document.getElementById(type + '-count').textContent = state.pax[type];
-      updatePaxLabel();
-    });
-  });
-}
-function updatePaxLabel() {
-  const { adults, children, infants } = state.pax;
-  const parts = [`${adults} Adult${adults > 1 ? 's' : ''}`];
-  if (children) parts.push(`${children} Child${children > 1 ? 'ren' : ''}`);
-  if (infants)  parts.push(`${infants} Infant${infants > 1 ? 's' : ''}`);
-  document.getElementById('pax-trigger').textContent = parts.join(', ');
-}
+function updatePaxLabel(){const{adults,children,infants}=state.pax;const p=[`${adults} Adult${adults>1?'s':''}`];if(children)p.push(`${children} Child${children>1?'ren':''}`);if(infants)p.push(`${infants} Infant${infants>1?'s':''}`);document.getElementById('pax-trigger').textContent=p.join(', ');}
 
 // ─── Autocomplete ─────────────────────────────────────────────────────────────
-function initAutocomplete(inputId, dropdownId, onSelect) {
-  const input    = document.getElementById(inputId);
-  const dropdown = document.getElementById(dropdownId);
-  let timer = null, highlighted = -1, items = [];
-
-  function triggerSearch() {
-    clearTimeout(timer);
-    const q = input.value.trim();
-    if (q.length < 2) { dropdown.classList.remove('open'); return; }
-    timer = setTimeout(async () => {
-      try {
-        const r = await fetch(`/api/airports?q=${encodeURIComponent(q)}`, { credentials: 'same-origin' });
-        if (!r.ok) { dropdown.classList.remove('open'); return; }
-        items = await r.json();
-        renderDropdown(items);
-      } catch(e) { dropdown.classList.remove('open'); }
-    }, 150);
-  }
-  input.addEventListener('input', triggerSearch);
-  input.addEventListener('keyup', triggerSearch); // iOS Safari fallback
-
-  input.addEventListener('keydown', e => {
-    if (!dropdown.classList.contains('open')) return;
-    if (e.key === 'ArrowDown') { highlighted = Math.min(highlighted + 1, items.length - 1); highlightItem(); e.preventDefault(); }
-    if (e.key === 'ArrowUp')   { highlighted = Math.max(highlighted - 1, 0); highlightItem(); e.preventDefault(); }
-    if (e.key === 'Enter' && highlighted >= 0) { selectItem(items[highlighted]); e.preventDefault(); }
-    if (e.key === 'Escape') dropdown.classList.remove('open');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('#' + inputId) && !e.target.closest('#' + dropdownId))
-      dropdown.classList.remove('open');
-  });
-
-  function renderDropdown(airports) {
-    if (!airports.length) { dropdown.classList.remove('open'); return; }
-    highlighted = -1;
-    dropdown.innerHTML = airports.map((a, i) => {
-      const isMetro = !!(a.metro || (a.name && a.name.includes('All Airports')));
-      const icon     = isMetro ? '🌐' : '✈️';
-      const metroBadge = isMetro ? '<span class="ac-metro-badge">ALL AIRPORTS</span>' : '';
-      const shortName  = a.name.replace(/ - All Airports.*/, '').replace(/ International( Airport)?/, '').replace(/ Airport$/, '');
-      const displayName = isMetro ? a.name : shortName;
-      return `
-      <div class="ac-item${isMetro ? ' metro' : ''}" data-idx="${i}" role="option">
-        <span class="ac-airport-icon">${icon}</span>
-        <span class="ac-iata">${a.iata}</span>
-        <div class="ac-details">
-          <div class="ac-name">${displayName}</div>
-          <div class="ac-location">${a.city}${a.country ? ' · ' + a.country : ''}</div>
-        </div>
-        ${metroBadge}
-      </div>`;
-    }).join('');
-    dropdown.querySelectorAll('.ac-item').forEach(item => {
-      item.addEventListener('mousedown', e => { e.preventDefault(); selectItem(items[parseInt(item.dataset.idx)]); });
-    });
-    dropdown.classList.add('open');
-  }
-  function highlightItem() {
-    dropdown.querySelectorAll('.ac-item').forEach((el, i) => el.classList.toggle('highlighted', i === highlighted));
-  }
-  function selectItem(a) {
-    const isMetro = !!(a.metro || (a.name && a.name.includes('All Airports')));
-    // Display: full name for metro, "IATA — City" for single airport
-    const displayVal = isMetro
-      ? `${a.name.replace(/ \(.*\)/, '')} (${a.iata})`
-      : `${a.iata} — ${a.city}`;
-    input.value = displayVal;
-    // Store display name on the input element so search can use it
-    input.dataset.displayName = displayVal;
-    input.dataset.iataCode    = a.iata;
-    onSelect(a.iata, displayVal);
-    dropdown.classList.remove('open');
-  }
+function initAutocomplete(inputId,dropdownId,onSelect){
+  const input=document.getElementById(inputId),dropdown=document.getElementById(dropdownId);
+  let timer=null,highlighted=-1,items=[];
+  input.addEventListener('input',()=>{clearTimeout(timer);const q=input.value.trim();if(q.length<2){dropdown.classList.remove('open');return;}timer=setTimeout(async()=>{try{const r=await fetch(`/api/airports?q=${encodeURIComponent(q)}`);items=await r.json();renderAcDropdown(items,dropdown,input,onSelect);}catch(e){dropdown.classList.remove('open');}},200);});
+  input.addEventListener('keydown',e=>{if(!dropdown.classList.contains('open'))return;if(e.key==='ArrowDown'){highlighted=Math.min(highlighted+1,items.length-1);highlightAc(dropdown,highlighted);e.preventDefault();}if(e.key==='ArrowUp'){highlighted=Math.max(highlighted-1,0);highlightAc(dropdown,highlighted);e.preventDefault();}if(e.key==='Enter'&&highlighted>=0){selectAc(items[highlighted],input,dropdown,onSelect);e.preventDefault();}if(e.key==='Escape')dropdown.classList.remove('open');});
+  document.addEventListener('click',e=>{if(!e.target.closest('#'+inputId)&&!e.target.closest('#'+dropdownId))dropdown.classList.remove('open');});
 }
+function renderAcDropdown(airports,dropdown,input,onSelect){
+  if(!airports.length){dropdown.classList.remove('open');return;}
+  dropdown.innerHTML=airports.map((a,i)=>`<div class="ac-item" data-idx="${i}"><span class="ac-iata">${a.iata}</span><div class="ac-details"><div class="ac-name">${a.name}</div><div class="ac-location">${a.city}, ${a.country}</div></div></div>`).join('');
+  dropdown.querySelectorAll('.ac-item').forEach(item=>{item.addEventListener('mousedown',e=>{e.preventDefault();selectAc(airports[parseInt(item.dataset.idx)],input,dropdown,onSelect);});});
+  dropdown.classList.add('open');
+}
+function highlightAc(dd,idx){dd.querySelectorAll('.ac-item').forEach((el,i)=>el.classList.toggle('highlighted',i===idx));}
+function selectAc(a,input,dropdown,onSelect){input.value=`${a.iata} — ${a.city}`;onSelect(a.iata);dropdown.classList.remove('open');}
 
 // ─── Sort Pills ───────────────────────────────────────────────────────────────
-function initSortPills() {
-  document.querySelectorAll('.sort-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.sort-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      sortAndRender(pill.dataset.sort);
-    });
+function initSortPills(){document.querySelectorAll('.sort-pill').forEach(pill=>{pill.addEventListener('click',()=>{document.querySelectorAll('.sort-pill').forEach(p=>p.classList.remove('active'));pill.classList.add('active');sortAndRender(pill.dataset.sort);});});}
+function sortAndRender(sortBy){
+  if(state.currentMode==='flights'){let s=[...state.rawFlights];if(sortBy==='cheapest')s.sort((a,b)=>a.price-b.price);if(sortBy==='fastest')s.sort((a,b)=>parseDuration(a.duration)-parseDuration(b.duration));if(sortBy==='best')s.sort((a,b)=>scoreFlight(a)-scoreFlight(b));renderFlights(s,state.searchParams);}
+  else if(state.currentMode==='bundles'){let s=[...state.rawBundles];if(sortBy==='cheapest')s.sort((a,b)=>a.bundlePrice-b.bundlePrice);if(sortBy==='best')s.sort((a,b)=>b.savings-a.savings);renderBundles(s,state.searchParams);}
+  else if(state.currentMode==='cars'){let s=[...state.rawCars];if(sortBy==='cheapest')s.sort((a,b)=>a.pricePerDay-b.pricePerDay);renderCars(s,state.searchParams);}
+}
+function scoreFlight(f){return(f.price/100)+(parseDuration(f.duration)/60);}
+function parseDuration(dur){const m=dur?dur.match(/(\d+)h\s*(\d+)m/):null;return m?parseInt(m[1])*60+parseInt(m[2]):999;}
+
+// ─── Deal Scores ──────────────────────────────────────────────────────────────
+function calcDealScores(items,priceKey){
+  const prices=items.map(i=>parseFloat(i[priceKey])).filter(p=>p>0&&!isNaN(p));
+  if(!prices.length)return items.map(i=>({...i,dealEmoji:'💛',dealLabel:'Fair Price',dealCls:'fair-price'}));
+  const avg=prices.reduce((a,b)=>a+b,0)/prices.length;
+  return items.map(item=>{const p=parseFloat(item[priceKey]);if(!p||isNaN(p))return{...item,dealEmoji:'💛',dealLabel:'Fair Price',dealCls:'fair-price'};const r=p/avg;
+    if(r<=0.80)return{...item,dealEmoji:'🔥',dealLabel:'Great Deal',dealCls:'great-deal'};
+    if(r<=0.90)return{...item,dealEmoji:'✅',dealLabel:'Good Deal',dealCls:'good-deal'};
+    if(r<=1.10)return{...item,dealEmoji:'💛',dealLabel:'Fair Price',dealCls:'fair-price'};
+    return{...item,dealEmoji:'⚠️',dealLabel:'Pricey',dealCls:'pricey'};
   });
 }
-function sortAndRender(sortBy) {
-  if (state.currentMode === 'flights') {
-    let sorted = [...state.rawFlights];
-    if (sortBy === 'cheapest') sorted.sort((a, b) => a.price - b.price);
-    if (sortBy === 'fastest')  sorted.sort((a, b) => parseDuration(a.duration) - parseDuration(b.duration));
-    if (sortBy === 'best')     sorted.sort((a, b) => scoreFlight(a) - scoreFlight(b));
-    renderFlights(sorted, state.searchParams);
-  } else if (state.currentMode === 'bundles') {
-    let sorted = [...state.rawBundles];
-    if (sortBy === 'cheapest') sorted.sort((a, b) => a.bundlePrice - b.bundlePrice);
-    if (sortBy === 'best')     sorted.sort((a, b) => b.savings - a.savings);
-    renderBundles(sorted, state.searchParams);
-  }
-}
-function scoreFlight(f) {
-  return (f.price / 100) + (parseDuration(f.duration) / 60);
-}
-function parseDuration(dur) {
-  const m = dur ? dur.match(/(\d+)h\s*(\d+)m/) : null;
-  if (!m) return 999;
-  return parseInt(m[1]) * 60 + parseInt(m[2]);
-}
 
-// ─── Popular Destinations ─────────────────────────────────────────────────────
-function fillDestination(iata, city, country, tab, fromIata) {
-  // Switch to flights tab
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const flightBtn = document.querySelector('[data-tab="flights"]');
-  flightBtn.classList.add('active');
+// ─── Fill Destination ─────────────────────────────────────────────────────────
+function fillDestination(iata,city,country,tab,fromIata){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('[data-tab="flights"]').classList.add('active');
   document.getElementById('tab-flights').classList.add('active');
-  state.activeTab = 'flights';
-
-  // Fill destination
-  const toInput = document.getElementById('to-input');
-  toInput.value = `${iata} — ${city}`;
-  state.toIata = iata;
-
-  // Auto-fill From if empty
-  const fromInput = document.getElementById('from-input');
-  if (!fromInput.value && fromIata) {
-    fromInput.value = `${fromIata} — New York`;
-    state.fromIata = fromIata;
-  }
-
-  // Scroll to hero
-  document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
+  state.activeTab='flights';
+  const toInput=document.getElementById('to-input');toInput.value=`${iata} — ${city}`;state.toIata=iata;
+  const fromInput=document.getElementById('from-input');if(!fromInput.value&&fromIata){fromInput.value=`${fromIata} — New York`;state.fromIata=fromIata;}
+  document.getElementById('hero').scrollIntoView({behavior:'smooth'});
 }
 
 // ─── Search Flights ───────────────────────────────────────────────────────────
-function extractIataFromInput(stateIata, inputId) {
-  if (stateIata) return stateIata;
-  const el = document.getElementById(inputId);
-  if (el && el.dataset.iataCode) return el.dataset.iataCode;
-  const raw = (el ? el.value : '').trim();
-  if (!raw) return '';
-  // Direct 3-letter IATA code
-  if (/^[A-Za-z]{3}$/.test(raw)) return raw.toUpperCase();
-  // Format: "IATA — City Name"
-  const dashPart = raw.split('—')[0].trim();
-  if (/^[A-Za-z]{3}$/.test(dashPart)) return dashPart.toUpperCase();
-  // Parenthetical: "New York (NYC)" or "All Airports (JFK)"
-  const parenMatch = raw.match(/\(([A-Za-z]{3})\)/);
-  if (parenMatch) return parenMatch[1].toUpperCase();
-  // First word if it looks like IATA
-  const firstWord = raw.split(/[\s,—]/)[0];
-  if (/^[A-Za-z]{3}$/.test(firstWord)) return firstWord.toUpperCase();
-  return raw.toUpperCase().slice(0, 3);
-}
-
-async function searchFlights() {
-  const origin      = extractIataFromInput(state.fromIata, 'from-input');
-  const destination = extractIataFromInput(state.toIata, 'to-input');
-  const departure   = document.getElementById('depart-input').value;
-  const returnDate  = state.tripType === 'roundtrip' ? document.getElementById('return-input').value : '';
-  const adults      = state.pax.adults;
-  const travelClass = document.getElementById('class-select').value;
-
-  if (!origin || !destination || !departure) {
-    alert('Please fill in origin, destination, and departure date.');
-    return;
-  }
-
-  state.currentMode = 'flights';
-  state.searchParams = { origin, destination, departure, returnDate, adults, travelClass };
-  saveRecentSearch(origin, destination, departure);
-
-  hidePoppularDests();
-  showResults();
-  showSidebar(true);
-  showSkeletons(5);
-
-  try {
-    let url = `/api/flights?origin=${origin}&destination=${destination}&departure=${departure}&adults=${adults}&class=${travelClass}`;
-    if (returnDate) url += `&return=${returnDate}`;
-    const r = await fetch(url);
-    const d = await r.json();
-    state.rawFlights = d.flights || [];
-
+async function searchFlights(){
+  const origin=state.fromIata||document.getElementById('from-input').value.split('—')[0].trim().split(' ')[0];
+  const destination=state.toIata||document.getElementById('to-input').value.split('—')[0].trim().split(' ')[0];
+  const departure=document.getElementById('depart-input').value;
+  const returnDate=state.tripType==='roundtrip'?document.getElementById('return-input').value:'';
+  const adults=state.pax.adults,travelClass=document.getElementById('class-select').value;
+  if(!origin||!destination||!departure){showToast('⚠️ Please fill in origin, destination, and departure date');return;}
+  state.currentMode='flights';state.searchParams={origin,destination,departure,returnDate,adults,travelClass};
+  hidePoppularDests();showResults();showSidebar(true);hideSectionExtras();showSkeletons(6);
+  try{
+    let url=`/api/flights?origin=${origin}&destination=${destination}&departure=${departure}&adults=${adults}&class=${travelClass}`;
+    if(returnDate)url+=`&return=${returnDate}`;
+    const r=await fetch(url);const d=await r.json();
+    state.rawFlights=d.flights||[];
     buildAirlineFilters(state.rawFlights);
-    sortAndRender(document.querySelector('.sort-pill.active')?.dataset.sort || 'best');
-  } catch(err) {
-    showError('flights');
-  }
+    sortAndRender(document.querySelector('.sort-pill.active')?.dataset.sort||'best');
+    if(state.flexDates&&state.rawFlights.length)showFlexDatesGrid(departure,state.rawFlights);
+    if(state.rawFlights.length){
+      const minP=Math.min(...state.rawFlights.map(f=>f.price));
+      document.getElementById('price-alert-text').textContent=`🔔 Get notified when ${origin}→${destination} drops below ${formatPrice(minP)} — set a price alert`;
+      document.getElementById('price-alert-banner').classList.add('visible');
+    }
+  }catch(err){showError();}
 }
 
 // ─── Search Hotels ────────────────────────────────────────────────────────────
-async function searchHotels() {
-  const city    = document.getElementById('hotel-city-input').value.trim();
-  const checkin  = document.getElementById('hotel-checkin').value;
-  const checkout = document.getElementById('hotel-checkout').value;
-  const adults   = document.getElementById('hotel-guests').value;
-
-  if (!city) { alert('Please enter a destination city.'); return; }
-
-  state.currentMode = 'hotels';
-  state.searchParams = { city, checkin, checkout, adults };
-
-  hidePoppularDests();
-  showResults();
-  showSidebar(false);
-  showHotelSkeletons(6);
-
-  try {
-    const r = await fetch(`/api/hotels?city=${encodeURIComponent(city)}&checkin=${checkin}&checkout=${checkout}&adults=${adults}`);
-    const d = await r.json();
-    state.rawHotels = d.hotels || [];
-    renderHotels(state.rawHotels, state.searchParams);
-  } catch(err) {
-    showError('hotels');
-  }
+async function searchHotels(){
+  const city=document.getElementById('hotel-city-input').value.trim();
+  const checkin=document.getElementById('hotel-checkin').value,checkout=document.getElementById('hotel-checkout').value;
+  const adults=document.getElementById('hotel-guests').value;
+  if(!city){showToast('⚠️ Please enter a destination city');return;}
+  state.currentMode='hotels';state.searchParams={city,checkin,checkout,adults};
+  hidePoppularDests();showResults();showSidebar(false);hideSectionExtras();showHotelSkeletons(6);
+  try{
+    const r=await fetch(`/api/hotels?city=${encodeURIComponent(city)}&checkin=${checkin}&checkout=${checkout}&adults=${adults}`);
+    const d=await r.json();state.rawHotels=d.hotels||[];
+    document.getElementById('amenity-filter-bar').classList.add('visible');
+    state.amenityFilters=[];document.querySelectorAll('.amenity-toggle').forEach(t=>t.classList.remove('active'));
+    renderHotels(state.rawHotels,state.searchParams);
+  }catch(err){showError();}
 }
 
 // ─── Search Bundles ───────────────────────────────────────────────────────────
-async function searchBundles() {
-  const origin      = state.bFromIata || document.getElementById('b-from-input').value.split('—')[0].trim().split(' ')[0];
-  const destination = state.bToIata   || document.getElementById('b-to-input').value.split('—')[0].trim().split(' ')[0];
-  const depart      = document.getElementById('b-depart').value;
-  const checkin     = document.getElementById('b-checkin').value;
-  const checkout    = document.getElementById('b-checkout').value;
-  const guests      = document.getElementById('b-guests').value;
+async function searchBundles(){
+  const origin=state.bFromIata||document.getElementById('b-from-input').value.split('—')[0].trim().split(' ')[0];
+  const destination=state.bToIata||document.getElementById('b-to-input').value.split('—')[0].trim().split(' ')[0];
+  const depart=document.getElementById('b-depart').value,checkin=document.getElementById('b-checkin').value;
+  const checkout=document.getElementById('b-checkout').value,guests=document.getElementById('b-guests').value;
+  if(!depart||!checkin||!checkout){showToast('⚠️ Please fill in travel and hotel dates');return;}
+  state.currentMode='bundles';state.searchParams={origin,destination,depart,checkin,checkout,guests};
+  hidePoppularDests();showResults();showSidebar(false);hideSectionExtras();
+  document.getElementById('progress-steps').classList.add('visible');showBundleSkeletons(4);
+  await animateBundleProgress();
+  try{
+    let url=`/api/bundles?depart=${depart}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
+    if(origin)url+=`&origin=${origin}`;if(destination)url+=`&destination=${destination}`;
+    const r=await fetch(url);const d=await r.json();state.rawBundles=d.bundles||[];
+    document.getElementById('progress-steps').classList.remove('visible');
+    renderBundles(state.rawBundles,state.searchParams);
+  }catch(err){document.getElementById('progress-steps').classList.remove('visible');showError();}
+}
+async function animateBundleProgress(){
+  const steps=[{id:'ps1',sep:'ps-sep1',delay:600},{id:'ps2',sep:'ps-sep2',delay:900},{id:'ps3',sep:null,delay:700}];
+  for(const s of steps){await new Promise(r=>setTimeout(r,s.delay));document.getElementById(s.id).classList.add('done');if(s.sep)document.getElementById(s.sep).classList.add('filled');const ni=steps.indexOf(s)+1;if(ni<steps.length)document.getElementById(steps[ni].id).classList.add('active');}
+  await new Promise(r=>setTimeout(r,300));
+}
 
-  if (!depart || !checkin || !checkout) {
-    alert('Please fill in travel dates and hotel dates.');
-    return;
-  }
-
-  state.currentMode = 'bundles';
-  state.searchParams = { origin, destination, depart, checkin, checkout, guests };
-  if (origin && destination) saveRecentSearch(origin, destination, depart);
-
-  hidePoppularDests();
-  showResults();
-  showSidebar(false);
-  showBundleSkeletons(4);
-
-  try {
-    let url = `/api/bundles?depart=${depart}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
-    if (origin)      url += `&origin=${origin}`;
-    if (destination) url += `&destination=${destination}`;
-    const r = await fetch(url);
-    const d = await r.json();
-    state.rawBundles = d.bundles || [];
-    renderBundles(state.rawBundles, state.searchParams);
-  } catch(err) {
-    showError('bundles');
-  }
+// ─── Search Cars ──────────────────────────────────────────────────────────────
+async function searchCars(){
+  const pickup=document.getElementById('car-pickup').value.trim();
+  const dropoff=document.getElementById('car-dropoff').value.trim()||pickup;
+  const pickupDate=document.getElementById('car-pickup-date').value;
+  const dropoffDate=document.getElementById('car-dropoff-date').value;
+  if(!pickup||!pickupDate||!dropoffDate){showToast('⚠️ Please enter pickup location and dates');return;}
+  state.currentMode='cars';state.searchParams={pickup,dropoff,pickupDate,dropoffDate};
+  hidePoppularDests();showResults();showSidebar(false);hideSectionExtras();showCarSkeletons(6);
+  try{
+    const r=await fetch(`/api/cars?pickup=${encodeURIComponent(pickup)}&dropoff=${encodeURIComponent(dropoff)}&pickupDate=${pickupDate}&dropoffDate=${dropoffDate}`);
+    const d=await r.json();state.rawCars=d.cars||[];
+    renderCars(state.rawCars,state.searchParams);
+  }catch(err){showError();}
 }
 
 // ─── Render Flights ───────────────────────────────────────────────────────────
-function renderFlights(flights, params) {
-  const container = document.getElementById('results-container');
-  const header    = document.getElementById('results-header');
-
-  header.style.display = 'block';
-  document.getElementById('results-title').textContent = `${params.origin} → ${params.destination}`;
-  const rtLabel = params.returnDate ? ` · Return ${formatDateDisplay(params.returnDate)}` : '';
-  document.getElementById('results-meta').textContent = `${formatDateDisplay(params.departure)}${rtLabel} · ${params.adults} Adult${params.adults > 1 ? 's' : ''} · ${formatClass(params.travelClass)}`;
-
-  const chip = document.getElementById('results-count-chip');
-  chip.style.display = flights.length ? 'inline-block' : 'none';
-  chip.textContent = `${flights.length} flight${flights.length !== 1 ? 's' : ''} found`;
-
-  if (!flights.length) { container.innerHTML = emptyState('✈️', 'No flights found', 'Try adjusting your dates or search for a different route.'); return; }
-
-  const minPrice = Math.min(...flights.map(f => f.price));
-  const html = flights.map((f, i) => flightCard(f, i, minPrice, params)).join('');
-  container.innerHTML = `<div class="flights-list">${html}</div>`;
-
-  container.querySelectorAll('.flight-card-main').forEach(el => {
-    el.addEventListener('click', () => {
-      const detail = el.nextElementSibling;
-      if (detail) detail.classList.toggle('open');
-    });
-  });
+function renderFlights(flights,params){
+  const container=document.getElementById('results-container');
+  document.getElementById('results-header').style.display='block';
+  document.getElementById('results-title').textContent=`${params.origin} → ${params.destination}`;
+  const rtL=params.returnDate?` · Return ${formatDateDisplay(params.returnDate)}`:'';
+  document.getElementById('results-meta').textContent=`${formatDateDisplay(params.departure)}${rtL} · ${params.adults} Adult${params.adults>1?'s':''} · ${formatClass(params.travelClass)}`;
+  const chip=document.getElementById('results-count-chip');chip.style.display=flights.length?'inline-block':'none';chip.textContent=`${flights.length} flight${flights.length!==1?'s':''} found`;
+  if(!flights.length){container.innerHTML=emptyState('✈️','No flights found','Try flexible dates or a nearby airport — e.g.',true);return;}
+  const ws=calcDealScores(flights,'price');
+  const minP=Math.min(...flights.map(f=>f.price));
+  container.innerHTML=`<div class="flights-list">${ws.map((f,i)=>flightCard(f,i,minP,params)).join('')}</div>`;
+  container.querySelectorAll('.flight-card-main').forEach(el=>{el.addEventListener('click',()=>{const d=el.nextElementSibling;if(d)d.classList.toggle('open');});});
 }
 
-function flightCard(f, idx, minPrice, params) {
-  const isCheapest = f.price === minPrice;
-  const isBest     = !isCheapest && idx === 1;
-  const cardClass  = isCheapest ? 'cheapest' : (isBest ? 'best' : '');
-
-  const logoHTML = `<img src="${f.airline.logo}" alt="${f.airline.code}"
-    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
-    <div class="airline-logo-fallback" style="display:none;background:${airlineColor(f.airline.code)}">${f.airline.code}</div>`;
-
-  const stopsHTML = f.stops === 0
-    ? `<span class="stops-badge nonstop">Nonstop</span>`
-    : `<span class="stops-badge stop">${f.stops} Stop${f.stops > 1 ? 's' : ''}</span><div class="stops-label">${(f.stopAirports||[]).join(', ')}</div>`;
-
-  const lineSegments = f.stops === 0
-    ? `<div class="flight-line-bar"></div>`
-    : Array.from({length: f.stops}, () => `<div class="flight-line-bar"></div><div class="stop-dot"></div>`).join('') + `<div class="flight-line-bar"></div>`;
-
-  const badges = `<div class="card-badges">
-    ${isCheapest ? '<span class="badge cheapest">💚 Cheapest</span>' : ''}
-    ${isBest     ? '<span class="badge best">⭐ Best Value</span>' : ''}
-    ${f.seatsLeft && f.seatsLeft <= 5 ? `<span class="badge seats">🔥 ${f.seatsLeft} seats left</span>` : ''}
-  </div>`;
-
-  // Price History Tag
-  const ph = f.priceHistory || 'typical';
-  const phConfig = {
-    lower:   { icon: '↓', text: 'Lower than usual', cls: 'lower' },
-    higher:  { icon: '↑', text: 'Higher than usual', cls: 'higher' },
-    typical: { icon: '~', text: 'Typical price',     cls: 'typical' }
-  };
-  const phData = phConfig[ph] || phConfig.typical;
-  const priceHistoryHTML = `<div class="price-history-tag ${phData.cls}">${phData.icon} ${phData.text}</div>`;
-
-  const bookLinks = buildFlightBookLinks(f, params);
-  const amenitiesHTML = (f.amenities || []).length
-    ? f.amenities.map(a => `<span class="amenity-tag">${a}</span>`).join('')
-    : '<span class="amenity-tag">Standard amenities</span>';
-
-  return `
-  <div class="flight-card ${cardClass}">
-    <div class="flight-card-main">
-      <div class="airline-logo-wrap">${logoHTML}</div>
-      <div class="flight-info">
-        <div class="flight-airline-name">${f.airline.name} · ${f.flightNumber}</div>
-        <div class="flight-timeline">
-          <div>
-            <div class="flight-time">${f.departure.time}</div>
-            <div class="flight-iata">${f.departure.iata}</div>
-          </div>
-          <div class="flight-line">
-            <div class="flight-line-track">${lineSegments}</div>
-            <div class="flight-duration">${f.duration}</div>
-          </div>
-          <div>
-            <div class="flight-time">${f.arrival.time}${f.arrival.date === '+1' ? '<sup style="font-size:11px;color:var(--gold);margin-left:1px">+1</sup>' : ''}</div>
-            <div class="flight-iata">${f.arrival.iata}</div>
-          </div>
-        </div>
-        ${badges}
-        ${priceHistoryHTML}
+function flightCard(f,idx,minPrice,params){
+  const isCheapest=f.price===minPrice,isBest=!isCheapest&&idx===1;
+  const cardClass=isCheapest?'cheapest':(isBest?'best':'');
+  const wl=isWishlisted('flight-'+f.id);
+  const seats=f.seatsLeft||Math.floor(Math.random()*12)+2;
+  const logoHTML=`<img src="${f.airline.logo}" alt="${f.airline.code}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block"><div class="airline-logo-fallback" style="display:none;background:${airlineColor(f.airline.code)}">${f.airline.code}</div>`;
+  const stopsHTML=f.stops===0?`<span class="stops-badge nonstop">Nonstop</span>`:`<span class="stops-badge stop">${f.stops} Stop${f.stops>1?'s':''}</span><div class="stops-label">${(f.stopAirports||[]).join(', ')}</div>`;
+  const lineSegs=f.stops===0?`<div class="flight-line-bar"></div>`:Array.from({length:f.stops},()=>`<div class="flight-line-bar"></div><div class="stop-dot"></div>`).join('')+`<div class="flight-line-bar"></div>`;
+  const ph=f.priceHistory||'typical';const phCfg={lower:{icon:'↓',text:'Lower than usual',cls:'lower'},higher:{icon:'↑',text:'Higher than usual',cls:'higher'},typical:{icon:'~',text:'Typical price',cls:'typical'}};const phD=phCfg[ph]||phCfg.typical;
+  const amenHTML=(f.amenities||[]).length?f.amenities.map(a=>`<span class="amenity-tag">${a}</span>`).join(''):'<span class="amenity-tag">Standard amenities</span>';
+  const wlItem={id:'flight-'+f.id,type:'flight',icon:'✈️',name:`${f.departure.iata}→${f.arrival.iata}`,meta:`${f.airline.name} · ${f.flightNumber}`,price:f.price};
+  const wlStr=JSON.stringify(wlItem).replace(/"/g,'&quot;');
+  return`<div class="flight-card ${cardClass}"><div class="flight-card-main">
+    <div class="airline-logo-wrap">${logoHTML}</div>
+    <div class="flight-info">
+      <div class="flight-airline-name">${f.airline.name} · ${f.flightNumber}</div>
+      <div class="flight-timeline">
+        <div><div class="flight-time">${f.departure.time}</div><div class="flight-iata">${f.departure.iata}</div></div>
+        <div class="flight-line"><div class="flight-line-track">${lineSegs}</div><div class="flight-duration">${f.duration}</div></div>
+        <div><div class="flight-time">${f.arrival.time}${f.arrival.date==='+1'?'<sup style="font-size:11px;color:var(--gold);margin-left:1px">+1</sup>':''}</div><div class="flight-iata">${f.arrival.iata}</div></div>
       </div>
-      <div class="flight-stops">${stopsHTML}</div>
-      <div class="flight-class-badge">${formatClass(f.class)}</div>
-      <div class="flight-price-wrap">
-        <div class="flight-price ${isCheapest ? 'cheap' : ''}">$${f.price.toLocaleString()}</div>
-        <div class="flight-price-per">per person</div>
+      <div class="card-badges">
+        ${isCheapest?'<span class="badge cheapest">💚 Cheapest</span>':''}
+        ${isBest?'<span class="badge best">⭐ Best Value</span>':''}
+        <span class="badge seats">⚡ ${seats} seat${seats!==1?'s':''} left</span>
       </div>
-      <button class="book-now-btn" onclick="event.stopPropagation();openBookLinks('${f.id}')">Book →</button>
+      <span class="deal-score-badge ${f.dealCls}">${f.dealEmoji} ${f.dealLabel}</span>
+      <div class="price-history-tag ${phD.cls}">${phD.icon} ${phD.text}</div>
     </div>
-    <div class="flight-detail" id="detail-${f.id}">
-      <div class="detail-grid">
-        <div class="detail-block">
-          <h4>Baggage Policy</h4>
-          <p>${f.baggage}</p>
-        </div>
-        <div class="detail-block">
-          <h4>Seat Amenities</h4>
-          <div>${amenitiesHTML}</div>
-        </div>
-        <div class="detail-block">
-          <h4>CO₂ Emissions</h4>
-          <p>${f.co2 || 'Estimated ~150 kg CO₂ per passenger'}</p>
-        </div>
-      </div>
-      <div class="book-links">
-        <span class="book-links-label">Book on:</span>
-        ${bookLinks}
-      </div>
+    <div class="flight-stops">${stopsHTML}</div>
+    <div class="flight-class-badge">${formatClass(f.class)}</div>
+    <div class="flight-price-wrap"><div class="flight-price ${isCheapest?'cheap':''}">${formatPrice(f.price)}</div><div class="flight-price-per">per person</div></div>
+    <button class="heart-btn ${wl?'wishlisted':''}" onclick="event.stopPropagation();toggleWishlistItem(${wlStr},this)" title="Save">${wl?'❤️':'🤍'}</button>
+    <button class="book-now-btn" onclick="event.stopPropagation();openBookLinks('${f.id}')">Book →</button>
+  </div>
+  <div class="flight-detail" id="detail-${f.id}">
+    <div class="detail-grid">
+      <div class="detail-block"><h4>Baggage Policy</h4><p>${f.baggage}</p></div>
+      <div class="detail-block"><h4>Seat Amenities</h4><div>${amenHTML}</div></div>
+      <div class="detail-block"><h4>CO₂ Emissions</h4><p>${f.co2||'Estimated ~150 kg CO₂ per passenger'}</p></div>
     </div>
-  </div>`;
+    <div class="book-links"><span class="book-links-label">Book on:</span>${buildFlightBookLinks(f,params)}</div>
+  </div></div>`;
 }
 
-function buildFlightBookLinks(f, params) {
-  const { origin, destination, departure, returnDate, adults, travelClass } = params;
-  const classLabel = (travelClass || 'ECONOMY').toLowerCase().replace('_', '');
-  const retDate = returnDate || '';
-  const links = [];
-  if (f.airline.website) {
-    links.push(`<a href="https://${f.airline.website}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name}</a>`);
-  }
+function buildFlightBookLinks(f,params){
+  const{origin,destination,departure,returnDate,adults,travelClass}=params;
+  const links=[];
+  if(f.airline.website)links.push(`<a href="https://${f.airline.website}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name}</a>`);
   links.push(`<a href="https://www.google.com/travel/flights?q=flights+from+${origin}+to+${destination}+${departure}" target="_blank" rel="noopener" class="book-link-btn">🔍 Google Flights</a>`);
-  const expediaUrl = retDate
-    ? `https://www.expedia.com/Flights-Search?trip=roundtrip&leg1=from:${origin},to:${destination},departure:${departure}&leg2=from:${destination},to:${origin},departure:${retDate}&passengers=adults:${adults}`
-    : `https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:${origin},to:${destination},departure:${departure}&passengers=adults:${adults}`;
-  links.push(`<a href="${expediaUrl}" target="_blank" rel="noopener" class="book-link-btn">Expedia</a>`);
-  const kayakUrl = retDate
-    ? `https://www.kayak.com/flights/${origin}-${destination}/${departure}/${retDate}/${adults}adults`
-    : `https://www.kayak.com/flights/${origin}-${destination}/${departure}/${adults}adults`;
+  const expUrl=returnDate?`https://www.expedia.com/Flights-Search?trip=roundtrip&leg1=from:${origin},to:${destination},departure:${departure}&leg2=from:${destination},to:${origin},departure:${returnDate}&passengers=adults:${adults}`:`https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:${origin},to:${destination},departure:${departure}&passengers=adults:${adults}`;
+  links.push(`<a href="${expUrl}" target="_blank" rel="noopener" class="book-link-btn">Expedia</a>`);
+  const kayakUrl=returnDate?`https://www.kayak.com/flights/${origin}-${destination}/${departure}/${returnDate}/${adults}adults`:`https://www.kayak.com/flights/${origin}-${destination}/${departure}/${adults}adults`;
   links.push(`<a href="${kayakUrl}" target="_blank" rel="noopener" class="book-link-btn">Kayak</a>`);
   return links.join('');
 }
 
 // ─── Render Hotels ────────────────────────────────────────────────────────────
-function renderHotels(hotels, params) {
-  const container = document.getElementById('results-container');
-  const header    = document.getElementById('results-header');
+function augmentHotels(hotels){return hotels.map((h,i)=>({...h,freeCancellation:(i*7919+31)%10<4,urgencyRooms:(i*6271+17)%10<3?((i*3)%5)+1:null}));}
 
-  header.style.display = 'block';
-  document.getElementById('results-title').textContent = `Hotels in ${params.city}`;
-  const nights = params.checkin && params.checkout
-    ? Math.max(1, (new Date(params.checkout) - new Date(params.checkin)) / 86400000) : 1;
-  document.getElementById('results-meta').textContent = `${formatDateDisplay(params.checkin)} – ${formatDateDisplay(params.checkout)} · ${nights} night${nights > 1 ? 's' : ''} · ${params.adults} Guest${params.adults > 1 ? 's' : ''}`;
-
-  const chip = document.getElementById('results-count-chip');
-  chip.style.display = hotels.length ? 'inline-block' : 'none';
-  chip.textContent = `${hotels.length} hotel${hotels.length !== 1 ? 's' : ''} found`;
-
-  if (!hotels.length) { container.innerHTML = emptyState('🏨', 'No hotels found', 'Try adjusting your dates or searching a different city.'); return; }
-
-  const avgPrice = hotels.reduce((s, h) => s + (h.pricePerNight || 200), 0) / (hotels.length || 1);
-  const html = hotels.map((h, i) => hotelCard(h, nights, i)).join('');
-  container.innerHTML = `<div class="hotels-grid">${html}</div>` + renderBestMonthSection(avgPrice);
-
-  // Attach price compare toggles
-  container.querySelectorAll('.price-compare-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const panel = btn.nextElementSibling;
-      const isOpen = panel.classList.toggle('open');
-      btn.classList.toggle('open', isOpen);
-      btn.innerHTML = isOpen ? '🏷️ Hide Price Comparison ▲' : '🏷️ Compare Prices Across Sites ▼';
-    });
-  });
+function renderHotels(hotels,params,amFilts){
+  const filters=amFilts||state.amenityFilters||[];
+  let filtered=augmentHotels(hotels);
+  if(filters.length>0){filtered=filtered.filter(h=>{const ha=(h.amenities||[]).map(a=>a.toLowerCase());return filters.every(f=>{if(f==='Free Cancellation')return h.freeCancellation;return ha.some(a=>a.includes(f.toLowerCase()));});});}
+  const ws=calcDealScores(filtered,'pricePerNight');
+  const container=document.getElementById('results-container');
+  document.getElementById('results-header').style.display='block';
+  document.getElementById('results-title').textContent=`Hotels in ${params.city}`;
+  const nights=params.checkin&&params.checkout?Math.max(1,Math.round((new Date(params.checkout)-new Date(params.checkin))/86400000)):1;
+  document.getElementById('results-meta').textContent=`${formatDateDisplay(params.checkin)} – ${formatDateDisplay(params.checkout)} · ${nights} night${nights>1?'s':''} · ${params.adults} Guest${params.adults>1?'s':''}`;
+  const chip=document.getElementById('results-count-chip');chip.style.display=ws.length?'inline-block':'none';chip.textContent=`${ws.length} hotel${ws.length!==1?'s':''} found`;
+  if(!ws.length){container.innerHTML=emptyState('🏨','No hotels match your filters','Try clearing some amenity filters or search a different city',false);return;}
+  container.innerHTML=`<div class="hotels-grid">${ws.map((h,i)=>hotelCard(h,nights,i)).join('')}</div>`;
+  container.querySelectorAll('.price-compare-btn').forEach(btn=>{btn.addEventListener('click',()=>{const panel=btn.nextElementSibling;const isOpen=panel.classList.toggle('open');btn.classList.toggle('open',isOpen);btn.innerHTML=isOpen?'🏷️ Hide Price Comparison ▲':'🏷️ Compare Prices Across Sites ▼';});});
 }
 
-function hotelCard(h, nights, idx) {
-  const stars = Array.from({length: 5}, (_, i) =>
-    `<span style="font-size:16px;color:${i < h.stars ? 'var(--gold)' : '#d1d5db'};letter-spacing:1px">★</span>`).join('');
-  const amenityList = (h.amenities || []).slice(0, 4).map(a => `<span class="amenity-pill">${a}</span>`).join('');
-  const ratingBadge = h.rating ? `<span class="rating-badge">★ ${h.rating} ${h.ratingLabel || ''}</span>` : '';
-  const price = h.pricePerNight ? `$${h.pricePerNight.toLocaleString()}` : 'Varies';
-  const totalPrice = h.pricePerNight ? `Total ~$${(h.pricePerNight * nights).toLocaleString()} for ${nights} night${nights > 1 ? 's' : ''}` : '';
-  const isGoodDeal = h.pricePerNight && h.pricePerNight < 500;
-  const priceCompareHTML = buildPriceComparePanel(h);
-
-  return `
-  <div class="hotel-card">
-    <img class="hotel-img" src="${h.image}" alt="${h.name}" loading="lazy"
-      onerror="this.src='https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=80'" />
+function hotelCard(h,nights,idx){
+  const stars=Array.from({length:5},(_,i)=>`<span class="star ${i<h.stars?'filled':'empty'}">★</span>`).join('');
+  const amenHTML=(h.amenities||[]).slice(0,4).map(a=>`<span class="amenity-pill">${a}</span>`).join('');
+  const ratingB=h.rating?`<span class="rating-badge">★ ${h.rating} ${h.ratingLabel||''}</span>`:'';
+  const price=h.pricePerNight?formatPrice(h.pricePerNight):'Varies';
+  const totalStr=h.pricePerNight?`Total ~${formatPrice(h.pricePerNight*nights)} for ${nights} night${nights>1?'s':''}`:''
+  const wl=isWishlisted('hotel-'+h.id);
+  const wlItem={id:'hotel-'+h.id,type:'hotel',icon:'🏨',name:h.name,meta:`${h.stars}★ · ${h.location||''}`,price:h.pricePerNight};
+  const wlStr=JSON.stringify(wlItem).replace(/"/g,'&quot;');
+  const imgBadges=`${h.freeCancellation?'<div class="hotel-img-badge cancel">✅ Free Cancellation</div>':''}${h.urgencyRooms?`<div class="hotel-img-badge urgency">🔴 Only ${h.urgencyRooms} room${h.urgencyRooms>1?'s':''} left!</div>`:''}`;
+  return`<div class="hotel-card">
+    <div class="hotel-img-wrap">
+      <img class="hotel-img" src="${h.image}" alt="${h.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=80'" />
+      <div class="hotel-img-badges">${imgBadges}</div>
+      <button class="heart-btn hotel-heart ${wl?'wishlisted':''}" onclick="toggleWishlistItem(${wlStr},this)">${wl?'❤️':'🤍'}</button>
+    </div>
     <div class="hotel-body">
       <h3 class="hotel-name">${h.name}</h3>
       <div class="hotel-stars">${stars}</div>
-      <div class="hotel-location">📍 ${h.location || 'See hotel for details'}</div>
-      <div class="hotel-amenities">${amenityList}</div>
+      <div class="hotel-location">📍 ${h.location||'See hotel for details'}</div>
+      <div class="hotel-badges-row">
+        <span class="deal-score-badge ${h.dealCls}">${h.dealEmoji} ${h.dealLabel}</span>
+        ${h.freeCancellation?'<span class="badge free-cancel">✅ Free Cancel</span>':''}
+        ${h.urgencyRooms?`<span class="badge urgency">🔴 ${h.urgencyRooms} left</span>`:''}
+      </div>
+      <div class="hotel-amenities">${amenHTML}</div>
       <div class="hotel-footer">
-        <div class="hotel-rating-row">
-          ${ratingBadge}
-          <span class="stars">${'★'.repeat(h.stars || 0)}${'☆'.repeat(Math.max(0, 5 - (h.stars || 0)))}</span>
-        </div>
-        <div class="hotel-price-row">
-          <span class="hotel-price" style="color:${isGoodDeal ? 'var(--green)' : 'var(--text)'}">${price}</span>
-          <span class="hotel-price-label">/ night</span>
-        </div>
-        ${totalPrice ? `<div class="hotel-total">${totalPrice}</div>` : ''}
+        <div class="hotel-rating-row">${ratingB}<span style="font-size:11.5px;color:var(--text-muted)">${h.stars}★ Hotel</span></div>
+        <div class="hotel-price-row"><span class="hotel-price">From ${price}</span><span class="hotel-price-label">/ night</span></div>
+        ${totalStr?`<div class="hotel-total">${totalStr}</div>`:''}
         <button class="price-compare-btn">🏷️ Compare Prices Across Sites ▼</button>
       </div>
     </div>
-    <div class="price-compare-panel">
-      <div class="compare-title">Price comparison — booking sites</div>
-      ${priceCompareHTML}
-    </div>
+    <div class="price-compare-panel"><div class="compare-title">Price comparison — booking sites</div>${buildPriceComparePanel(h)}</div>
   </div>`;
 }
 
-function buildPriceComparePanel(h) {
-  if (!h.pricePerNight) return '<p style="font-size:13px;color:var(--text-muted);padding:6px 0">Price comparison not available.</p>';
-
-  const base = h.pricePerNight;
-  const sources = [
-    { name: 'Expedia',        site: 'expedia.com',    mult: 1.00 },
-    { name: 'Booking.com',    site: 'booking.com',    mult: 1.07 },
-    { name: 'Hotels.com',     site: 'hotels.com',     mult: 1.04 },
-    { name: 'Marriott Direct',site: 'marriott.com',   mult: 1.12 },
-    { name: 'Hotwire',        site: 'hotwire.com',    mult: 0.93 }
-  ];
-
-  // Shuffle slightly
-  const priced = sources.map(s => ({
-    ...s,
-    price: Math.round(base * s.mult * (0.96 + Math.random() * 0.08))
-  })).sort((a, b) => a.price - b.price);
-
-  const lowestPrice = priced[0].price;
-
-  return priced.map((s, i) => {
-    const isBest = s.price === lowestPrice;
-    const name = encodeURIComponent(h.name);
-    const siteUrl = `https://www.${s.site}/search?q=${name}`;
-    return `
-    <div class="compare-row">
-      <span class="compare-source">${s.name}</span>
-      ${isBest ? '<span class="best-badge">Best</span>' : '<span></span>'}
-      <span class="compare-price ${isBest ? 'best-price' : ''}">$${s.price}</span>
-      <a href="${siteUrl}" target="_blank" rel="noopener">
-        <button class="view-deal-btn ${isBest ? 'best' : ''}">View Deal</button>
-      </a>
-    </div>`;
-  }).join('');
+function buildPriceComparePanel(h){
+  if(!h.pricePerNight)return'<p style="font-size:13px;color:var(--text-muted)">Price comparison not available.</p>';
+  const base=h.pricePerNight;
+  const sources=[{name:'Expedia',site:'expedia.com',mult:1.00},{name:'Booking.com',site:'booking.com',mult:1.07},{name:'Hotels.com',site:'hotels.com',mult:1.04},{name:'Marriott Direct',site:'marriott.com',mult:1.12},{name:'Hotwire',site:'hotwire.com',mult:0.93}];
+  const seed=(base*100+(h.id.charCodeAt?h.id.charCodeAt(0):42))%100;
+  const priced=sources.map((s,i)=>({...s,price:Math.round(base*s.mult*(0.96+((seed+i*7)%20)/100))})).sort((a,b)=>a.price-b.price);
+  const lowest=priced[0].price;
+  return priced.map(s=>{const isBest=s.price===lowest;return`<div class="compare-row"><span class="compare-source">${s.name}</span>${isBest?'<span class="best-badge">Best</span>':'<span></span>'}<span class="compare-price ${isBest?'best-price':''}">${formatPrice(s.price)}</span><a href="https://www.${s.site}/search?q=${encodeURIComponent(h.name)}" target="_blank" rel="noopener"><button class="view-deal-btn ${isBest?'best':''}">View Deal</button></a></div>`;}).join('');
 }
 
 // ─── Render Bundles ───────────────────────────────────────────────────────────
-function renderBundles(bundles, params) {
-  const container = document.getElementById('results-container');
-  const header    = document.getElementById('results-header');
-
-  header.style.display = 'block';
-  document.getElementById('results-title').textContent = 'Flight + Hotel Bundles';
-  document.getElementById('results-meta').textContent = `Save up to 20% when you book together · ${bundles.length} bundle${bundles.length !== 1 ? 's' : ''} available`;
-
-  const chip = document.getElementById('results-count-chip');
-  chip.style.display = bundles.length ? 'inline-block' : 'none';
-  chip.textContent = `${bundles.length} bundle${bundles.length !== 1 ? 's' : ''}`;
-
-  if (!bundles.length) { container.innerHTML = emptyState('✈️🏨', 'No bundles found', 'Try adjusting your dates.'); return; }
-
-  const html = bundles.map(b => bundleCard(b)).join('');
-  container.innerHTML = `<div class="bundles-list">${html}</div>`;
+function renderBundles(bundles,params){
+  const container=document.getElementById('results-container');
+  document.getElementById('results-header').style.display='block';
+  document.getElementById('results-title').textContent='Flight + Hotel Bundles';
+  document.getElementById('results-meta').textContent=`Save up to 20% when you book together · ${bundles.length} bundle${bundles.length!==1?'s':''} available`;
+  const chip=document.getElementById('results-count-chip');chip.style.display=bundles.length?'inline-block':'none';chip.textContent=`${bundles.length} bundle${bundles.length!==1?'s':''}`;
+  if(!bundles.length){container.innerHTML=emptyState('✈️🏨','No bundles found','Try adjusting your travel dates',false);return;}
+  const cheapest=bundles.reduce((a,b)=>a.bundlePrice<b.bundlePrice?a:b);
+  const maxSav=Math.max(...bundles.map(b=>b.savings));const taxEst=Math.round(cheapest.bundlePrice*0.12);
+  document.getElementById('bsc-main-row').innerHTML=`
+    <div class="bsc-item"><div class="bsc-label">✈️ Best flight</div><div class="bsc-value">${formatPrice(cheapest.flightPrice)}</div><div class="bsc-sub">${cheapest.flight.airline.name}</div></div>
+    <div class="bsc-item"><div class="bsc-label">🏨 Hotel × ${cheapest.nights} nights</div><div class="bsc-value">${formatPrice(cheapest.hotelTotal)}</div><div class="bsc-sub">${cheapest.hotel.name}</div></div>
+    <div class="bsc-item"><div class="bsc-label">💰 Best bundle</div><div class="bsc-value gold">${formatPrice(cheapest.bundlePrice)}</div><div class="bsc-sub">+12% taxes ≈ ${formatPrice(cheapest.bundlePrice+taxEst)}</div></div>
+    <div class="bsc-item"><div class="bsc-label">🎉 Max savings</div><div class="bsc-value gold">Up to ${formatPrice(maxSav)}</div><div class="bsc-sub">vs. booking separately</div></div>`;
+  document.getElementById('bsc-rec').innerHTML=`✅ <strong>Best value:</strong> ${cheapest.flight.airline.name} + ${cheapest.hotel.name} — saves you ${formatPrice(cheapest.savings)} over booking separately`;
+  document.getElementById('bundle-summary-card').classList.add('visible');
+  container.innerHTML=`<div class="bundles-list">${bundles.map(b=>bundleCard(b)).join('')}</div>`;
 }
 
-function bundleCard(b) {
-  const f = b.flight;
-  const h = b.hotel;
-  const stars = Array.from({length: 5}, (_, i) =>
-    `<span style="color:${i < h.stars ? 'var(--gold)' : '#d1d5db'}">★</span>`).join('');
-
-  const logoHTML = `<img src="${f.airline.logo}" alt="${f.airline.code}"
-    onerror="this.style.display='none'" style="width:28px;height:28px;object-fit:contain">`;
-
-  return `
-  <div class="bundle-card">
-    <div class="bundle-card-inner">
-      <div class="bundle-flight-section">
-        <div class="bundle-section-label">✈️ Flight</div>
-        <div class="bundle-flight-info">
-          <div class="bundle-airline-logo">${logoHTML}</div>
-          <div>
-            <div class="bundle-flight-times">
-              <span class="bundle-time">${f.departure.time}</span>
-              <span class="bundle-time-sep">→</span>
-              <span class="bundle-time">${f.arrival.time}</span>
-            </div>
-            <div class="bundle-flight-meta">${f.airline.name} · ${f.flightNumber} · ${f.duration} · ${f.stops === 0 ? 'Nonstop' : f.stops + ' Stop'}</div>
-            <div class="bundle-flight-meta" style="margin-top:2px">${f.departure.iata} → ${f.arrival.iata}</div>
-          </div>
-        </div>
-        <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">Flight only: <strong style="color:var(--text)">$${b.flightPrice.toLocaleString()}</strong></div>
+function bundleCard(b){
+  const f=b.flight,h=b.hotel;
+  const stars=Array.from({length:5},(_,i)=>`<span style="color:${i<h.stars?'var(--gold)':'#d1d5db'}">★</span>`).join('');
+  const logoHTML=`<img src="${f.airline.logo}" alt="${f.airline.code}" onerror="this.style.display='none'" style="width:28px;height:28px;object-fit:contain">`;
+  const wl=isWishlisted('bundle-'+b.id);
+  const wlItem={id:'bundle-'+b.id,type:'bundle',icon:'✈️🏨',name:`${f.departure.iata}→${f.arrival.iata}+${h.name}`,meta:`${b.nights} nights`,price:b.bundlePrice};
+  const wlStr=JSON.stringify(wlItem).replace(/"/g,'&quot;');
+  return`<div class="bundle-card"><div class="bundle-card-inner">
+    <div class="bundle-flight-section">
+      <div class="bundle-section-label">✈️ Flight</div>
+      <div class="bundle-flight-info">
+        <div class="bundle-airline-logo">${logoHTML}</div>
+        <div><div class="bundle-flight-times"><span class="bundle-time">${f.departure.time}</span><span class="bundle-time-sep">→</span><span class="bundle-time">${f.arrival.time}</span></div>
+        <div class="bundle-flight-meta">${f.airline.name} · ${f.flightNumber} · ${f.duration} · ${f.stops===0?'Nonstop':f.stops+' Stop'}</div>
+        <div class="bundle-flight-meta">${f.departure.iata} → ${f.arrival.iata}</div></div>
       </div>
-      <div class="bundle-hotel-section">
-        <img class="bundle-hotel-img" src="${h.image}" alt="${h.name}"
-          onerror="this.src='https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=200&q=80'" />
-        <div>
-          <div class="bundle-section-label">🏨 Hotel</div>
-          <div class="bundle-hotel-name">${h.name}</div>
-          <div class="bundle-hotel-stars">${stars} ${h.stars}★</div>
-          <div class="bundle-hotel-meta">${b.nights} nights · $${h.pricePerNight}/night</div>
-          <div class="bundle-hotel-meta" style="margin-top:3px">Hotel only: <strong style="color:var(--text)">$${b.hotelTotal.toLocaleString()}</strong></div>
-        </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">Flight only: <strong>${formatPrice(b.flightPrice)}</strong></div>
+    </div>
+    <div class="bundle-hotel-section">
+      <img class="bundle-hotel-img" src="${h.image}" alt="${h.name}" onerror="this.src='https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=200&q=80'" />
+      <div><div class="bundle-section-label">🏨 Hotel</div>
+      <div class="bundle-hotel-name">${h.name}</div><div class="bundle-hotel-stars">${stars} ${h.stars}★</div>
+      <div class="bundle-hotel-meta">${b.nights} nights · ${formatPrice(h.pricePerNight)}/night</div>
+      <div class="bundle-hotel-meta">Hotel only: <strong>${formatPrice(b.hotelTotal)}</strong></div></div>
+    </div>
+    <div class="bundle-price-section">
+      <div class="bundle-individual-price">Separately ${formatPrice(b.individualTotal)}</div>
+      <div class="bundle-price">${formatPrice(b.bundlePrice)}</div>
+      <div class="bundle-price-label">total bundle price</div>
+      <div class="bundle-save-badge">🎉 Save ${formatPrice(b.savings)}</div>
+      <div style="display:flex;gap:8px;width:100%;align-items:center">
+        <button class="bundle-book-btn" style="flex:1" onclick="showToast('✅ Booking in progress — connect live API for real bookings')">Book Bundle →</button>
+        <button class="heart-btn ${wl?'wishlisted':''}" onclick="toggleWishlistItem(${wlStr},this)">${wl?'❤️':'🤍'}</button>
       </div>
-      <div class="bundle-price-section">
-        <div class="bundle-individual-price">Separately $${b.individualTotal.toLocaleString()}</div>
-        <div class="bundle-price">$${b.bundlePrice.toLocaleString()}</div>
-        <div class="bundle-price-label">total bundle price</div>
-        <div class="bundle-save-badge">🎉 Save $${b.savings.toLocaleString()}</div>
-        <button class="bundle-book-btn" onclick="alert('Booking would proceed in live mode. Demo only.')">
-          Book Bundle →
-        </button>
-        <button class="share-trip-btn" onclick="shareTrip('${f.departure.iata}','${f.arrival.iata}','')">
-          🔗 Share Trip
-        </button>
+    </div>
+  </div></div>`;
+}
+
+// ─── Render Cars ──────────────────────────────────────────────────────────────
+function renderCars(cars,params){
+  const container=document.getElementById('results-container');
+  document.getElementById('results-header').style.display='block';
+  const days=params.pickupDate&&params.dropoffDate?Math.max(1,Math.round((new Date(params.dropoffDate)-new Date(params.pickupDate))/86400000)):3;
+  document.getElementById('results-title').textContent=`Car Rentals — ${params.pickup||'All Locations'}`;
+  document.getElementById('results-meta').textContent=`${formatDateDisplay(params.pickupDate)} – ${formatDateDisplay(params.dropoffDate)} · ${days} day${days!==1?'s':''}`;
+  const chip=document.getElementById('results-count-chip');chip.style.display=cars.length?'inline-block':'none';chip.textContent=`${cars.length} car${cars.length!==1?'s':''} available`;
+  if(!cars.length){container.innerHTML=emptyState('🚗','No cars available','Try different dates or location',false);return;}
+  const ws=calcDealScores(cars,'pricePerDay');
+  container.innerHTML=`<div class="cars-grid">${ws.map(c=>carCard(c,days)).join('')}</div>`;
+}
+
+function carCard(c,days){
+  const wl=isWishlisted('car-'+c.id);const totalP=c.pricePerDay*days;
+  const wlItem={id:'car-'+c.id,type:'car',icon:'🚗',name:c.name,meta:`${c.provider} · ${c.type} · ${days} days`,price:totalP};
+  const wlStr=JSON.stringify(wlItem).replace(/"/g,'&quot;');
+  const isDark=c.id==='c8';const featHTML=(c.features||[]).slice(0,4).map(f=>`<span class="car-feature-tag">${f}</span>`).join('');
+  const mpgStr=c.mpg?`${c.mpg} MPG`:(c.range||'Electric');
+  return`<div class="car-card">
+    <div class="car-img-section" style="background:${c.cardColor||'#f3f4f6'}">
+      <span class="car-emoji-display">${c.emoji}</span>
+      <span class="car-type-badge ${c.type}">${c.type}</span>
+      <button class="heart-btn car-heart ${wl?'wishlisted':''}" onclick="toggleWishlistItem(${wlStr},this)">${wl?'❤️':'🤍'}</button>
+      <span class="car-provider-badge">${c.provider}</span>
+    </div>
+    <div class="car-body">
+      <div class="car-name">${c.name}</div>
+      <div class="car-description">${c.description||''}</div>
+      <div class="car-specs-row"><span class="car-spec">👤 ${c.seats} seats</span><span class="car-spec">🚪 ${c.doors} doors</span><span class="car-spec">⚙️ ${c.transmission}</span><span class="car-spec">⛽ ${mpgStr}</span></div>
+      <div class="car-features">${featHTML}</div>
+      <div class="car-footer">
+        <div class="car-price-block">
+          <div class="car-price-per">From</div>
+          <div class="car-price">${formatPrice(c.pricePerDay)}<span class="car-price-day">/day</span></div>
+          <div class="car-total">${days} days · Total ${formatPrice(totalP)}</div>
+          <span class="deal-score-badge ${c.dealCls}" style="margin-top:6px;display:inline-flex">${c.dealEmoji} ${c.dealLabel}</span>
+        </div>
+        <div style="text-align:right">
+          <div class="car-rating"><span class="car-rating-score">${c.rating}</span><span class="car-rating-star">★</span><span class="car-rating-count">(${(c.reviews||0).toLocaleString()})</span></div>
+          <button class="car-book-btn" onclick="showToast('✅ Redirecting to ${c.provider}... (Demo mode)')">Book Now →</button>
+        </div>
       </div>
     </div>
   </div>`;
 }
 
 // ─── Skeletons ────────────────────────────────────────────────────────────────
-function showSkeletons(n) {
-  const skels = Array.from({length: n}, () => `
-    <div class="skeleton-card">
-      <div class="skeleton skel-logo"></div>
-      <div class="skel-body">
-        <div class="skeleton skel-line skel-short"></div>
-        <div class="skeleton skel-line skel-long"></div>
-        <div class="skeleton skel-line skel-full"></div>
-      </div>
-      <div class="skeleton skel-price"></div>
-    </div>`).join('');
-  document.getElementById('results-container').innerHTML = `<div class="flights-list">${skels}</div>`;
-}
-function showHotelSkeletons(n) {
-  const skels = Array.from({length: n}, () => `
-    <div class="hotel-card">
-      <div class="skeleton" style="width:100%;height:190px;border-radius:0"></div>
-      <div class="hotel-body" style="gap:8px;display:flex;flex-direction:column">
-        <div class="skeleton skel-line skel-long" style="margin-top:6px"></div>
-        <div class="skeleton skel-line skel-short"></div>
-        <div class="skeleton skel-line skel-full"></div>
-        <div class="skeleton skel-line skel-long" style="margin-top:10px;height:20px"></div>
-      </div>
-    </div>`).join('');
-  document.getElementById('results-container').innerHTML = `<div class="hotels-grid">${skels}</div>`;
-}
-function showBundleSkeletons(n) {
-  const skels = Array.from({length: n}, () => `
-    <div class="skeleton-card" style="height:120px">
-      <div class="skeleton skel-logo" style="width:120px;height:80px;border-radius:10px;flex-shrink:0"></div>
-      <div class="skel-body">
-        <div class="skeleton skel-line skel-long"></div>
-        <div class="skeleton skel-line skel-full"></div>
-        <div class="skeleton skel-line skel-short"></div>
-      </div>
-      <div class="skeleton skel-price" style="width:110px;height:50px"></div>
-    </div>`).join('');
-  document.getElementById('results-container').innerHTML = `<div class="bundles-list">${skels}</div>`;
-}
+function showSkeletons(n){const s=Array.from({length:n},()=>`<div class="skeleton-card"><div class="skeleton skel-logo"></div><div class="skel-body"><div class="skeleton skel-line skel-short"></div><div class="skeleton skel-line skel-long"></div><div class="skeleton skel-line skel-full"></div></div><div class="skeleton skel-price"></div></div>`).join('');document.getElementById('results-container').innerHTML=`<div class="flights-list">${s}</div>`;}
+function showHotelSkeletons(n){const s=Array.from({length:n},()=>`<div class="hotel-card"><div class="skeleton" style="width:100%;height:190px;border-radius:0"></div><div class="hotel-body" style="gap:8px;display:flex;flex-direction:column"><div class="skeleton skel-line skel-long" style="margin-top:6px"></div><div class="skeleton skel-line skel-short"></div><div class="skeleton skel-line skel-full"></div></div></div>`).join('');document.getElementById('results-container').innerHTML=`<div class="hotels-grid">${s}</div>`;}
+function showBundleSkeletons(n){const s=Array.from({length:n},()=>`<div class="skeleton-card" style="height:120px"><div class="skeleton skel-logo" style="width:120px;height:80px;border-radius:10px;flex-shrink:0"></div><div class="skel-body"><div class="skeleton skel-line skel-long"></div><div class="skeleton skel-line skel-full"></div></div><div class="skeleton skel-price" style="width:110px;height:50px"></div></div>`).join('');document.getElementById('results-container').innerHTML=`<div class="bundles-list">${s}</div>`;}
+function showCarSkeletons(n){const s=Array.from({length:n},()=>`<div class="car-card"><div class="skeleton" style="width:100%;height:130px"></div><div class="hotel-body" style="gap:8px;display:flex;flex-direction:column;padding:16px 18px"><div class="skeleton skel-line skel-long"></div><div class="skeleton skel-line skel-short"></div><div class="skeleton skel-line skel-full"></div></div></div>`).join('');document.getElementById('results-container').innerHTML=`<div class="cars-grid">${s}</div>`;}
 
-// ─── Filter / Sidebar ─────────────────────────────────────────────────────────
-function showSidebar(show) {
-  const sidebar = document.getElementById('filter-sidebar');
-  const layout  = document.getElementById('results-layout');
-  if (show) {
-    sidebar.style.display = '';
-    layout.classList.remove('no-sidebar');
-    document.getElementById('airline-filters-section').style.display = show ? '' : 'none';
-  } else {
-    sidebar.style.display = 'none';
-    layout.classList.add('no-sidebar');
+// ─── Filters / Sidebar ────────────────────────────────────────────────────────
+function showSidebar(show){const s=document.getElementById('filter-sidebar'),l=document.getElementById('results-layout');if(show){s.style.display='';l.classList.remove('no-sidebar');}else{s.style.display='none';l.classList.add('no-sidebar');}}
+function openFilters(){document.getElementById('filter-drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');}
+function closeFilters(){document.getElementById('filter-drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');}
+function applyFilters(){sortAndRender(document.querySelector('.sort-pill.active')?.dataset.sort||'best');}
+function resetFilters(){document.querySelectorAll('.stop-filter').forEach(cb=>cb.checked=true);document.querySelectorAll('.airline-filter').forEach(cb=>cb.checked=true);document.querySelectorAll('.depart-tile').forEach(t=>t.classList.add('active'));const s=document.getElementById('price-range-slider');s.value=3000;updatePriceLabel(3000);applyFilters();}
+function updatePriceLabel(v){document.getElementById('price-range-label').textContent=`Up to $${parseInt(v).toLocaleString()}`;}
+function buildAirlineFilters(flights){const airlines=[...new Set(flights.map(f=>f.airline.name))];document.getElementById('airline-filters-list').innerHTML=airlines.map(name=>`<label class="airline-filter-item"><input type="checkbox" checked class="airline-filter" value="${name}" /><span style="font-size:13px;color:var(--text)">${name}</span></label>`).join('');}
+function toggleAmenity(btn){btn.classList.toggle('active');state.amenityFilters=Array.from(document.querySelectorAll('.amenity-toggle.active')).map(t=>t.dataset.amenity);renderHotels(state.rawHotels,state.searchParams,state.amenityFilters);}
+function clearAmenityFilters(){document.querySelectorAll('.amenity-toggle').forEach(t=>t.classList.remove('active'));state.amenityFilters=[];renderHotels(state.rawHotels,state.searchParams,[]);}
+
+// ─── Flexible Dates ───────────────────────────────────────────────────────────
+function toggleFlexDates(){state.flexDates=!state.flexDates;document.getElementById('flex-dates-toggle').classList.toggle('on',state.flexDates);}
+function showFlexDatesGrid(baseDateStr,flights){
+  const section=document.getElementById('flex-dates-section'),grid=document.getElementById('flex-dates-grid');
+  const base=new Date(baseDateStr+'T12:00:00');const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const minP=Math.min(...flights.map(f=>f.price));
+  const cells=[];
+  for(let o=-3;o<=3;o++){const d=new Date(base);d.setDate(d.getDate()+o);const ds=d.toISOString().split('T')[0];const seed=(d.getDate()+d.getMonth()*31)%7;const v=[0.88,1.05,0.92,0.78,1.12,0.95,1.02][seed];const p=Math.round(minP*v+(Math.abs(o)*8));cells.push({offset:o,date:d,dateStr:ds,price:p});}
+  const cheapP=Math.min(...cells.map(c=>c.price));const priP=Math.max(...cells.map(c=>c.price));
+  grid.innerHTML=cells.map(cell=>{const isSel=cell.offset===0;const isCheap=!isSel&&cell.price===cheapP;const isPricey=!isSel&&cell.price===priP;const cls=isSel?'selected':(isCheap?'cheapest':(isPricey?'priciest':''));const badge=isCheap?'<div class="fdc-badge">BEST</div>':(isPricey?'<div class="fdc-badge">HIGH</div>':'');
+    return`<div class="flex-date-cell ${cls}" onclick="selectFlexDate('${cell.dateStr}')"><div class="fdc-day">${days[cell.date.getDay()]}</div><div class="fdc-date">${cell.date.getDate()}</div><div class="fdc-price">${formatPrice(cell.price)}</div>${badge}</div>`;}).join('');
+  section.classList.add('visible');
+}
+function selectFlexDate(dateStr){document.getElementById('depart-input').value=dateStr;state.searchParams.departure=dateStr;showToast(`📅 Date updated to ${formatDateDisplay(dateStr)} — tap Search to refresh prices`);}
+
+// ─── Price Alert ──────────────────────────────────────────────────────────────
+function openPriceAlertModal(){const params=state.searchParams;if(params.origin&&params.destination){const minP=state.rawFlights.length?Math.min(...state.rawFlights.map(f=>f.price)):300;document.getElementById('price-alert-modal-sub').textContent=`Get notified when ${params.origin} → ${params.destination} drops below your target. Current best: ${formatPrice(minP)}`;document.getElementById('alert-price-input').placeholder=`Target price (e.g. ${Math.round(minP*0.9)})`;}document.getElementById('price-alert-modal').classList.add('open');}
+function closePriceAlertModal(){document.getElementById('price-alert-modal').classList.remove('open');}
+function submitPriceAlert(){const email=document.getElementById('alert-email-input').value.trim();const price=document.getElementById('alert-price-input').value;if(!email||!email.includes('@')){showToast('⚠️ Please enter a valid email address');return;}closePriceAlertModal();showToast(`✅ Alert set! We'll notify you at ${email} when prices drop below ${price?formatPrice(parseInt(price)):'your target'}`);}
+
+// ─── Wishlist ─────────────────────────────────────────────────────────────────
+function initWishlist(){updateWishlistBadge();}
+function getWishlist(){try{return JSON.parse(localStorage.getItem('voyage_wishlist')||'[]');}catch(e){return[];}}
+function saveWishlistData(list){localStorage.setItem('voyage_wishlist',JSON.stringify(list));updateWishlistBadge();}
+function toggleWishlistItem(item,btn){
+  const list=getWishlist();const idx=list.findIndex(i=>i.id===item.id);
+  if(idx>=0){list.splice(idx,1);btn.classList.remove('wishlisted');btn.textContent='🤍';showToast('💔 Removed from saved items');}
+  else{list.push(item);btn.classList.add('wishlisted');btn.textContent='❤️';showToast('❤️ Saved! View in Saved Items');}
+  saveWishlistData(list);
+}
+function isWishlisted(id){return getWishlist().some(i=>i.id===id);}
+function updateWishlistBadge(){const count=getWishlist().length;const b=document.getElementById('wishlist-count');b.textContent=count;b.style.display=count>0?'flex':'none';}
+function openWishlist(){renderWishlistItems();document.getElementById('wishlist-drawer').classList.add('open');document.getElementById('wishlist-overlay').classList.add('open');}
+function closeWishlist(){document.getElementById('wishlist-drawer').classList.remove('open');document.getElementById('wishlist-overlay').classList.remove('open');}
+function renderWishlistItems(){
+  const list=getWishlist();const container=document.getElementById('wishlist-items');
+  if(!list.length){container.innerHTML=`<div class="wishlist-empty"><div style="font-size:52px;margin-bottom:16px">💔</div><div style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--text)">Nothing saved yet</div><div style="color:var(--text-muted);font-size:14px;line-height:1.5">Tap the ♡ on any flight, hotel, or car rental to save it here.</div></div>`;return;}
+  const groups={};list.forEach(item=>{if(!groups[item.type])groups[item.type]=[];groups[item.type].push(item);});
+  const labels={flight:'✈️ Flights',hotel:'🏨 Hotels',car:'🚗 Car Rentals',bundle:'✈️🏨 Bundles'};
+  let html='';
+  for(const[type,items]of Object.entries(groups)){
+    html+=`<div class="wishlist-type-label">${labels[type]||type}</div>`;
+    html+=items.map(item=>`<div class="wishlist-item"><div class="wishlist-item-icon">${item.icon}</div><div class="wishlist-item-body"><div class="wishlist-item-name">${item.name}</div><div class="wishlist-item-meta">${item.meta||''}</div></div><div class="wishlist-item-price">${item.price?formatPrice(item.price):''}</div><button class="wishlist-remove-btn" onclick="removeWishlistItem('${item.id}')">✕</button></div>`).join('');
   }
+  container.innerHTML=html;
 }
-function openFilters()  { document.getElementById('filter-drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
-function closeFilters() { document.getElementById('filter-drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
-function applyFilters() {
-  const activeSortBtn = document.querySelector('.sort-pill.active');
-  sortAndRender(activeSortBtn?.dataset.sort || 'best');
+function removeWishlistItem(id){const list=getWishlist().filter(i=>i.id!==id);saveWishlistData(list);renderWishlistItems();showToast('💔 Removed from saved items');}
+
+// ─── AI Planner ───────────────────────────────────────────────────────────────
+const AI={
+  paris:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🇫🇷</span><h3>Paris — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Arrive</div><div class="ai-day-item">🛬 Arrive CDG · Check in at <strong>Hôtel des Grands Boulevards</strong> (~$345/night)</div><div class="ai-day-item">🗼 Evening stroll to Eiffel Tower</div><div class="ai-day-item">🍷 Dinner at Café de Flore, Saint-Germain</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Classics</div><div class="ai-day-item">🏛️ Louvre Museum (book skip-the-line!)</div><div class="ai-day-item">🌸 Tuileries Garden → Champs-Élysées → Arc de Triomphe</div><div class="ai-day-item">🥩 Dinner at Le Cinq, Four Seasons George V</div></div><div class="ai-day"><div class="ai-day-label">Day 3 — Montmartre</div><div class="ai-day-item">⛪ Sacré-Cœur Basilica · Artists' Quarter</div><div class="ai-day-item">🎨 Musée d'Orsay · Pont des Arts</div><div class="ai-day-item">🧀 Dinner at Le Relais de la Butte</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Flight (JFK→CDG)</span><strong>$614–$1,890</strong></div><div class="ai-budget-row"><span>🏨 Hotel/night</span><strong>$345–$980</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$80–$150</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$2,800–$6,500</strong></div></div></div>`,
+  tokyo:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🇯🇵</span><h3>Tokyo — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Shinjuku</div><div class="ai-day-item">🛬 Arrive NRT · Check in at <strong>Park Hyatt Tokyo</strong> (~$820/night)</div><div class="ai-day-item">🌃 Shinjuku Kabukicho & Tokyo Tower</div><div class="ai-day-item">🍜 Dinner: Ichiran Ramen solo booths</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Temples & Pop Culture</div><div class="ai-day-item">⛩️ Senso-ji Temple in Asakusa</div><div class="ai-day-item">🚦 Shibuya Crossing · Harajuku · Takeshita St.</div><div class="ai-day-item">🍣 Dinner: Sushi omakase in Ginza</div></div><div class="ai-day"><div class="ai-day-label">Day 3 — Akihabara</div><div class="ai-day-item">🎮 Akihabara Electric Town · retro arcades</div><div class="ai-day-item">🗼 Tokyo Skytree · Odaiba waterfront</div><div class="ai-day-item">🥩 Wagyu yakiniku in Shibuya</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Flight (LAX→NRT)</span><strong>$769–$834</strong></div><div class="ai-budget-row"><span>🏨 Hotel/night</span><strong>$590–$820</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$60–$200</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$3,500–$8,200</strong></div></div></div>`,
+  dubai:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🇦🇪</span><h3>Dubai — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Arrive & Glam</div><div class="ai-day-item">🛬 Arrive DXB · Check in at <strong>Atlantis The Palm</strong> (~$650/night)</div><div class="ai-day-item">🌊 Aquaventure Waterpark · Private beach</div><div class="ai-day-item">🍽️ Dinner at Nobu, Atlantis</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Icons</div><div class="ai-day-item">🗼 Burj Khalifa (At the Top)</div><div class="ai-day-item">🛍️ Dubai Mall · Dubai Fountain · Gold Souk</div><div class="ai-day-item">🥙 Dinner: Al Fanar — authentic Emirati cuisine</div></div><div class="ai-day"><div class="ai-day-label">Day 3 — Desert</div><div class="ai-day-item">🐪 Desert safari — dunes, camels, sandboarding</div><div class="ai-day-item">🏙️ Old Dubai · Spice Souk · Creek Abra boat ride</div><div class="ai-day-item">🍷 Rooftop dinner at Zuma Dubai</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Flight (JFK→DXB)</span><strong>$812–$978</strong></div><div class="ai-budget-row"><span>🏨 Hotel/night</span><strong>$650–$2,200</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$100–$300</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$4,200–$12,000</strong></div></div></div>`,
+  miami:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🌴</span><h3>Miami — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Beach Life</div><div class="ai-day-item">🛬 Arrive MIA · Check in at <strong>Faena Hotel Miami Beach</strong> (~$689/night)</div><div class="ai-day-item">🏖️ South Beach — sun, sand, people-watching</div><div class="ai-day-item">🍹 Dinner at Mango's Tropical Café</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Art & Culture</div><div class="ai-day-item">🎨 Wynwood Walls — world-famous street art</div><div class="ai-day-item">🚤 Biscayne Bay boat tour · Star Island</div><div class="ai-day-item">🦞 Joe's Stone Crab — legendary Miami institution</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Flight (JFK→MIA)</span><strong>$167–$224</strong></div><div class="ai-budget-row"><span>🏨 Hotel/night</span><strong>$299–$689</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$60–$120</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$1,200–$4,000</strong></div></div></div>`,
+  rome:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🇮🇹</span><h3>Rome — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Ancient Rome</div><div class="ai-day-item">🛬 Arrive FCO · Check in near the Colosseum</div><div class="ai-day-item">🏟️ Colosseum & Roman Forum (pre-book!)</div><div class="ai-day-item">🍕 Dinner at Da Enzo al 29 — authentic trattoria</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Vatican & Piazzas</div><div class="ai-day-item">⛪ Vatican Museums · Sistine Chapel · St. Peter's</div><div class="ai-day-item">⛲ Trevi Fountain · Spanish Steps · Piazza Navona</div><div class="ai-day-item">🍝 La Pergola — Rome's only 3-Michelin-star restaurant</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Flight (JFK→FCO)</span><strong>$549–$900</strong></div><div class="ai-budget-row"><span>🏨 Hotel/night</span><strong>$150–$500</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$60–$120</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$1,800–$5,000</strong></div></div></div>`,
+  london:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🇬🇧</span><h3>London — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Royal London</div><div class="ai-day-item">🛬 Arrive LHR · Check in near Mayfair</div><div class="ai-day-item">👑 Buckingham Palace · Westminster Abbey · Big Ben</div><div class="ai-day-item">🍺 Pub crawl in Covent Garden</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Culture</div><div class="ai-day-item">🖼️ British Museum · National Gallery (free!)</div><div class="ai-day-item">🎨 Shoreditch street art · Borough Market</div><div class="ai-day-item">🎭 West End show — world-class theatre</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Flight (JFK→LHR)</span><strong>$480–$900</strong></div><div class="ai-budget-row"><span>🏨 Hotel/night</span><strong>$200–$600</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$80–$150</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$2,200–$6,500</strong></div></div></div>`,
+  bali:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🇮🇩</span><h3>Bali — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Ubud</div><div class="ai-day-item">🛬 Arrive DPS · Check into Ubud rice terrace villa</div><div class="ai-day-item">🌿 Sacred Monkey Forest · Tegallalang Rice Terraces</div><div class="ai-day-item">💆 Traditional Balinese massage & dance show</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Temples & Surf</div><div class="ai-day-item">⛩️ Tanah Lot Temple at sunset</div><div class="ai-day-item">🏄 Surfing lesson at Kuta Beach</div><div class="ai-day-item">🌅 Cocktails at Sky Garden Rooftop, Seminyak</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Flight (LAX→DPS)</span><strong>$890–$1,200</strong></div><div class="ai-budget-row"><span>🏨 Villa/night</span><strong>$80–$300</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$25–$80</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$1,500–$4,000</strong></div></div></div>`,
+  cancun:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🇲🇽</span><h3>Cancún — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Paradise</div><div class="ai-day-item">🛬 Arrive CUN · Check into all-inclusive resort</div><div class="ai-day-item">🌊 Caribbean beach · turquoise water snorkeling</div><div class="ai-day-item">🌮 Dinner at La Habichuela — romantic Mexican dining</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Mayan Ruins</div><div class="ai-day-item">🏛️ Chichén Itzá day trip — New Seven Wonders</div><div class="ai-day-item">🏊 Swim in a cenote — magical underground pools</div><div class="ai-day-item">🎵 Coco Bongo nightclub — legendary Cancún experience</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Flight (JFK→CUN)</span><strong>$289–$450</strong></div><div class="ai-budget-row"><span>🏨 All-inclusive/night</span><strong>$150–$400</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$30–$100</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$1,000–$3,500</strong></div></div></div>`,
+  nyc:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🗽</span><h3>New York City — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Manhattan</div><div class="ai-day-item">🏙️ Check in at citizenM Times Square (~$249/night)</div><div class="ai-day-item">🗽 Statue of Liberty ferry · Ellis Island</div><div class="ai-day-item">🍕 Joe's Pizza in Greenwich Village — NYC must-do</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Park & Culture</div><div class="ai-day-item">🌳 Central Park bike ride · The Metropolitan Museum</div><div class="ai-day-item">🛍️ Fifth Avenue · Rockefeller Center · High Line</div><div class="ai-day-item">🌃 Dinner at Le Bernardin — 4 decades of Michelin stars</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Domestic flights</span><strong>$150–$400</strong></div><div class="ai-budget-row"><span>🏨 Hotel/night</span><strong>$199–$895</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$80–$200</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$800–$3,500</strong></div></div></div>`
+};
+
+function getAIResponse(query){
+  const q=query.toLowerCase();const dm=q.match(/(\d+)\s*days?/);const d=dm?parseInt(dm[1]):5;
+  if(q.includes('paris')||q.includes('france'))return AI.paris(d);
+  if(q.includes('tokyo')||q.includes('japan'))return AI.tokyo(d);
+  if(q.includes('dubai')||q.includes('uae'))return AI.dubai(d);
+  if(q.includes('miami'))return AI.miami(d);
+  if(q.includes('rome')||q.includes('italy'))return AI.rome(d);
+  if(q.includes('london')||q.includes('uk')||q.includes('england'))return AI.london(d);
+  if(q.includes('bali')||q.includes('indonesia'))return AI.bali(d);
+  if(q.includes('cancun')||q.includes('cancún')||q.includes('mexico'))return AI.cancun(d);
+  if(q.includes('nyc')||q.includes('new york'))return AI.nyc(d);
+  return`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🌍</span><h3>Adventure Awaits! — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Arrive & Explore</div><div class="ai-day-item">🛬 Arrive & check in · freshen up</div><div class="ai-day-item">🚶 Explore the neighborhood on foot</div><div class="ai-day-item">🌅 Find a rooftop bar for sunset views</div></div><div class="ai-day"><div class="ai-day-label">Day 2+ — Discover</div><div class="ai-day-item">🏛️ Visit top-rated local attractions</div><div class="ai-day-item">🍽️ Try authentic local cuisine</div><div class="ai-day-item">📸 Half-day off-the-beaten-path tour</div></div><div class="ai-budget"><div class="ai-budget-row"><span>Try asking me about:</span><strong></strong></div><div class="ai-budget-row"><span>🇫🇷 Paris · 🇯🇵 Tokyo · 🇦🇪 Dubai · 🇮🇹 Rome</span><strong></strong></div><div class="ai-budget-row total"><span>🇬🇧 London · 🌴 Miami · 🇲🇽 Cancún · 🇮🇩 Bali</span><strong></strong></div></div></div>`;
 }
-function resetFilters() {
-  document.querySelectorAll('.stop-filter').forEach(cb => cb.checked = true);
-  document.querySelectorAll('.airline-filter').forEach(cb => cb.checked = true);
-  document.querySelectorAll('.depart-tile').forEach(t => t.classList.add('active'));
-  const slider = document.getElementById('price-range-slider');
-  slider.value = 3000;
-  updatePriceLabel(3000);
-  applyFilters();
-}
-function updatePriceLabel(v) {
-  document.getElementById('price-range-label').textContent = `Up to $${parseInt(v).toLocaleString()}`;
+function openAIPlanner(){document.getElementById('ai-panel').classList.add('open');document.getElementById('ai-panel-overlay').classList.add('open');document.getElementById('ai-fab-btn').style.display='none';setTimeout(()=>document.getElementById('ai-input').focus(),300);}
+function closeAIPlanner(){document.getElementById('ai-panel').classList.remove('open');document.getElementById('ai-panel-overlay').classList.remove('open');document.getElementById('ai-fab-btn').style.display='';}
+function sendAIMessage(preset){
+  const input=document.getElementById('ai-input');const msg=preset||input.value.trim();if(!msg)return;
+  input.value='';document.getElementById('ai-suggestions').style.display='none';
+  const msgs=document.getElementById('ai-messages');
+  const userEl=document.createElement('div');userEl.className='ai-msg user';userEl.textContent=msg;msgs.appendChild(userEl);
+  const typing=document.getElementById('ai-typing');typing.classList.add('visible');msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{typing.classList.remove('visible');const botEl=document.createElement('div');botEl.className='ai-msg bot rich';botEl.innerHTML=getAIResponse(msg);msgs.appendChild(botEl);msgs.scrollTop=msgs.scrollHeight;},1400+Math.random()*700);
 }
 
-function buildAirlineFilters(flights) {
-  const airlines = [...new Set(flights.map(f => f.airline.name))];
-  const container = document.getElementById('airline-filters-list');
-  container.innerHTML = airlines.map(name => `
-    <label class="airline-filter-item">
-      <input type="checkbox" checked class="airline-filter" value="${name}" />
-      <span style="font-size:13px;color:var(--text)">${name}</span>
-    </label>`).join('');
-}
+// ─── Toast ────────────────────────────────────────────────────────────────────
+function showToast(msg){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className='toast';t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3200);}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function hidePoppularDests() {
-  document.getElementById('popular-destinations').classList.add('hidden');
+function hidePoppularDests(){document.getElementById('popular-destinations').classList.add('hidden');}
+function showResults(){const s=document.getElementById('results-section');s.classList.add('visible');setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'start'}),100);}
+function hideSectionExtras(){
+  ['price-alert-banner','flex-dates-section','amenity-filter-bar','bundle-summary-card','progress-steps'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.remove('visible');if(id==='price-alert-banner'||id==='flex-dates-section')el.classList.remove('visible');}});
+  ['ps1','ps2','ps3'].forEach(id=>document.getElementById(id).classList.remove('active','done'));
+  ['ps-sep1','ps-sep2'].forEach(id=>document.getElementById(id).classList.remove('filled'));
+  document.getElementById('ps1').classList.add('active');
+  document.getElementById('results-header').style.display='none';
 }
-function showResults() {
-  const s = document.getElementById('results-section');
-  s.classList.add('visible');
-  setTimeout(() => s.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-}
-function showError(type) {
-  document.getElementById('results-container').innerHTML =
-    emptyState('⚠️', 'Search unavailable', 'Please try again in a moment.');
-}
-function emptyState(emoji, title, sub) {
-  return `<div class="empty-state"><div class="empty-emoji">${emoji}</div><div class="empty-title">${title}</div><div class="empty-sub">${sub}</div></div>`;
-}
-function formatDateDisplay(d) {
-  if (!d) return '';
-  const [y, m, day] = d.split('-');
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
-}
-function formatClass(c) {
-  const map = { ECONOMY:'Economy', PREMIUM_ECONOMY:'Premium Economy', BUSINESS:'Business', FIRST:'First Class' };
-  return map[c] || c || 'Economy';
-}
-function airlineColor(code) {
-  const colors = { AA:'#0078D2', DL:'#E01933', UA:'#005DAA', B6:'#003876', WN:'#304CB2', AS:'#01426A', LH:'#05164D', BA:'#075AAA', AF:'#002395', EK:'#D71921', QR:'#5C0632', SQ:'#0E3E6C', NH:'#1B3F87' };
-  return colors[code] || '#6B7280';
-}
-function openBookLinks(id) {
-  const detail = document.getElementById('detail-' + id);
-  if (detail) { detail.classList.add('open'); detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
-}
+function showError(){document.getElementById('results-container').innerHTML=`<div class="empty-state"><div class="empty-emoji">⚠️</div><div class="empty-title">Search unavailable</div><div class="empty-sub">Please try again in a moment.</div><div class="empty-suggest"><button class="empty-dest-btn" onclick="fillDestination('CDG','Paris','France','flights','JFK')">🇫🇷 Try Paris</button><button class="empty-dest-btn" onclick="fillDestination('NRT','Tokyo','Japan','flights','LAX')">🇯🇵 Try Tokyo</button></div></div>`;}
+function emptyState(emoji,title,sub,showDests){const d=showDests?`<div class="empty-suggest"><button class="empty-dest-btn" onclick="fillDestination('CDG','Paris','France','flights','JFK')">🇫🇷 Paris</button><button class="empty-dest-btn" onclick="fillDestination('NRT','Tokyo','Japan','flights','LAX')">🇯🇵 Tokyo</button><button class="empty-dest-btn" onclick="fillDestination('DXB','Dubai','UAE','flights','JFK')">🇦🇪 Dubai</button></div>`:'';return`<div class="empty-state"><div class="empty-emoji">${emoji}</div><div class="empty-title">${title}</div><div class="empty-sub">${sub}</div>${d}</div>`;}
+function formatDateDisplay(d){if(!d)return'';const[y,m,day]=d.split('-');const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;}
+function formatClass(c){const map={ECONOMY:'Economy',PREMIUM_ECONOMY:'Premium Economy',BUSINESS:'Business',FIRST:'First Class'};return map[c]||c||'Economy';}
+function airlineColor(code){const colors={AA:'#0078D2',DL:'#E01933',UA:'#005DAA',B6:'#003876',WN:'#304CB2',AS:'#01426A',LH:'#05164D',BA:'#075AAA',AF:'#002395',EK:'#D71921',QR:'#5C0632',SQ:'#0E3E6C',NH:'#1B3F87'};return colors[code]||'#6B7280';}
+function openBookLinks(id){const d=document.getElementById('detail-'+id);if(d){d.classList.add('open');d.scrollIntoView({behavior:'smooth',block:'nearest'});}}
 
-// ─── Keyboard support ────────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    if (e.target.closest('#tab-flights')) searchFlights();
-    else if (e.target.closest('#tab-hotels'))  searchHotels();
-    else if (e.target.closest('#tab-bundles')) searchBundles();
+// ─── Keyboard ─────────────────────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.target.closest('.ai-input-row')&&!e.target.closest('.price-alert-modal')){
+    if(e.target.closest('#tab-flights'))searchFlights();
+    else if(e.target.closest('#tab-hotels'))searchHotels();
+    else if(e.target.closest('#tab-bundles'))searchBundles();
+    else if(e.target.closest('#tab-cars'))searchCars();
   }
-});
-
-// ─── Toast Notifications ──────────────────────────────────────────────────────
-function showToast(msg) {
-  const c = document.getElementById('toast-container');
-  if (!c) return;
-  const t = document.createElement('div');
-  t.className = 'toast-msg';
-  t.textContent = msg;
-  c.appendChild(t);
-  setTimeout(() => t.remove(), 2900);
-}
-
-// ─── Recently Searched ────────────────────────────────────────────────────────
-function saveRecentSearch(origin, dest, date) {
-  try {
-    const key = 'voyage_recent_searches';
-    const recent = JSON.parse(localStorage.getItem(key) || '[]');
-    const entry = { origin, dest, date, ts: Date.now() };
-    // Remove duplicate
-    const filtered = recent.filter(r => !(r.origin === origin && r.dest === dest));
-    filtered.unshift(entry);
-    const trimmed = filtered.slice(0, 5);
-    localStorage.setItem(key, JSON.stringify(trimmed));
-    renderRecentSearches();
-  } catch(e) {}
-}
-
-function renderRecentSearches() {
-  try {
-    const key = 'voyage_recent_searches';
-    const recent = JSON.parse(localStorage.getItem(key) || '[]');
-    const section = document.getElementById('recently-searched');
-    const list    = document.getElementById('recent-items-list');
-    if (!section || !list || !recent.length) {
-      if (section) section.style.display = 'none';
-      return;
-    }
-    section.style.display = 'block';
-    list.innerHTML = recent.map(r => `
-      <div class="recent-item" onclick="fillRecentSearch('${r.origin}','${r.dest}','${r.date}')">
-        <span>${r.origin}</span>
-        <span class="recent-arrow">→</span>
-        <span>${r.dest}</span>
-        ${r.date ? `<span class="recent-date">${formatDateDisplay(r.date)}</span>` : ''}
-      </div>`).join('');
-  } catch(e) {}
-}
-
-function fillRecentSearch(origin, dest, date) {
-  // Switch to flights tab
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector('[data-tab="flights"]').classList.add('active');
-  document.getElementById('tab-flights').classList.add('active');
-  state.activeTab = 'flights';
-  // Fill fields
-  const fromInput = document.getElementById('from-input');
-  const toInput   = document.getElementById('to-input');
-  fromInput.value = origin; state.fromIata = origin;
-  toInput.value   = dest;   state.toIata   = dest;
-  if (date) document.getElementById('depart-input').value = date;
-  document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
-}
-
-// ─── Flight + Hotel Bundle Switch ─────────────────────────────────────────────
-function switchToBundle() {
-  // Switch tab
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector('[data-tab="bundles"]').classList.add('active');
-  document.getElementById('tab-bundles').classList.add('active');
-  state.activeTab = 'bundles';
-  // Pre-fill from flights form
-  const from   = document.getElementById('from-input').value;
-  const to     = document.getElementById('to-input').value;
-  const depart = document.getElementById('depart-input').value;
-  const ret    = document.getElementById('return-input').value;
-  if (from)   { document.getElementById('b-from-input').value = from; state.bFromIata = state.fromIata; }
-  if (to)     { document.getElementById('b-to-input').value   = to;   state.bToIata   = state.toIata; }
-  if (depart) { document.getElementById('b-depart').value     = depart; }
-  if (ret)    { document.getElementById('b-return').value     = ret; }
-  // Set hotel dates same as flight dates if not already set
-  if (depart && !document.getElementById('b-checkin').value)  document.getElementById('b-checkin').value  = depart;
-  if (ret    && !document.getElementById('b-checkout').value) document.getElementById('b-checkout').value = ret;
-  showToast('✈️🏨 Bundle mode — add your hotel dates!');
-}
-
-// ─── Share Trip ───────────────────────────────────────────────────────────────
-function shareTrip(origin, dest, depart) {
-  try {
-    const url = `${location.origin}?from=${encodeURIComponent(origin)}&to=${encodeURIComponent(dest)}&depart=${depart}`;
-    navigator.clipboard.writeText(url).then(() => {
-      showToast('Link copied! 📋');
-    }).catch(() => {
-      // Fallback
-      const ta = document.createElement('textarea');
-      ta.value = url; document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy');
-      ta.remove();
-      showToast('Link copied! 📋');
-    });
-  } catch(e) { showToast('Could not copy link'); }
-}
-
-// ─── Best Month to Go ─────────────────────────────────────────────────────────
-function renderBestMonthSection(basePrice) {
-  // Simulate monthly price variation based on base price
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  // Typical travel price multipliers by month
-  const multipliers = [0.75, 0.72, 0.85, 0.90, 0.88, 1.00, 1.15, 1.18, 0.95, 0.82, 0.78, 1.10];
-  const prices = multipliers.map(m => Math.round((basePrice || 200) * m));
-  const minP = Math.min(...prices), maxP = Math.max(...prices);
-
-  const barsHTML = prices.map((p, i) => {
-    const ratio = (p - minP) / (maxP - minP + 1);
-    const heightPct = 20 + Math.round(ratio * 80); // 20% to 100%
-    // Color: green (cheap) → yellow → red (expensive)
-    const r = Math.round(ratio * 220);
-    const g = Math.round((1 - ratio) * 180 + 40);
-    const color = `rgb(${r},${g},50)`;
-    return `<div class="month-bar-wrap" title="${monthNames[i]}: ~$${p}/night">
-      <div class="month-bar-fill" style="height:${heightPct}%;background:${color}"></div>
-      <div class="month-label">${monthNames[i]}</div>
-    </div>`;
-  }).join('');
-
-  return `<div class="best-month-section">
-    <div class="best-month-title">📅 Best Month to Go</div>
-    <div class="best-month-sub">Estimated relative hotel prices by month — green = cheapest, red = peak pricing</div>
-    <div class="month-bars">${barsHTML}</div>
-  </div>`;
-}
-
-// ─── Init on load ─────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  renderRecentSearches();
+  if(e.key==='Escape'){closeWishlist();closeAIPlanner();closePriceAlertModal();closeFilters();}
 });
 </script>
 </body>
