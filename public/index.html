@@ -1205,13 +1205,14 @@
       to   { transform: translateX(-50%); }
     }
 
-    /* ─── Metro Airport Badge ────────────────────────────────────────── */
-    .ac-item.metro { background: #fafaf8; }
-    .ac-item.metro:hover, .ac-item.metro.highlighted { background: #f5f2e8; }
-    .ac-item.metro .ac-name { font-weight: 700; }
+    /* ─── Metro Airport Badge (enhanced) ────────────────────────────── */
+    .ac-item.metro { background: linear-gradient(90deg, rgba(212,168,71,0.09), rgba(212,168,71,0.03)); }
+    .ac-item.metro:hover, .ac-item.metro.highlighted { background: rgba(212,168,71,0.15); }
+    .ac-item.metro .ac-name { font-weight: 700; color: var(--navy-dark); }
+    .ac-item.metro .ac-iata { color: var(--gold); }
     .ac-metro-badge {
       margin-left: auto;
-      background: #D4A847;
+      background: var(--gold);
       color: #fff;
       font-size: 9px;
       font-weight: 800;
@@ -1221,6 +1222,125 @@
       padding: 2px 6px;
       white-space: nowrap;
       flex-shrink: 0;
+    }
+
+    /* ─── Recently Searched ──────────────────────────────────────────── */
+    .recently-searched {
+      margin: 16px 0 0;
+      padding: 13px 16px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      backdrop-filter: blur(6px);
+    }
+    .recently-searched-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 9px;
+    }
+    .recent-items { display: flex; flex-wrap: wrap; gap: 7px; }
+    .recent-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.82);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    .recent-item:hover {
+      background: rgba(212,168,71,0.18);
+      border-color: var(--gold);
+      color: var(--gold-light);
+      transform: translateY(-1px);
+    }
+    .recent-arrow { color: var(--gold); font-size: 10px; }
+    .recent-date  { font-size: 10.5px; color: rgba(255,255,255,0.35); margin-left: 2px; }
+
+    /* ─── Toast ──────────────────────────────────────────────────────── */
+    #toast-container {
+      position: fixed; bottom: 30px; right: 30px;
+      z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+      pointer-events: none;
+    }
+    .toast-msg {
+      background: var(--navy-dark); color: #fff;
+      padding: 12px 20px; border-radius: 12px;
+      font-size: 14px; font-weight: 500;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+      border-left: 3px solid var(--gold);
+      animation: toast-in 0.3s ease, toast-out 0.3s ease 2.5s forwards;
+    }
+    @keyframes toast-in  { from { opacity:0; transform:translateY(20px) scale(0.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes toast-out { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-10px); } }
+
+    /* ─── Share Trip Button ──────────────────────────────────────────── */
+    .share-trip-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(27,46,75,0.06); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 12px;
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+      cursor: pointer; transition: all 0.2s ease; margin-top: 10px;
+    }
+    .share-trip-btn:hover { background: var(--navy); color: var(--gold-light); border-color: var(--navy); transform: translateY(-1px); }
+
+    /* ─── Best Month to Go ───────────────────────────────────────────── */
+    .best-month-section {
+      margin: 24px 0 0; padding: 20px 22px;
+      background: var(--card-bg); border-radius: var(--radius);
+      box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+    .best-month-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .best-month-sub   { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+    .month-bars {
+      display: grid; grid-template-columns: repeat(12, 1fr);
+      gap: 5px; align-items: end; height: 70px;
+    }
+    .month-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+    .month-bar-fill { width: 100%; border-radius: 4px 4px 0 0; transition: filter 0.2s; min-height: 6px; cursor: default; }
+    .month-bar-fill:hover { filter: brightness(1.18); }
+    .month-label { font-size: 9.5px; color: var(--text-muted); font-weight: 500; text-align: center; }
+
+    /* ─── Flight+Hotel Toggle ────────────────────────────────────────── */
+    .fh-toggle-wrap { margin-top: 12px; display: flex; align-items: center; gap: 10px; }
+    .fh-toggle-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.09); border: 1.5px solid rgba(255,255,255,0.18);
+      border-radius: 20px; padding: 7px 16px;
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.72);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .fh-toggle-btn:hover { background: rgba(212,168,71,0.18); border-color: var(--gold); color: var(--gold-light); }
+
+    /* ─── Global Polish ──────────────────────────────────────────────── */
+    .search-btn { transition: all 0.22s cubic-bezier(0.4,0,0.2,1) !important; }
+    .search-btn:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 28px rgba(27,46,75,0.45) !important; }
+    .book-now-btn { transition: all 0.2s ease; }
+    .book-now-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(27,46,75,0.3); }
+    .bundle-book-btn { transition: all 0.22s ease; }
+    .flight-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+    .hotel-card  { transition: box-shadow 0.25s ease, transform 0.25s ease; }
+    .bundle-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+    .tab-btn     { transition: all 0.18s ease; }
+    .sort-pill   { transition: all 0.18s ease; }
+    .dest-card   { transition: transform 0.28s ease, box-shadow 0.28s ease; }
+    .dest-card:hover { transform: translateY(-6px) scale(1.02); }
+    .price-compare-btn { transition: all 0.18s ease; }
+    .price-compare-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .view-deal-btn { transition: all 0.18s ease; }
+    .recent-item, .book-link-btn { transition: all 0.18s ease; }
+    @media (max-width: 600px) {
+      .month-label { font-size: 8px; }
+      .best-month-section { padding: 14px 12px; }
+      #toast-container { bottom: 16px; right: 16px; }
     }
   </style>
 </head>
@@ -1327,6 +1447,11 @@
             <button class="search-btn" onclick="searchFlights()">Search →</button>
           </div>
         </div>
+        <div class="fh-toggle-wrap">
+          <button class="fh-toggle-btn" onclick="switchToBundle()" title="Search flight + hotel together">
+            ✈️🏨 Add Hotel — Bundle &amp; Save
+          </button>
+        </div>
       </div>
 
       <!-- HOTELS TAB -->
@@ -1411,8 +1536,17 @@
         </div>
       </div>
     </div>
+
+    <!-- Recently Searched -->
+    <div class="recently-searched" id="recently-searched" style="display:none">
+      <div class="recently-searched-title">🕐 Recently Searched</div>
+      <div class="recent-items" id="recent-items-list"></div>
+    </div>
   </div>
 </section>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
 
 <!-- Trending Ticker -->
 <div class="ticker-wrap" id="trending-ticker">
@@ -1754,11 +1888,12 @@ function initAutocomplete(inputId, dropdownId, onSelect) {
     if (!airports.length) { dropdown.classList.remove('open'); return; }
     highlighted = -1;
     dropdown.innerHTML = airports.map((a, i) => {
-      const isMetro = a.name && a.name.includes('All Airports');
-      const metroBadge = isMetro ? '<span class="ac-metro-badge">All Airports</span>' : '';
+      const isMetro = !!(a.metro || (a.name && a.name.includes('All Airports')));
+      const metroPrefix = isMetro ? '<span style="font-size:13px;margin-right:4px">✈✈</span>' : '';
+      const metroBadge  = isMetro ? '<span class="ac-metro-badge">All Airports</span>' : '';
       return `
       <div class="ac-item${isMetro ? ' metro' : ''}" data-idx="${i}">
-        <span class="ac-iata">${a.iata}</span>
+        <span class="ac-iata">${metroPrefix}${a.iata}</span>
         <div class="ac-details">
           <div class="ac-name">${a.name}</div>
           <div class="ac-location">${a.city}, ${a.country}</div>
@@ -1775,8 +1910,16 @@ function initAutocomplete(inputId, dropdownId, onSelect) {
     dropdown.querySelectorAll('.ac-item').forEach((el, i) => el.classList.toggle('highlighted', i === highlighted));
   }
   function selectItem(a) {
-    input.value = `${a.iata} — ${a.city}`;
-    onSelect(a.iata, input.value);
+    const isMetro = !!(a.metro || (a.name && a.name.includes('All Airports')));
+    // Display: full name for metro, "IATA — City" for single airport
+    const displayVal = isMetro
+      ? `${a.name.replace(/ \(.*\)/, '')} (${a.iata})`
+      : `${a.iata} — ${a.city}`;
+    input.value = displayVal;
+    // Store display name on the input element so search can use it
+    input.dataset.displayName = displayVal;
+    input.dataset.iataCode    = a.iata;
+    onSelect(a.iata, displayVal);
     dropdown.classList.remove('open');
   }
 }
@@ -1856,6 +1999,7 @@ async function searchFlights() {
 
   state.currentMode = 'flights';
   state.searchParams = { origin, destination, departure, returnDate, adults, travelClass };
+  saveRecentSearch(origin, destination, departure);
 
   hidePoppularDests();
   showResults();
@@ -1919,6 +2063,7 @@ async function searchBundles() {
 
   state.currentMode = 'bundles';
   state.searchParams = { origin, destination, depart, checkin, checkout, guests };
+  if (origin && destination) saveRecentSearch(origin, destination, depart);
 
   hidePoppularDests();
   showResults();
@@ -2095,8 +2240,9 @@ function renderHotels(hotels, params) {
 
   if (!hotels.length) { container.innerHTML = emptyState('🏨', 'No hotels found', 'Try adjusting your dates or searching a different city.'); return; }
 
+  const avgPrice = hotels.reduce((s, h) => s + (h.pricePerNight || 200), 0) / (hotels.length || 1);
   const html = hotels.map((h, i) => hotelCard(h, nights, i)).join('');
-  container.innerHTML = `<div class="hotels-grid">${html}</div>`;
+  container.innerHTML = `<div class="hotels-grid">${html}</div>` + renderBestMonthSection(avgPrice);
 
   // Attach price compare toggles
   container.querySelectorAll('.price-compare-btn').forEach(btn => {
@@ -2111,7 +2257,7 @@ function renderHotels(hotels, params) {
 
 function hotelCard(h, nights, idx) {
   const stars = Array.from({length: 5}, (_, i) =>
-    `<span class="star ${i < h.stars ? 'filled' : 'empty'}">★</span>`).join('');
+    `<span style="font-size:16px;color:${i < h.stars ? 'var(--gold)' : '#d1d5db'};letter-spacing:1px">★</span>`).join('');
   const amenityList = (h.amenities || []).slice(0, 4).map(a => `<span class="amenity-pill">${a}</span>`).join('');
   const ratingBadge = h.rating ? `<span class="rating-badge">★ ${h.rating} ${h.ratingLabel || ''}</span>` : '';
   const price = h.pricePerNight ? `$${h.pricePerNight.toLocaleString()}` : 'Varies';
@@ -2250,6 +2396,9 @@ function bundleCard(b) {
         <button class="bundle-book-btn" onclick="alert('Booking would proceed in live mode. Demo only.')">
           Book Bundle →
         </button>
+        <button class="share-trip-btn" onclick="shareTrip('${f.departure.iata}','${f.arrival.iata}','')">
+          🔗 Share Trip
+        </button>
       </div>
     </div>
   </div>`;
@@ -2380,6 +2529,143 @@ document.addEventListener('keydown', e => {
     else if (e.target.closest('#tab-hotels'))  searchHotels();
     else if (e.target.closest('#tab-bundles')) searchBundles();
   }
+});
+
+// ─── Toast Notifications ──────────────────────────────────────────────────────
+function showToast(msg) {
+  const c = document.getElementById('toast-container');
+  if (!c) return;
+  const t = document.createElement('div');
+  t.className = 'toast-msg';
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 2900);
+}
+
+// ─── Recently Searched ────────────────────────────────────────────────────────
+function saveRecentSearch(origin, dest, date) {
+  try {
+    const key = 'voyage_recent_searches';
+    const recent = JSON.parse(localStorage.getItem(key) || '[]');
+    const entry = { origin, dest, date, ts: Date.now() };
+    // Remove duplicate
+    const filtered = recent.filter(r => !(r.origin === origin && r.dest === dest));
+    filtered.unshift(entry);
+    const trimmed = filtered.slice(0, 5);
+    localStorage.setItem(key, JSON.stringify(trimmed));
+    renderRecentSearches();
+  } catch(e) {}
+}
+
+function renderRecentSearches() {
+  try {
+    const key = 'voyage_recent_searches';
+    const recent = JSON.parse(localStorage.getItem(key) || '[]');
+    const section = document.getElementById('recently-searched');
+    const list    = document.getElementById('recent-items-list');
+    if (!section || !list || !recent.length) {
+      if (section) section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+    list.innerHTML = recent.map(r => `
+      <div class="recent-item" onclick="fillRecentSearch('${r.origin}','${r.dest}','${r.date}')">
+        <span>${r.origin}</span>
+        <span class="recent-arrow">→</span>
+        <span>${r.dest}</span>
+        ${r.date ? `<span class="recent-date">${formatDateDisplay(r.date)}</span>` : ''}
+      </div>`).join('');
+  } catch(e) {}
+}
+
+function fillRecentSearch(origin, dest, date) {
+  // Switch to flights tab
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-tab="flights"]').classList.add('active');
+  document.getElementById('tab-flights').classList.add('active');
+  state.activeTab = 'flights';
+  // Fill fields
+  const fromInput = document.getElementById('from-input');
+  const toInput   = document.getElementById('to-input');
+  fromInput.value = origin; state.fromIata = origin;
+  toInput.value   = dest;   state.toIata   = dest;
+  if (date) document.getElementById('depart-input').value = date;
+  document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ─── Flight + Hotel Bundle Switch ─────────────────────────────────────────────
+function switchToBundle() {
+  // Switch tab
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-tab="bundles"]').classList.add('active');
+  document.getElementById('tab-bundles').classList.add('active');
+  state.activeTab = 'bundles';
+  // Pre-fill from flights form
+  const from   = document.getElementById('from-input').value;
+  const to     = document.getElementById('to-input').value;
+  const depart = document.getElementById('depart-input').value;
+  const ret    = document.getElementById('return-input').value;
+  if (from)   { document.getElementById('b-from-input').value = from; state.bFromIata = state.fromIata; }
+  if (to)     { document.getElementById('b-to-input').value   = to;   state.bToIata   = state.toIata; }
+  if (depart) { document.getElementById('b-depart').value     = depart; }
+  if (ret)    { document.getElementById('b-return').value     = ret; }
+  // Set hotel dates same as flight dates if not already set
+  if (depart && !document.getElementById('b-checkin').value)  document.getElementById('b-checkin').value  = depart;
+  if (ret    && !document.getElementById('b-checkout').value) document.getElementById('b-checkout').value = ret;
+  showToast('✈️🏨 Bundle mode — add your hotel dates!');
+}
+
+// ─── Share Trip ───────────────────────────────────────────────────────────────
+function shareTrip(origin, dest, depart) {
+  try {
+    const url = `${location.origin}?from=${encodeURIComponent(origin)}&to=${encodeURIComponent(dest)}&depart=${depart}`;
+    navigator.clipboard.writeText(url).then(() => {
+      showToast('Link copied! 📋');
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = url; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy');
+      ta.remove();
+      showToast('Link copied! 📋');
+    });
+  } catch(e) { showToast('Could not copy link'); }
+}
+
+// ─── Best Month to Go ─────────────────────────────────────────────────────────
+function renderBestMonthSection(basePrice) {
+  // Simulate monthly price variation based on base price
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // Typical travel price multipliers by month
+  const multipliers = [0.75, 0.72, 0.85, 0.90, 0.88, 1.00, 1.15, 1.18, 0.95, 0.82, 0.78, 1.10];
+  const prices = multipliers.map(m => Math.round((basePrice || 200) * m));
+  const minP = Math.min(...prices), maxP = Math.max(...prices);
+
+  const barsHTML = prices.map((p, i) => {
+    const ratio = (p - minP) / (maxP - minP + 1);
+    const heightPct = 20 + Math.round(ratio * 80); // 20% to 100%
+    // Color: green (cheap) → yellow → red (expensive)
+    const r = Math.round(ratio * 220);
+    const g = Math.round((1 - ratio) * 180 + 40);
+    const color = `rgb(${r},${g},50)`;
+    return `<div class="month-bar-wrap" title="${monthNames[i]}: ~$${p}/night">
+      <div class="month-bar-fill" style="height:${heightPct}%;background:${color}"></div>
+      <div class="month-label">${monthNames[i]}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="best-month-section">
+    <div class="best-month-title">📅 Best Month to Go</div>
+    <div class="best-month-sub">Estimated relative hotel prices by month — green = cheapest, red = peak pricing</div>
+    <div class="month-bars">${barsHTML}</div>
+  </div>`;
+}
+
+// ─── Init on load ─────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderRecentSearches();
 });
 </script>
 </body>

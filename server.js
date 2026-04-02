@@ -482,6 +482,94 @@ const MOCK_HOTELS = [
   }
 ];
 
+// ─── Mock Car Rentals ─────────────────────────────────────────────────────────
+const MOCK_CARS = [
+  {
+    id: 'c1', type: 'Economy', name: 'Toyota Corolla or similar', emoji: '🚗',
+    provider: 'Enterprise', providerColor: '#006747', pricePerDay: 45,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: 32, rating: 8.7, reviews: 1243,
+    cardColor: '#e5e7eb', description: 'Perfect for solo travelers or couples. Great fuel economy.'
+  },
+  {
+    id: 'c2', type: 'Economy', name: 'Hyundai Elantra or similar', emoji: '🚙',
+    provider: 'Budget', providerColor: '#e84c1e', pricePerDay: 38,
+    features: ['AC', 'Unlimited Miles', 'Free Cancellation'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: 35, rating: 8.4, reviews: 892,
+    cardColor: '#dbeafe', description: 'Best value economy. Outstanding fuel efficiency.'
+  },
+  {
+    id: 'c3', type: 'Compact', name: 'Honda Civic or similar', emoji: '🚗',
+    provider: 'Hertz', providerColor: '#ffcc00', pricePerDay: 58,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: 30, rating: 8.9, reviews: 2156,
+    cardColor: '#dcfce7', description: 'Sporty compact with excellent handling and comfort.'
+  },
+  {
+    id: 'c4', type: 'Compact', name: 'Chevrolet Malibu or similar', emoji: '🚗',
+    provider: 'Avis', providerColor: '#cc0001', pricePerDay: 62,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', 'Bluetooth'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: 29, rating: 8.6, reviews: 1547,
+    cardColor: '#fef3c7', description: 'Comfortable mid-size with spacious interior.'
+  },
+  {
+    id: 'c5', type: 'SUV', name: 'Toyota RAV4 or similar', emoji: '🚙',
+    provider: 'National', providerColor: '#009639', pricePerDay: 89,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', 'AWD'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: 26, rating: 9.1, reviews: 3421,
+    cardColor: '#ede9fe', description: 'Popular family SUV with AWD and ample cargo space.'
+  },
+  {
+    id: 'c6', type: 'SUV', name: 'Ford Explorer or similar', emoji: '🛻',
+    provider: 'Enterprise', providerColor: '#006747', pricePerDay: 105,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', '3rd Row Seating'],
+    seats: 7, doors: 4, transmission: 'Automatic', mpg: 22, rating: 9.0, reviews: 2876,
+    cardColor: '#fce7f3', description: 'Full-size SUV perfect for family road trips with 7 seats.'
+  },
+  {
+    id: 'c7', type: 'Luxury', name: 'BMW 5 Series or similar', emoji: '🚘',
+    provider: 'Hertz', providerColor: '#ffcc00', pricePerDay: 189,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', 'Premium Sound', 'Heated Seats'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: 27, rating: 9.4, reviews: 876,
+    cardColor: '#f0f4ff', description: 'Premium German engineering. Arrive in style.'
+  },
+  {
+    id: 'c8', type: 'Luxury', name: 'Mercedes-Benz E-Class or similar', emoji: '🚘',
+    provider: 'Avis', providerColor: '#cc0001', pricePerDay: 219,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', 'Heated Seats', 'Premium Sound', 'Sunroof'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: 25, rating: 9.6, reviews: 654,
+    cardColor: '#1a1a2e', textDark: false, description: 'The pinnacle of automotive luxury and refinement.'
+  },
+  {
+    id: 'c9', type: 'Minivan', name: 'Chrysler Pacifica or similar', emoji: '🚐',
+    provider: 'Budget', providerColor: '#e84c1e', pricePerDay: 99,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', '7 Seats', 'Stow N Go'],
+    seats: 7, doors: 4, transmission: 'Automatic', mpg: 22, rating: 8.8, reviews: 1234,
+    cardColor: '#ecfdf5', description: 'Ideal for large families. Folds flat for extra cargo.'
+  },
+  {
+    id: 'c10', type: 'Compact', name: 'Nissan Altima or similar', emoji: '🚗',
+    provider: 'National', providerColor: '#009639', pricePerDay: 55,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', 'Backup Camera'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: 31, rating: 8.5, reviews: 987,
+    cardColor: '#fff7ed', description: 'Reliable and comfortable for business or leisure.'
+  },
+  {
+    id: 'c11', type: 'Electric', name: 'Tesla Model 3 or similar', emoji: '⚡',
+    provider: 'Enterprise', providerColor: '#006747', pricePerDay: 145,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', 'Autopilot', 'Supercharger'],
+    seats: 5, doors: 4, transmission: 'Automatic', mpg: null, range: '358 mi', rating: 9.7, reviews: 432,
+    cardColor: '#d1fae5', description: 'Zero emissions, cutting-edge tech. The future of driving.'
+  },
+  {
+    id: 'c12', type: 'Luxury', name: 'Cadillac Escalade or similar', emoji: '🚗',
+    provider: 'Hertz', providerColor: '#ffcc00', pricePerDay: 285,
+    features: ['AC', 'GPS', 'Unlimited Miles', 'Free Cancellation', 'Heated Seats', '4WD', 'Premium Audio'],
+    seats: 7, doors: 4, transmission: 'Automatic', mpg: 16, rating: 9.3, reviews: 321,
+    cardColor: '#fdf2f8', description: 'Commanding presence and first-class luxury for VIP travel.'
+  }
+];
+
 // ─── Mock Bundles ─────────────────────────────────────────────────────────────
 function buildMockBundles() {
   const combos = [
@@ -822,6 +910,24 @@ app.get('/api/bundles', async (req, res) => {
 
   // Live mode: would combine flight + hotel search
   res.json({ bundles: [], error: 'Bundle search requires live API mode.', demo: false });
+});
+
+// Car Rentals search
+app.get('/api/cars', (req, res) => {
+  const { pickupDate, dropoffDate } = req.query;
+  let days = 3;
+  if (pickupDate && dropoffDate) {
+    const d1 = new Date(pickupDate), d2 = new Date(dropoffDate);
+    if (!isNaN(d1) && !isNaN(d2) && d2 > d1) {
+      days = Math.max(1, Math.round((d2 - d1) / 86400000));
+    }
+  }
+  const cars = MOCK_CARS.map(c => ({
+    ...c,
+    days,
+    totalPrice: c.pricePerDay * days
+  }));
+  res.json({ cars, demo: true, days });
 });
 
 // ─── Static Files ─────────────────────────────────────────────────────────────
