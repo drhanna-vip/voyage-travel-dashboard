@@ -69,7 +69,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow: visible;
       padding: 80px 24px 60px;
     }
     .hero-bg { position: absolute; inset: 0; z-index: 0; }
@@ -290,33 +290,41 @@
     /* Autocomplete */
     .autocomplete-dropdown {
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% + 4px);
       left: 0; right: 0;
       background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: var(--shadow-lg);
-      z-index: 999;
-      max-height: 280px;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
+      z-index: 99999;
+      max-height: 320px;
       overflow-y: auto;
       display: none;
+      animation: acFadeIn 0.15s ease;
     }
+    @keyframes acFadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
     .autocomplete-dropdown.open { display: block; }
     .ac-item {
-      padding: 10px 14px;
+      padding: 12px 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 10px;
-      transition: background 0.15s;
-      border-bottom: 1px solid #f3f4f6;
+      gap: 12px;
+      transition: background 0.12s;
+      border-bottom: 1px solid #f0f0f0;
     }
     .ac-item:last-child { border-bottom: none; }
-    .ac-item:hover, .ac-item.highlighted { background: #f7f4ef; }
-    .ac-iata { font-weight: 700; font-size: 15px; color: var(--navy); min-width: 36px; }
-    .ac-details { flex: 1; }
-    .ac-name { font-size: 13px; color: var(--text); font-weight: 500; }
-    .ac-location { font-size: 11.5px; color: var(--text-muted); }
+    .ac-item:hover, .ac-item.highlighted { background: #f5f0e8; }
+    .ac-item.metro { background: #fdfaf3; }
+    .ac-item.metro:hover, .ac-item.metro.highlighted { background: #faf4e0; }
+    .ac-iata { font-weight: 800; font-size: 15px; color: var(--navy); min-width: 42px; font-family: monospace; letter-spacing: 0.04em; }
+    .ac-item.metro .ac-iata { color: var(--gold); }
+    .ac-details { flex: 1; min-width: 0; }
+    .ac-name { font-size: 13px; color: #1a1a2e; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ac-item.metro .ac-name { font-weight: 700; color: var(--navy); }
+    .ac-location { font-size: 11px; color: #6b7280; margin-top: 1px; }
+    .ac-metro-badge { font-size: 9px; font-weight: 800; background: var(--gold); color: #0A1628; padding: 2px 6px; border-radius: 4px; white-space: nowrap; letter-spacing: 0.05em; flex-shrink: 0; }
+    .ac-airport-icon { font-size: 14px; flex-shrink: 0; }
 
     /* Passenger picker */
     .pax-trigger {
@@ -1858,18 +1866,21 @@ function initAutocomplete(inputId, dropdownId, onSelect) {
   const dropdown = document.getElementById(dropdownId);
   let timer = null, highlighted = -1, items = [];
 
-  input.addEventListener('input', () => {
+  function triggerSearch() {
     clearTimeout(timer);
     const q = input.value.trim();
     if (q.length < 2) { dropdown.classList.remove('open'); return; }
     timer = setTimeout(async () => {
       try {
-        const r = await fetch(`/api/airports?q=${encodeURIComponent(q)}`);
+        const r = await fetch(`/api/airports?q=${encodeURIComponent(q)}`, { credentials: 'same-origin' });
+        if (!r.ok) { dropdown.classList.remove('open'); return; }
         items = await r.json();
         renderDropdown(items);
       } catch(e) { dropdown.classList.remove('open'); }
-    }, 200);
-  });
+    }, 150);
+  }
+  input.addEventListener('input', triggerSearch);
+  input.addEventListener('keyup', triggerSearch); // iOS Safari fallback
 
   input.addEventListener('keydown', e => {
     if (!dropdown.classList.contains('open')) return;
@@ -1889,14 +1900,17 @@ function initAutocomplete(inputId, dropdownId, onSelect) {
     highlighted = -1;
     dropdown.innerHTML = airports.map((a, i) => {
       const isMetro = !!(a.metro || (a.name && a.name.includes('All Airports')));
-      const metroPrefix = isMetro ? '<span style="font-size:13px;margin-right:4px">✈✈</span>' : '';
-      const metroBadge  = isMetro ? '<span class="ac-metro-badge">All Airports</span>' : '';
+      const icon     = isMetro ? '🌐' : '✈️';
+      const metroBadge = isMetro ? '<span class="ac-metro-badge">ALL AIRPORTS</span>' : '';
+      const shortName  = a.name.replace(/ - All Airports.*/, '').replace(/ International( Airport)?/, '').replace(/ Airport$/, '');
+      const displayName = isMetro ? a.name : shortName;
       return `
-      <div class="ac-item${isMetro ? ' metro' : ''}" data-idx="${i}">
-        <span class="ac-iata">${metroPrefix}${a.iata}</span>
+      <div class="ac-item${isMetro ? ' metro' : ''}" data-idx="${i}" role="option">
+        <span class="ac-airport-icon">${icon}</span>
+        <span class="ac-iata">${a.iata}</span>
         <div class="ac-details">
-          <div class="ac-name">${a.name}</div>
-          <div class="ac-location">${a.city}, ${a.country}</div>
+          <div class="ac-name">${displayName}</div>
+          <div class="ac-location">${a.city}${a.country ? ' · ' + a.country : ''}</div>
         </div>
         ${metroBadge}
       </div>`;
