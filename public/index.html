@@ -214,18 +214,51 @@
       border-radius: 12px;
       padding: 12px 14px 12px 40px;
       font-size: 14px;
-      color: #fff;
+      color: #fff !important;
+      -webkit-text-fill-color: #fff !important;
+      caret-color: #D4A847;
       outline: none;
       transition: all 0.2s;
       height: 48px;
+      -webkit-appearance: none;
+      appearance: none;
     }
-    .search-input::placeholder { color: rgba(255,255,255,0.42); }
+    .search-input::placeholder {
+      color: rgba(255,255,255,0.45) !important;
+      -webkit-text-fill-color: rgba(255,255,255,0.45) !important;
+      opacity: 1;
+    }
     .search-input:focus {
       border-color: var(--gold);
       background: rgba(255,255,255,0.18);
       box-shadow: 0 0 0 3px rgba(212,168,71,0.18);
+      -webkit-text-fill-color: #fff !important;
     }
     .search-input.no-icon { padding-left: 14px; }
+    /* iOS/Safari autofill override */
+    .search-input:-webkit-autofill,
+    .search-input:-webkit-autofill:hover,
+    .search-input:-webkit-autofill:focus,
+    .search-input:-webkit-autofill:active {
+      -webkit-text-fill-color: #fff !important;
+      -webkit-box-shadow: 0 0 0 1000px #1B2E4B inset !important;
+      box-shadow: 0 0 0 1000px #1B2E4B inset !important;
+      transition: background-color 9999s ease-in-out 0s;
+    }
+    /* Date picker text color fix */
+    input[type="date"].search-input::-webkit-datetime-edit,
+    input[type="date"].search-input::-webkit-datetime-edit-fields-wrapper,
+    input[type="date"].search-input::-webkit-datetime-edit-text,
+    input[type="date"].search-input::-webkit-datetime-edit-month-field,
+    input[type="date"].search-input::-webkit-datetime-edit-day-field,
+    input[type="date"].search-input::-webkit-datetime-edit-year-field {
+      color: #fff;
+      -webkit-text-fill-color: #fff;
+    }
+    input[type="date"].search-input::-webkit-calendar-picker-indicator {
+      filter: invert(1) opacity(0.6);
+      cursor: pointer;
+    }
     .field-icon {
       position: absolute;
       bottom: 13px;
