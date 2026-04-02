@@ -1998,9 +1998,29 @@ function fillDestination(iata, city, country, tab, fromIata) {
 }
 
 // ─── Search Flights ───────────────────────────────────────────────────────────
+function extractIataFromInput(stateIata, inputId) {
+  if (stateIata) return stateIata;
+  const el = document.getElementById(inputId);
+  if (el && el.dataset.iataCode) return el.dataset.iataCode;
+  const raw = (el ? el.value : '').trim();
+  if (!raw) return '';
+  // Direct 3-letter IATA code
+  if (/^[A-Za-z]{3}$/.test(raw)) return raw.toUpperCase();
+  // Format: "IATA — City Name"
+  const dashPart = raw.split('—')[0].trim();
+  if (/^[A-Za-z]{3}$/.test(dashPart)) return dashPart.toUpperCase();
+  // Parenthetical: "New York (NYC)" or "All Airports (JFK)"
+  const parenMatch = raw.match(/\(([A-Za-z]{3})\)/);
+  if (parenMatch) return parenMatch[1].toUpperCase();
+  // First word if it looks like IATA
+  const firstWord = raw.split(/[\s,—]/)[0];
+  if (/^[A-Za-z]{3}$/.test(firstWord)) return firstWord.toUpperCase();
+  return raw.toUpperCase().slice(0, 3);
+}
+
 async function searchFlights() {
-  const origin      = state.fromIata || document.getElementById('from-input').value.split('—')[0].trim().split(' ')[0];
-  const destination = state.toIata   || document.getElementById('to-input').value.split('—')[0].trim().split(' ')[0];
+  const origin      = extractIataFromInput(state.fromIata, 'from-input');
+  const destination = extractIataFromInput(state.toIata, 'to-input');
   const departure   = document.getElementById('depart-input').value;
   const returnDate  = state.tripType === 'roundtrip' ? document.getElementById('return-input').value : '';
   const adults      = state.pax.adults;
