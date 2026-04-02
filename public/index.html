@@ -2364,14 +2364,46 @@ function hotelCard(h,nights,idx){
   </div>`;
 }
 
-function buildPriceComparePanel(h){
+function buildHotelBookingUrl(site, h, params) {
+  const name = encodeURIComponent(h.name);
+  const city = encodeURIComponent(h.location || h.city || '');
+  const cin  = (params && params.checkin)  || '';
+  const cout = (params && params.checkout) || '';
+  const adults = (params && params.adults) || 2;
+  switch(site) {
+    case 'expedia.com':
+      return `https://www.expedia.com/Hotel-Search?destination=${name}&startDate=${cin}&endDate=${cout}&adults=${adults}`;
+    case 'booking.com':
+      return `https://www.booking.com/searchresults.html?ss=${name}&checkin=${cin}&checkout=${cout}&group_adults=${adults}&no_rooms=1`;
+    case 'hotels.com':
+      return `https://www.hotels.com/search.do?q-destination=${name}&q-check-in=${cin}&q-check-out=${cout}&q-rooms=1&q-adult-guests=${adults}`;
+    case 'marriott.com':
+      return `https://www.marriott.com/search/findHotels.mi?roomCount=1&numAdultsPerRoom=${adults}&fromDate=${cin}&toDate=${cout}`;
+    case 'hotwire.com':
+      return `https://www.hotwire.com/Hotel/search?destination=${city}&checkInDate=${cin}&checkOutDate=${cout}&numRooms=1&numGuests=${adults}`;
+    default:
+      return `https://www.${site}/search?q=${name}`;
+  }
+}
+
+function buildPriceComparePanel(h, params){
   if(!h.pricePerNight)return'<p style="font-size:13px;color:var(--text-muted)">Price comparison not available.</p>';
   const base=h.pricePerNight;
-  const sources=[{name:'Expedia',site:'expedia.com',mult:1.00},{name:'Booking.com',site:'booking.com',mult:1.07},{name:'Hotels.com',site:'hotels.com',mult:1.04},{name:'Marriott Direct',site:'marriott.com',mult:1.12},{name:'Hotwire',site:'hotwire.com',mult:0.93}];
+  const sources=[
+    {name:'Expedia',    site:'expedia.com',  mult:1.00, icon:'🟦'},
+    {name:'Booking.com',site:'booking.com',  mult:1.07, icon:'🟦'},
+    {name:'Hotels.com', site:'hotels.com',   mult:1.04, icon:'🔴'},
+    {name:'Direct',     site:'marriott.com', mult:1.12, icon:'⭐'},
+    {name:'Hotwire',    site:'hotwire.com',  mult:0.93, icon:'🔥'}
+  ];
   const seed=(base*100+(h.id.charCodeAt?h.id.charCodeAt(0):42))%100;
   const priced=sources.map((s,i)=>({...s,price:Math.round(base*s.mult*(0.96+((seed+i*7)%20)/100))})).sort((a,b)=>a.price-b.price);
   const lowest=priced[0].price;
-  return priced.map(s=>{const isBest=s.price===lowest;return`<div class="compare-row"><span class="compare-source">${s.name}</span>${isBest?'<span class="best-badge">Best</span>':'<span></span>'}<span class="compare-price ${isBest?'best-price':''}">${formatPrice(s.price)}</span><a href="https://www.${s.site}/search?q=${encodeURIComponent(h.name)}" target="_blank" rel="noopener"><button class="view-deal-btn ${isBest?'best':''}">View Deal</button></a></div>`;}).join('');
+  return priced.map(s=>{
+    const isBest=s.price===lowest;
+    const url=buildHotelBookingUrl(s.site,h,params||state.searchParams);
+    return`<div class="compare-row"><span class="compare-source">${s.icon} ${s.name}</span>${isBest?'<span class="best-badge">Best</span>':'<span></span>'}<span class="compare-price ${isBest?'best-price':''}">${formatPrice(s.price)}/night</span><a href="${url}" target="_blank" rel="noopener noreferrer"><button class="view-deal-btn ${isBest?'best':''}">View Deal ↗</button></a></div>`;
+  }).join('');
 }
 
 // ─── Render Bundles ───────────────────────────────────────────────────────────
@@ -2425,7 +2457,7 @@ function bundleCard(b){
       <div class="bundle-price-label">total bundle price</div>
       <div class="bundle-save-badge">🎉 Save ${formatPrice(b.savings)}</div>
       <div style="display:flex;gap:8px;width:100%;align-items:center">
-        <button class="bundle-book-btn" style="flex:1" onclick="showToast('✅ Booking in progress — connect live API for real bookings')">Book Bundle →</button>
+        <button class="bundle-book-btn" style="flex:1" onclick="openBundleLinks(this,${JSON.stringify({orig:f.departure.iata,dest:f.arrival.iata,dep:f.departure.date,hotel:h.name,city:h.city||h.location,nights:b.nights}).replace(/"/g,'&quot;')})">Book Bundle ↗</button>
         <button class="heart-btn ${wl?'wishlisted':''}" onclick="toggleWishlistItem(${wlStr},this)">${wl?'❤️':'🤍'}</button>
       </div>
     </div>
@@ -2472,7 +2504,7 @@ function carCard(c,days){
         </div>
         <div style="text-align:right">
           <div class="car-rating"><span class="car-rating-score">${c.rating}</span><span class="car-rating-star">★</span><span class="car-rating-count">(${(c.reviews||0).toLocaleString()})</span></div>
-          <button class="car-book-btn" onclick="showToast('✅ Redirecting to ${c.provider}... (Demo mode)')">Book Now →</button>
+          <button class="car-book-btn" onclick="window.open('https://www.kayak.com/cars/${encodeURIComponent(params.pickup||'')}/${params.pickupDate||''}/${params.dropoffDate||''}','_blank')">Book on KAYAK ↗</button>
         </div>
       </div>
     </div>
@@ -2600,6 +2632,33 @@ function formatDateDisplay(d){if(!d)return'';const[y,m,day]=d.split('-');const m
 function formatClass(c){const map={ECONOMY:'Economy',PREMIUM_ECONOMY:'Premium Economy',BUSINESS:'Business',FIRST:'First Class'};return map[c]||c||'Economy';}
 function airlineColor(code){const colors={AA:'#0078D2',DL:'#E01933',UA:'#005DAA',B6:'#003876',WN:'#304CB2',AS:'#01426A',LH:'#05164D',BA:'#075AAA',AF:'#002395',EK:'#D71921',QR:'#5C0632',SQ:'#0E3E6C',NH:'#1B3F87'};return colors[code]||'#6B7280';}
 function openBookLinks(id){const d=document.getElementById('detail-'+id);if(d){d.classList.add('open');d.scrollIntoView({behavior:'smooth',block:'nearest'});}}
+
+function openBundleLinks(btn, info) {
+  // Build KAYAK flight URL
+  const kayakUrl = `https://www.kayak.com/flights/${info.orig}-${info.dest}/${info.dep}/1adults`;
+  // Build Booking.com hotel URL
+  const cin  = info.dep || '';
+  const cout = (() => { try { const d=new Date(cin); d.setDate(d.getDate()+(info.nights||3)); return d.toISOString().split('T')[0]; } catch(e){return '';} })();
+  const hotelUrl = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(info.hotel)}&checkin=${cin}&checkout=${cout}&group_adults=2&no_rooms=1`;
+  // Show a mini dropdown menu under the button
+  const existing = document.getElementById('bundle-links-menu');
+  if (existing) existing.remove();
+  const menu = document.createElement('div');
+  menu.id = 'bundle-links-menu';
+  menu.style.cssText = 'position:fixed;z-index:99999;background:#fff;border:1.5px solid #e0e0e0;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.18);padding:12px;min-width:240px;';
+  menu.innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Book this bundle on:</div>
+    <a href="${kayakUrl}" target="_blank" rel="noopener" style="display:block;padding:10px 14px;background:#ff690f;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;margin-bottom:8px;text-align:center">✈️ Book Flight on KAYAK ↗</a>
+    <a href="${hotelUrl}" target="_blank" rel="noopener" style="display:block;padding:10px 14px;background:#003580;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;margin-bottom:8px;text-align:center">🏨 Book Hotel on Booking.com ↗</a>
+    <a href="https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:${info.orig},to:${info.dest},departure:${info.dep}&passengers=adults:1" target="_blank" rel="noopener" style="display:block;padding:10px 14px;background:#00355f;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;text-align:center">📦 Book Full Package on Expedia ↗</a>
+    <div style="text-align:center;margin-top:8px"><span style="font-size:11px;color:#9ca3af">Free to book · Zero fees from us</span></div>
+  `;
+  const rect = btn.getBoundingClientRect();
+  menu.style.top = (rect.bottom + 8 + window.scrollY) + 'px';
+  menu.style.left = Math.max(8, rect.left - 60) + 'px';
+  document.body.appendChild(menu);
+  setTimeout(() => document.addEventListener('click', function rm(e){ if(!menu.contains(e.target)){menu.remove();document.removeEventListener('click',rm);} }), 100);
+}
 
 // ─── Keyboard ─────────────────────────────────────────────────────────────────
 document.addEventListener('keydown',e=>{
