@@ -114,75 +114,98 @@
     }
     .hero-logo::after { background: linear-gradient(90deg, var(--gold), transparent); }
     .hero-title {
-      font-size: clamp(34px, 5vw, 64px);
-      font-weight: 700;
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 800;
       color: #fff;
-      line-height: 1.1;
-      margin-bottom: 16px;
-      letter-spacing: -0.5px;
+      line-height: 1.08;
+      margin-bottom: 18px;
+      letter-spacing: -1px;
     }
     .hero-subtitle {
       font-size: clamp(15px, 2vw, 19px);
-      color: rgba(255,255,255,0.78);
+      color: rgba(255,255,255,0.72);
       font-weight: 400;
       margin-bottom: 44px;
-      line-height: 1.5;
+      line-height: 1.6;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* ─── Search Card ────────────────────────────────────────────────── */
     .search-card {
       width: 100%;
       max-width: 1100px;
-      background: rgba(255,255,255,0.10);
+      margin: 0 auto;
+      background: rgba(255,255,255,0.08);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255,255,255,0.22);
-      border-radius: var(--radius-lg);
-      padding: 30px 32px 32px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 28px 28px 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.10);
     }
 
-    /* Tabs */
+    /* Tabs — pill style */
     .search-tabs {
       display: flex;
-      gap: 0;
-      margin-bottom: 26px;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      gap: 4px;
+      background: rgba(0,0,0,0.25);
+      padding: 4px;
+      border-radius: 14px;
+      width: fit-content;
+      margin-bottom: 20px;
+      border-bottom: none;
     }
     .tab-btn {
       background: none;
       border: none;
-      padding: 10px 22px 14px;
-      font-size: 14.5px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.48);
-      border-bottom: 3px solid transparent;
-      margin-bottom: -1px;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      border-radius: 10px;
       transition: all 0.2s;
       letter-spacing: 0.2px;
+      cursor: pointer;
     }
-    .tab-btn.active { color: #fff; border-bottom-color: var(--gold); }
-    .tab-btn:hover { color: rgba(255,255,255,0.85); }
+    .tab-btn.active {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.20);
+    }
+    .tab-btn:hover:not(.active) { color: rgba(255,255,255,0.88); background: rgba(255,255,255,0.08); }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* Trip type pills */
-    .trip-type { display: flex; gap: 8px; margin-bottom: 18px; }
+    /* Trip type pills — same pill container, smaller */
+    .trip-type {
+      display: flex;
+      gap: 4px;
+      background: rgba(0,0,0,0.25);
+      padding: 4px;
+      border-radius: 14px;
+      width: fit-content;
+      margin-bottom: 18px;
+    }
     .trip-pill {
-      background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.18);
+      background: none;
+      border: none;
       color: rgba(255,255,255,0.65);
-      border-radius: 20px;
-      padding: 5px 15px;
+      border-radius: 10px;
+      padding: 7px 16px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       transition: all 0.2s;
+      cursor: pointer;
     }
-    .trip-pill.active, .trip-pill:hover {
-      background: rgba(212,168,71,0.22);
-      border-color: var(--gold);
-      color: var(--gold);
+    .trip-pill.active {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.20);
     }
+    .trip-pill:hover:not(.active) { color: rgba(255,255,255,0.88); background: rgba(255,255,255,0.08); }
 
     /* Search grid */
     .search-grid {
@@ -626,15 +649,27 @@
     .sort-pill {
       background: #fff;
       border: 1.5px solid var(--border);
-      border-radius: 20px;
+      border-radius: 100px;
       padding: 7px 18px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-muted);
-      transition: all 0.2s;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    .sort-pill.active { background: var(--navy); border-color: var(--navy); color: #fff; }
-    .sort-pill:hover:not(.active) { border-color: var(--navy); color: var(--navy); }
+    .sort-pill.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(10,22,40,0.25), inset 0 -2px 0 rgba(212,168,71,0.5);
+    }
+    .sort-pill:hover:not(.active) {
+      border-color: var(--navy);
+      color: var(--navy);
+      background: rgba(10,22,40,0.04);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.10);
+    }
     .results-count-chip {
       font-size: 12.5px;
       color: var(--text-muted);
@@ -662,17 +697,34 @@
       background: var(--card-bg);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      border: 1px solid var(--border);
+      border: 1px solid #e8ecf0;
       border-left: 4px solid transparent;
       overflow: hidden;
-      transition: all 0.25s;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
     }
-    .flight-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .flight-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 4px; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--navy));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .flight-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: var(--navy);
+    }
+    .flight-card:hover::before { opacity: 0.25; }
     .flight-card.cheapest { border-left-color: var(--green); }
+    .flight-card.cheapest:hover { border-color: var(--green); }
     .flight-card.best     { border-left-color: var(--gold); }
+    .flight-card.best:hover { border-color: var(--gold); }
 
     .flight-card-main {
-      padding: 18px 22px;
+      padding: 18px 20px;
       display: grid;
       grid-template-columns: 52px 1fr 90px auto auto auto;
       align-items: center;
@@ -707,7 +759,7 @@
       font-variant-numeric: tabular-nums;
       line-height: 1;
     }
-    .flight-iata { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; font-weight: 500; }
+    .flight-iata { font-size: 13px; color: var(--navy); margin-top: 3px; font-weight: 700; letter-spacing: 0.5px; }
     .flight-line {
       flex: 1;
       display: flex; flex-direction: column; align-items: center;
@@ -771,15 +823,18 @@
     .price-history-tag.higher  { background: #fef2f2; color: #991b1b; }
     .price-history-tag.typical { background: #f1f5f9; color: #64748b; }
 
-    .flight-price-wrap { text-align: right; min-width: 100px; }
+    .flight-price-wrap { text-align: right; min-width: 110px; }
     .flight-price {
-      font-size: 27px;
-      font-weight: 700;
-      color: var(--text);
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--navy);
       font-variant-numeric: tabular-nums;
       line-height: 1;
     }
-    .flight-price.cheap { color: var(--green); }
+    .flight-price.cheap {
+      color: var(--green);
+      text-shadow: 0 0 18px rgba(5,150,105,0.28);
+    }
     .flight-price-per { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
 
     .book-now-btn {
@@ -886,14 +941,22 @@
       transition: all 0.25s;
       display: flex; flex-direction: column;
     }
-    .hotel-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .hotel-card:hover { box-shadow: 0 12px 40px rgba(10,22,40,0.18); transform: translateY(-4px); }
+    .hotel-img-wrap { position: relative; overflow: hidden; }
     .hotel-img {
-      width: 100%; height: 190px; object-fit: cover; background: #e5e7eb;
+      width: 100%; height: 220px; object-fit: cover; background: #e5e7eb;
+      display: block;
+    }
+    .hotel-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(0deg, rgba(10,22,40,0.7) 0%, transparent 60%);
+      pointer-events: none;
     }
     .hotel-body { padding: 16px 18px; flex: 1; display: flex; flex-direction: column; }
-    .hotel-name { font-size: 16.5px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.3; }
+    .hotel-name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.2; }
     .hotel-stars { display: flex; gap: 2px; margin-bottom: 5px; }
-    .star { font-size: 13px; }
+    .star { font-size: 16px; }
     .star.filled { color: var(--gold); }
     .star.empty  { color: #d1d5db; }
     .hotel-location {
@@ -918,8 +981,8 @@
     .hotel-price-row {
       display: flex; align-items: baseline; gap: 7px; margin-bottom: 3px;
     }
-    .hotel-price { font-size: 25px; font-weight: 700; }
-    .hotel-price-label { font-size: 12.5px; color: var(--text-muted); }
+    .hotel-price { font-size: 24px; font-weight: 700; color: var(--gold); }
+    .hotel-price-label { font-size: 12px; color: var(--text-muted); }
     .hotel-total { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
 
     /* ─── Price Comparison (Trivago-style) ───────────────────────────── */
@@ -955,14 +1018,23 @@
     }
     .compare-row {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 8px 0;
+      padding: 8px 10px;
       border-bottom: 1px solid var(--border-light);
+      border-radius: 8px;
       gap: 8px;
+      transition: background 0.15s;
     }
-    .compare-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .compare-row:last-child { border-bottom: none; padding-bottom: 8px; }
+    .compare-row:hover { background: rgba(0,0,0,0.02); }
+    .compare-row:has(.best-badge) {
+      background: #f0fdf4;
+      border: 1.5px solid var(--green);
+      padding: 8px 10px;
+      margin: 4px 0;
+    }
     .compare-source { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
     .compare-price { font-size: 15px; font-weight: 700; color: var(--text); }
-    .compare-price.best-price { color: var(--green); }
+    .compare-price.best-price { color: var(--green); font-weight: 800; }
     .best-badge {
       background: var(--green-bg); color: var(--green);
       border-radius: 6px; padding: 2px 7px;
@@ -1096,9 +1168,11 @@
     /* Light-bg skeleton override inside results lists */
     .flights-list .skeleton,
     .hotels-grid .skeleton,
-    .bundles-list .skeleton {
+    .bundles-list .skeleton,
+    .cars-grid .skeleton {
       background: linear-gradient(90deg, #f0f2f5 25%, #e4e7ec 50%, #f0f2f5 75%);
       background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
     }
     .skeleton-card {
       background: var(--card-bg);
