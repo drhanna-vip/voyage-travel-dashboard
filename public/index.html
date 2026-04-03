@@ -1169,6 +1169,10 @@
       .search-grid, .search-grid.hotels-grid, .search-grid.bundles-grid {
         grid-template-columns: 1fr 1fr;
       }
+      /* FROM and TO always full width on tablet */
+      #from-field, #to-field, #b-from-field, #b-to-field {
+        grid-column: span 2 !important;
+      }
       .search-grid > * { grid-column: span 1 !important; }
       .search-grid > .search-btn-wrap { grid-column: span 2 !important; }
       .flight-card-main {
@@ -1186,13 +1190,63 @@
       .bundle-price-section { border-top: 1px solid var(--border); border-right: none; align-items: flex-start; min-width: unset; }
     }
     @media (max-width: 480px) {
-      .search-grid { grid-template-columns: 1fr; }
-      .search-grid > * { grid-column: 1 !important; }
+      .search-grid { grid-template-columns: 1fr 1fr; }
+      /* FROM/TO always full width on phone */
+      #from-field, #to-field, #b-from-field, #b-to-field {
+        grid-column: span 2 !important;
+      }
+      .search-grid > .search-btn-wrap { grid-column: span 2 !important; }
       .trip-type { flex-wrap: wrap; }
       .hero-title { font-size: 30px; }
       .flight-card-main { grid-template-columns: 48px 1fr; }
       .flight-price-wrap, .book-now-btn { display: none; }
       .destinations-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      /* Make FROM/TO fields dramatically larger on phone */
+      #from-field .search-input,
+      #to-field .search-input,
+      #b-from-field .search-input,
+      #b-to-field .search-input {
+        height: 68px !important;
+        font-size: 18px !important;
+        padding: 18px 18px 18px 50px !important;
+        border-width: 2px !important;
+      }
+      #from-field .field-icon,
+      #to-field .field-icon,
+      #b-from-field .field-icon,
+      #b-to-field .field-icon {
+        font-size: 20px !important;
+        bottom: 20px !important;
+        left: 14px !important;
+      }
+      #from-field label, #to-field label,
+      #b-from-field label, #b-to-field label {
+        font-size: 13px !important;
+        letter-spacing: 1.2px !important;
+        color: rgba(255,255,255,0.80) !important;
+        margin-bottom: 8px !important;
+      }
+    }
+
+    /* Mobile autocomplete dropdown */
+    @media (max-width: 480px) {
+      .autocomplete-dropdown {
+        max-height: 260px;
+        border-radius: 12px;
+        box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+      }
+      .ac-item { padding: 16px 18px !important; }
+      .ac-iata { font-size: 19px !important; min-width: 52px !important; }
+      .ac-name { font-size: 16px !important; }
+      .ac-location { font-size: 13px !important; }
+      /* Search and passengers full-width on phone too */
+      .search-input, .pax-trigger, .search-select {
+        height: 60px !important;
+        font-size: 16px !important;
+      }
     }
 
     /* ─── Gold Star Ratings ──────────────────────────────────────────── */
