@@ -39,6 +39,7 @@
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
+      line-height: 1.6;
     }
     h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
     button { cursor: pointer; font-family: 'Inter', sans-serif; }
@@ -688,7 +689,14 @@
       color: var(--text);
       margin-bottom: 4px;
     }
-    .results-meta { font-size: 13.5px; color: var(--text-muted); }
+    .results-meta { font-size: 13.5px; color: #64748b; line-height: 1.6; }
+
+    /* ─── Tab section headings ───────────────────────────────────────── */
+    .tab-section-title {
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px; color: var(--text);
+      margin-bottom: 16px;
+    }
 
     /* ─── Flight Cards ───────────────────────────────────────────────── */
     .flights-list { display: flex; flex-direction: column; gap: 12px; }
@@ -960,14 +968,14 @@
     .star.filled { color: var(--gold); }
     .star.empty  { color: #d1d5db; }
     .hotel-location {
-      font-size: 12px; color: var(--text-muted); margin-bottom: 10px;
-      display: flex; align-items: flex-start; gap: 4px; line-height: 1.4;
+      font-size: 12px; color: #64748b; margin-bottom: 10px;
+      display: flex; align-items: flex-start; gap: 4px; line-height: 1.6;
     }
     .hotel-amenities { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
     .amenity-pill {
       background: var(--bg); border: 1px solid var(--border);
       border-radius: 8px; padding: 2px 8px;
-      font-size: 11px; color: var(--text-muted); font-weight: 500;
+      font-size: 11px; color: #64748b; font-weight: 500;
     }
     .hotel-footer { margin-top: auto; border-top: 1px solid var(--border); padding-top: 12px; }
     .hotel-rating-row {
@@ -1152,6 +1160,11 @@
       color: var(--text); text-align: right;
       line-height: 1;
     }
+    .bundle-price-from {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--text-muted); text-align: right;
+      margin-bottom: 2px;
+    }
     .bundle-price-label { font-size: 12px; color: var(--text-muted); text-align: right; margin-bottom: 8px; }
     .bundle-save-badge {
       background: linear-gradient(135deg, #059669, #10b981);
@@ -1212,10 +1225,16 @@
     .skel-price { width: 80px; height: 30px; border-radius: 8px; }
 
     /* ─── Empty State ────────────────────────────────────────────────── */
-    .empty-state { text-align: center; padding: 60px 20px; }
-    .empty-emoji { font-size: 50px; margin-bottom: 14px; }
-    .empty-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 7px; }
-    .empty-sub   { font-size: 15px; color: var(--text-muted); }
+    .empty-state {
+      text-align: center; padding: 72px 20px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .empty-emoji { font-size: 56px; margin-bottom: 16px; }
+    .empty-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); margin-bottom: 8px; }
+    .empty-sub   { font-size: 15px; color: #64748b; line-height: 1.6; max-width: 420px; margin: 0 auto 20px; }
 
     /* ─── Filter Drawer (mobile) ─────────────────────────────────────── */
     .drawer-overlay {
@@ -2692,7 +2711,7 @@ function bundleCard(b){
         <div class="bundle-flight-meta">${f.airline.name} · ${f.flightNumber} · ${f.duration} · ${f.stops===0?'Nonstop':f.stops+' Stop'}</div>
         <div class="bundle-flight-meta">${f.departure.iata} → ${f.arrival.iata}</div></div>
       </div>
-      <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">Flight only: <strong>${formatPrice(b.flightPrice)}</strong></div>
+      <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.5)">Flight only: <strong style="color:rgba(255,255,255,0.85)">${formatPrice(b.flightPrice)}</strong></div>
     </div>
     <div class="bundle-hotel-section">
       <img class="bundle-hotel-img" src="${h.image}" alt="${h.name}" onerror="this.src='https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=200&q=80'" />
@@ -2703,6 +2722,7 @@ function bundleCard(b){
     </div>
     <div class="bundle-price-section">
       <div class="bundle-individual-price">Separately ${formatPrice(b.individualTotal)}</div>
+      <div class="bundle-price-from">From</div>
       <div class="bundle-price">${formatPrice(b.bundlePrice)}</div>
       <div class="bundle-price-label">total bundle price</div>
       <div class="bundle-save-badge">🎉 Save ${formatPrice(b.savings)}</div>
