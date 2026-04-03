@@ -2449,13 +2449,17 @@ function flightCard(f,idx,minPrice,params){
 
 function buildFlightBookLinks(f,params){
   const{origin,destination,departure,returnDate,adults,travelClass}=params;
+  function toExpDate(d){const p=d.split('-');return p[1]+'/'+p[2]+'/'+p[0];}
   const links=[];
   if(f.airline.website)links.push(`<a href="https://${f.airline.website}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name}</a>`);
-  links.push(`<a href="https://www.google.com/travel/flights?q=flights+from+${origin}+to+${destination}+${departure}" target="_blank" rel="noopener" class="book-link-btn">🔍 Google Flights</a>`);
-  const expUrl=returnDate?`https://www.expedia.com/Flights-Search?trip=roundtrip&leg1=from:${origin},to:${destination},departure:${departure}&leg2=from:${destination},to:${origin},departure:${returnDate}&passengers=adults:${adults}`:`https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:${origin},to:${destination},departure:${departure}&passengers=adults:${adults}`;
+  const gUrl=returnDate?`https://www.google.com/travel/flights#flt=${origin}.${destination}.${departure}*${destination}.${origin}.${returnDate};c:USD;e:1;sd:1;t:f`:`https://www.google.com/travel/flights#flt=${origin}.${destination}.${departure};c:USD;e:1;sd:1;t:f`;
+  links.push(`<a href="${gUrl}" target="_blank" rel="noopener" class="book-link-btn">🔍 Google Flights</a>`);
+  const expUrl=returnDate?`https://www.expedia.com/Flights-Search?trip=roundtrip&leg1=from:${origin},to:${destination},departure:${toExpDate(departure)}TANYT&leg2=from:${destination},to:${origin},departure:${toExpDate(returnDate)}TANYT&passengers=adults:${adults},children:0,infantsinlap:0`:`https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:${origin},to:${destination},departure:${toExpDate(departure)}TANYT&passengers=adults:${adults},children:0,infantsinlap:0`;
   links.push(`<a href="${expUrl}" target="_blank" rel="noopener" class="book-link-btn">Expedia</a>`);
   const kayakUrl=returnDate?`https://www.kayak.com/flights/${origin}-${destination}/${departure}/${returnDate}/${adults}adults`:`https://www.kayak.com/flights/${origin}-${destination}/${departure}/${adults}adults`;
   links.push(`<a href="${kayakUrl}" target="_blank" rel="noopener" class="book-link-btn">Kayak</a>`);
+  const pricelineUrl=returnDate?`https://www.priceline.com/flights/search?departureDate=${departure}&returnDate=${returnDate}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=economy`:`https://www.priceline.com/flights/search?departureDate=${departure}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=economy`;
+  links.push(`<a href="${pricelineUrl}" target="_blank" rel="noopener" class="book-link-btn">Priceline</a>`);
   return links.join('');
 }
 
@@ -2523,11 +2527,11 @@ function buildHotelBookingUrl(site, h, params) {
   const adults = (params && params.adults) || 2;
   switch(site) {
     case 'expedia.com':
-      return `https://www.expedia.com/Hotel-Search?destination=${name}&startDate=${cin}&endDate=${cout}&adults=${adults}`;
+      return `https://www.expedia.com/Hotel-Search?destination=${name}&startDate=${cin}&endDate=${cout}&adults=${adults}&rooms=1`;
     case 'booking.com':
-      return `https://www.booking.com/searchresults.html?ss=${name}&checkin=${cin}&checkout=${cout}&group_adults=${adults}&no_rooms=1`;
+      return `https://www.booking.com/searchresults.html?ss=${name}&checkin=${cin}&checkout=${cout}&group_adults=${adults}&no_rooms=1&aid=304142`;
     case 'hotels.com':
-      return `https://www.hotels.com/search.do?q-destination=${name}&q-check-in=${cin}&q-check-out=${cout}&q-rooms=1&q-adult-guests=${adults}`;
+      return `https://www.hotels.com/search?q-destination=${name}&q-check-in=${cin}&q-check-out=${cout}&q-rooms=1&q-adult-guests=${adults}`;
     case 'marriott.com':
       return `https://www.marriott.com/search/findHotels.mi?roomCount=1&numAdultsPerRoom=${adults}&fromDate=${cin}&toDate=${cout}`;
     case 'hotwire.com':
