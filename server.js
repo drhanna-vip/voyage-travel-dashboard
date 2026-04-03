@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const session = require('express-session');
 const path = require('path');
+const fs = require('fs');
 
 // ─── Auth Config ──────────────────────────────────────────────────────────────
 const AUTH_USER = process.env.AUTH_USER || 'gh';
@@ -1017,6 +1018,38 @@ app.get('/api/cars', (req, res) => {
     totalPrice: c.pricePerDay * days
   }));
   res.json({ cars, demo: true, days });
+});
+
+// ─── Price Watchdog ───────────────────────────────────────────────────────────
+const WATCHLIST_FILE = path.join(__dirname, 'watchlist.json');
+
+function loadWatchlist() {
+  try { return JSON.parse(fs.readFileSync(WATCHLIST_FILE, 'utf8')); } catch(e) { return []; }
+}
+function saveWatchlist(list) {
+  fs.writeFileSync(WATCHLIST_FILE, JSON.stringify(list, null, 2));
+}
+
+app.post('/api/watchlist', requireAuth, (req, res) => {
+  const { email, type, origin, destination, departure, returnDate, targetPrice, adults, hotelName, city, checkin, checkout } = req.body;
+  if (!email || !targetPrice) return res.status(400).json({ error: 'email and targetPrice required' });
+  const list = loadWatchlist();
+  const item = {
+    id: Date.now().toString(),
+    email, type: type || 'flight', targetPrice: parseFloat(targetPrice),
+    origin, destination, departure, returnDate, adults,
+    hotelName, city, checkin, checkout,
+    createdAt: new Date().toISOString(),
+    active: true,
+    lastChecked: null
+  };
+  list.push(item);
+  saveWatchlist(list);
+  res.json({ ok: true, id: item.id, message: `Watching! We'll email ${email} if price drops below $${targetPrice}` });
+});
+
+app.get('/api/watchlist', requireAuth, (req, res) => {
+  res.json(loadWatchlist());
 });
 
 // ─── Static Files ─────────────────────────────────────────────────────────────
