@@ -1052,6 +1052,21 @@
     .view-deal-btn:hover { background: #0e1f3a; }
     .view-deal-btn.best { background: var(--green); }
     .view-deal-btn.best:hover { background: #047857; }
+    .view-deal-btn.expedia { background: #0033A0; }
+    .view-deal-btn.expedia:hover { background: #00298a; }
+    .view-deal-btn.booking { background: #003580; }
+    .view-deal-btn.booking:hover { background: #002a66; }
+    .view-deal-btn.hotelscom { background: #D81F2A; }
+    .view-deal-btn.hotelscom:hover { background: #b81824; }
+    /* Brand-color dots for OTA source labels */
+    .compare-source-dot {
+      display: inline-block; width: 9px; height: 9px;
+      border-radius: 50%; margin-right: 5px; flex-shrink: 0;
+      vertical-align: middle;
+    }
+    .compare-source-dot.expedia   { background: #0033A0; }
+    .compare-source-dot.booking   { background: #003580; }
+    .compare-source-dot.hotelscom { background: #D81F2A; }
 
     /* ─── Bundle Cards ───────────────────────────────────────────────── */
     .bundles-list { display: flex; flex-direction: column; gap: 16px; }
@@ -1074,12 +1089,18 @@
 
     .bundle-flight-section {
       padding: 20px 22px;
-      border-right: 1px solid var(--border);
+      border-right: 1px solid rgba(255,255,255,0.12);
+      background: #0A1628;
     }
+    .bundle-flight-section .bundle-section-label { color: rgba(255,255,255,0.55); }
+    .bundle-flight-section .bundle-time { color: #fff; }
+    .bundle-flight-section .bundle-time-sep { color: rgba(255,255,255,0.45); }
+    .bundle-flight-section .bundle-flight-meta { color: rgba(255,255,255,0.55); }
     .bundle-hotel-section {
       padding: 20px 22px;
       border-right: 1px solid var(--border);
       display: flex; align-items: flex-start; gap: 14px;
+      background: #fff;
     }
     .bundle-hotel-img {
       width: 72px; height: 72px;
