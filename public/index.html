@@ -59,7 +59,7 @@
       position: relative;
       z-index: 100;
     }
-    #demo-banner.visible { display: block; }
+    #demo-banner { display: none !important; }
     #demo-banner strong { color: var(--gold-light); font-weight: 700; }
 
     /* ─── Hero ───────────────────────────────────────────────────────── */
@@ -1858,6 +1858,34 @@
         border-radius: 100px !important;
       }
     }
+
+    /* ─── Mobile Nuclear Search Form (≤600px) ─────────────────────── */
+    .mobile-search-form { display: none; }
+    @media (max-width: 600px) {
+      .search-container > .search-grid { display: none !important; }
+      .mobile-search-form { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+      .mobile-search-form .m-field { display: flex; flex-direction: column; gap: 8px; }
+      .mobile-search-form label { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.70); text-transform: uppercase; letter-spacing: 1px; }
+      .mobile-search-form input, .mobile-search-form select {
+        height: 72px; font-size: 18px; font-weight: 500;
+        background: rgba(255,255,255,0.18); border: 2px solid rgba(255,255,255,0.30);
+        border-radius: 16px; padding: 0 20px;
+        color: #fff; -webkit-text-fill-color: #fff; caret-color: #D4A847;
+        outline: none; width: 100%; transition: all 0.2s;
+      }
+      .mobile-search-form input::placeholder { color: rgba(255,255,255,0.50); -webkit-text-fill-color: rgba(255,255,255,0.50); }
+      .mobile-search-form input:focus, .mobile-search-form select:focus { border-color: #D4A847; background: rgba(255,255,255,0.25); box-shadow: 0 0 0 3px rgba(212,168,71,0.25); }
+      .mobile-search-form select { -webkit-appearance: none; }
+      .mobile-search-form .m-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .mobile-search-form .m-search-btn {
+        height: 64px; font-size: 18px; font-weight: 800;
+        background: linear-gradient(135deg, #D4A847, #F0C060); color: #0A1628;
+        border: none; border-radius: 100px; cursor: pointer;
+        box-shadow: 0 4px 16px rgba(212,168,71,0.40); letter-spacing: 0.5px;
+        transition: all 0.22s;
+      }
+      .mobile-search-form .m-search-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(212,168,71,0.55); }
+    }
   </style>
 </head>
 <body>
@@ -2014,6 +2042,27 @@
           <div class="search-field search-btn-wrap" style="display:flex;align-items:flex-end">
             <button class="search-btn" onclick="searchFlights()">Search →</button>
           </div>
+        </div>
+
+        <!-- Mobile Search Form (≤600px) -->
+        <div class="mobile-search-form" id="mobile-search">
+          <div class="m-field">
+            <label>✈ From</label>
+            <input id="m-from-input" type="text" placeholder="City or airport" autocomplete="off" />
+          </div>
+          <div class="m-field">
+            <label>📍 To</label>
+            <input id="m-to-input" type="text" placeholder="City or airport" autocomplete="off" />
+          </div>
+          <div class="m-row">
+            <div class="m-field"><label>Depart</label><input id="m-depart" type="date" /></div>
+            <div class="m-field"><label>Return</label><input id="m-return" type="date" /></div>
+          </div>
+          <div class="m-row">
+            <div class="m-field"><label>Passengers</label><select id="m-adults"><option value="1">1 Adult</option><option value="2">2 Adults</option><option value="3">3 Adults</option><option value="4">4 Adults</option></select></div>
+            <div class="m-field"><label>Class</label><select id="m-class"><option value="ECONOMY">Economy</option><option value="PREMIUM_ECONOMY">Premium Economy</option><option value="BUSINESS">Business</option><option value="FIRST">First</option></select></div>
+          </div>
+          <button class="m-search-btn" onclick="mobileFlight()">Search Flights →</button>
         </div>
       </div>
 
@@ -2334,7 +2383,17 @@ document.addEventListener('DOMContentLoaded',async()=>{
   window.addEventListener('resize',checkMobileFilters);
 });
 
-async function checkDemoMode(){try{const r=await fetch('/health');const d=await r.json();if(d.demo)document.getElementById('demo-banner').classList.add('visible');}catch(e){}}
+function mobileFlight() {
+  document.getElementById('from-input').value = document.getElementById('m-from-input').value;
+  document.getElementById('to-input').value = document.getElementById('m-to-input').value;
+  document.getElementById('depart-input').value = document.getElementById('m-depart').value;
+  document.getElementById('return-input').value = document.getElementById('m-return').value;
+  document.getElementById('adults-count').textContent = document.getElementById('m-adults').value;
+  document.getElementById('class-select').value = document.getElementById('m-class').value;
+  searchFlights();
+}
+
+async function checkDemoMode(){/* banner permanently hidden */}
 
 function setDefaultDates(){
   const today=new Date(),dep=new Date(today),ret=new Date();
