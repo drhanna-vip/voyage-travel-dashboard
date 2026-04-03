@@ -1667,6 +1667,83 @@
     @media(max-width:1024px){.bsc-main-row{grid-template-columns:1fr 1fr;}}
     @media(max-width:768px){.search-grid.cars-grid{grid-template-columns:1fr 1fr;}.ai-panel{width:calc(100vw - 20px);right:10px;bottom:80px;}.ai-fab{bottom:20px;right:16px;}.wishlist-drawer{width:100%;right:-100%;}.flex-dates-grid-wrap{grid-template-columns:repeat(4,1fr);}.nav-logout-btn{display:none;}.cars-grid{grid-template-columns:1fr;}}
     @media(max-width:480px){.flex-dates-grid-wrap{grid-template-columns:repeat(3,1fr);}.currency-select{min-width:80px;font-size:12px;}.bsc-main-row{grid-template-columns:1fr;}}
+
+    /* ─── Mobile Search Fix (≤600px) — flex column, large FROM/TO ─── */
+    @media (max-width: 600px) {
+      /* Switch search grid to flex column — no grid fighting */
+      .search-grid,
+      .search-grid.hotels-grid,
+      .search-grid.bundles-grid,
+      .search-grid.cars-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
+
+      /* Every field takes full width */
+      .search-grid > *,
+      .search-grid > .search-field,
+      .search-grid > .search-btn-wrap {
+        width: 100% !important;
+        grid-column: unset !important;
+      }
+
+      /* FROM / TO inputs — big and readable */
+      #from-field .search-input,
+      #to-field .search-input,
+      #b-from-field .search-input,
+      #b-to-field .search-input {
+        height: 72px !important;
+        font-size: 18px !important;
+        padding: 18px 18px 18px 52px !important;
+        width: 100% !important;
+        border-width: 2px !important;
+      }
+
+      /* FROM / TO icons */
+      #from-field .field-icon,
+      #to-field .field-icon,
+      #b-from-field .field-icon,
+      #b-to-field .field-icon {
+        font-size: 22px !important;
+        bottom: 22px !important;
+        left: 14px !important;
+      }
+
+      /* FROM / TO labels */
+      #from-field label,
+      #to-field label,
+      #b-from-field label,
+      #b-to-field label {
+        font-size: 13px !important;
+        color: rgba(255,255,255,0.75) !important;
+        margin-bottom: 8px !important;
+      }
+
+      /* All other inputs / selects / pax trigger */
+      .search-input,
+      .search-select,
+      .pax-trigger {
+        height: 56px !important;
+        font-size: 16px !important;
+        width: 100% !important;
+      }
+
+      /* All other labels */
+      .search-field label {
+        font-size: 13px !important;
+        color: rgba(255,255,255,0.75) !important;
+        margin-bottom: 8px !important;
+      }
+
+      /* Search button */
+      .search-btn {
+        width: 100% !important;
+        height: 60px !important;
+        font-size: 18px !important;
+        border-radius: 100px !important;
+      }
+    }
   </style>
 </head>
 <body>
