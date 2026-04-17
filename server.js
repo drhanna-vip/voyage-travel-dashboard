@@ -54,13 +54,21 @@ function requireAuth(req, res, next) {
 app.post('/auth/login', async (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password) return res.status(401).json({ error: 'Invalid credentials' });
+  if (username !== AUTH_USER) return res.status(401).json({ error: 'Invalid credentials' });
   try {
-    const passOk = await bcrypt.compare(password, AUTH_PASS_HASH);
-    if (username === AUTH_USER && passOk) {
+    let passOk = false;
+    if (AUTH_PASS_HASH.startsWith('$2')) {
+      // bcrypt hash
+      passOk = await bcrypt.compare(password, AUTH_PASS_HASH);
+    } else {
+      // plain text fallback (Render env may have plain value)
+      passOk = (password === AUTH_PASS_HASH);
+    }
+    if (passOk) {
       req.session.authenticated = true;
       return res.json({ ok: true });
     }
-  } catch(e) { /* hash compare error */ }
+  } catch(e) { /* hash compare error — fall through */ }
   return res.status(401).json({ error: 'Invalid credentials' });
 });
 
