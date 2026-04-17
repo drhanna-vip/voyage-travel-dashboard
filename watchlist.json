@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1776469377765",
+    "email": "georgehannamd@gmail.com",
+    "type": "flight",
+    "targetPrice": 250,
+    "origin": "JFK",
+    "destination": "LAX",
+    "departure": "2026-05-01",
+    "adults": 1,
+    "createdAt": "2026-04-17T23:42:57.765Z",
+    "active": true,
+    "lastChecked": null
+  }
+]

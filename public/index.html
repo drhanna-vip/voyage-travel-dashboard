@@ -6,6 +6,7 @@
   <title>Voyage — Premium Travel Search</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     /* ─── Reset & Base ───────────────────────────────────────────────── */
@@ -48,7 +49,7 @@
 
     /* ─── Demo Banner ────────────────────────────────────────────────── */
     #demo-banner {
-      display: none;
+      display: block;
       background: linear-gradient(135deg, var(--navy), var(--navy-mid));
       color: rgba(255,255,255,0.9);
       text-align: center;
@@ -59,7 +60,6 @@
       position: relative;
       z-index: 100;
     }
-    #demo-banner { display: none !important; }
     #demo-banner strong { color: var(--gold-light); font-weight: 700; }
 
     /* ─── Hero ───────────────────────────────────────────────────────── */
@@ -1946,7 +1946,7 @@
 
 <!-- Demo Banner -->
 <div id="demo-banner">
-  ⚡ <strong>DEMO MODE</strong> — Showing sample data · Connect Amadeus API key for live pricing
+  ⚡ <strong>DEMO MODE</strong> — Sample data shown. Live Amadeus search available when credentials are configured.
 </div>
 
 <!-- Hero -->
@@ -1971,6 +1971,7 @@
         <button class="tab-btn" data-tab="hotels">🏨 Hotels</button>
         <button class="tab-btn" data-tab="bundles">✈️🏨 Bundles</button>
         <button class="tab-btn" data-tab="cars">🚗 Cars</button>
+        <button class="tab-btn" data-tab="alerts" id="alerts-tab-btn">🔔 Alerts <span id="alerts-badge" style="display:none;background:#ef4444;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px">0</span></button>
       </div>
 
       <!-- FLIGHTS TAB -->
@@ -2151,6 +2152,20 @@
           <div class="search-field search-btn-wrap" style="display:flex;align-items:flex-end">
             <button class="search-btn" onclick="searchCars()">Search →</button>
           </div>
+        </div>
+      </div>
+
+      <!-- ─── Alerts Panel ─────────────────────────────────────── -->
+      <div class="tab-panel" id="tab-alerts">
+        <div style="margin-bottom:14px"><span style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:600">🔔 Your active price alerts — we'll notify you when prices drop to your target</span></div>
+        <div id="alerts-panel-content" style="min-height:120px">
+          <div id="alerts-loading" style="text-align:center;padding:32px;color:rgba(255,255,255,0.5);font-size:15px">Loading alerts…</div>
+          <div id="alerts-empty" style="display:none;text-align:center;padding:32px;color:rgba(255,255,255,0.5);font-size:15px">No active price alerts.<br><span style="font-size:13px;opacity:0.7">Search for flights or hotels, then click 🔔 to set a target price.</span></div>
+          <div id="alerts-list" style="display:none"></div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
+          <button class="search-btn" style="padding:12px 24px;font-size:14px" onclick="loadAlertsPanel()">🔄 Refresh</button>
+          <button class="search-btn" style="padding:12px 24px;font-size:14px;background:linear-gradient(135deg,#059669,#047857)" onclick="checkAlertPrices()">⚡ Check Prices Now</button>
         </div>
       </div>
 
@@ -2400,7 +2415,20 @@ function mobileFlight() {
   searchFlights();
 }
 
-async function checkDemoMode(){/* banner permanently hidden */}
+async function checkDemoMode(){
+  try{
+    const r=await fetch('/health');const d=await r.json();
+    const banner=document.getElementById('demo-banner');
+    if(banner){
+      if(d.demo){
+        banner.style.display='block';
+        banner.innerHTML='⚡ <strong>DEMO MODE</strong> — Sample data shown. Live Amadeus search available when credentials are configured.';
+      } else {
+        banner.style.display='none';
+      }
+    }
+  }catch(e){}
+}
 
 function setDefaultDates(){
   const today=new Date(),dep=new Date(today),ret=new Date();
@@ -3062,5 +3090,81 @@ document.addEventListener('click', function(e) {
     <div id="watch-msg" style="margin-top:12px;font-size:13px;text-align:center;display:none;"></div>
   </div>
 </div>
+<script>
+// ─── Alerts Panel ──────────────────────────────────────────────────────────
+async function loadAlertsPanel() {
+  document.getElementById('alerts-loading').style.display='block';
+  document.getElementById('alerts-empty').style.display='none';
+  document.getElementById('alerts-list').style.display='none';
+  try {
+    const r = await fetch('/api/watchlist');
+    const list = await r.json();
+    document.getElementById('alerts-loading').style.display='none';
+    const badge = document.getElementById('alerts-badge');
+    if (!list.length) {
+      document.getElementById('alerts-empty').style.display='block';
+      badge.style.display='none';
+      return;
+    }
+    badge.style.display='inline';
+    badge.textContent = list.length;
+    const container = document.getElementById('alerts-list');
+    container.innerHTML = list.map(a => `
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px">
+            ${a.type === 'flight' ? '✈️' : '🏨'} 
+            ${a.type === 'flight' ? `${a.origin||''} → ${a.destination||''}` : (a.hotelName||a.city||'Hotel')}
+          </div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.55)">
+            ${a.departure ? `Depart: ${a.departure} · ` : ''}
+            ${a.checkin ? `Check-in: ${a.checkin} · ` : ''}
+            Alert email: ${a.email}
+          </div>
+        </div>
+        <div style="text-align:center;min-width:90px">
+          <div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.6px">Target</div>
+          <div style="font-size:22px;font-weight:800;color:#D4A847">$${a.targetPrice}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <span style="padding:4px 12px;background:rgba(5,150,105,0.2);color:#34d399;border-radius:99px;font-size:12px;font-weight:700">🟢 Active</span>
+          <button onclick="deleteAlert('${a.id}')" style="padding:6px 14px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:99px;font-size:12px;font-weight:600;cursor:pointer">✕ Remove</button>
+        </div>
+      </div>`).join('');
+    container.style.display='block';
+  } catch(e) {
+    document.getElementById('alerts-loading').textContent = 'Error loading alerts.';
+  }
+}
+
+async function deleteAlert(id) {
+  await fetch('/api/watchlist/'+id, {method:'DELETE'});
+  loadAlertsPanel();
+  showToast('Alert removed');
+}
+
+async function checkAlertPrices() {
+  showToast('⏳ Checking prices…');
+  try {
+    const r = await fetch('/api/watchlist/check');
+    const data = await r.json();
+    const triggered = data.results.filter(x => x.triggered);
+    if (triggered.length) {
+      showToast(`🔔 ${triggered.length} alert(s) triggered! Prices are at or below your target.`);
+    } else {
+      showToast(`✅ Checked ${data.results.length} alert(s) — no targets hit yet`);
+    }
+    loadAlertsPanel();
+  } catch(e) { showToast('Error checking prices'); }
+}
+
+// Load alerts when switching to the tab
+document.addEventListener('DOMContentLoaded', () => {
+  const alertsBtn = document.getElementById('alerts-tab-btn');
+  if (alertsBtn) {
+    alertsBtn.addEventListener('click', () => { loadAlertsPanel(); });
+  }
+});
+</script>
 </body>
 </html>
