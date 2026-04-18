@@ -59,7 +59,7 @@ function requireAuth(req, res, next) {
 app.post('/auth/login', (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password) return res.status(401).json({ error: 'Invalid credentials' });
-  if (username !== AUTH_USER) return res.status(401).json({ error: 'Invalid credentials' });
+  if (username.toLowerCase().trim() !== AUTH_USER.toLowerCase()) return res.status(401).json({ error: 'Invalid credentials' });
   // Support plain text or SHA256 hash comparison
   const passOk = (password === AUTH_PASS_HASH) ||
     (crypto.createHash('sha256').update(password).digest('hex') === AUTH_PASS_HASH);
