@@ -1099,7 +1099,7 @@ app.get('*', (req, res) => {
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, '127.0.0.1', () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Voyage Travel Dashboard v2 running on port ${PORT}`);
   console.log(`   Mode: ${DEMO_MODE ? '⚡ DEMO (no Amadeus key)' : '✅ LIVE (Amadeus connected)'}`);
   console.log(`   Features: Flights | Hotels | Bundles | Price Comparison`);
