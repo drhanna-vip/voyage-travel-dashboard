@@ -1869,7 +1869,8 @@
     /* ─── Mobile Nuclear Search Form (≤600px) ─────────────────────── */
     .mobile-search-form { display: none; }
     @media (max-width: 600px) {
-      .search-container > .search-grid { display: none !important; }
+      #tab-flights .search-grid { display: none !important; }
+      #tab-flights .trip-type, #tab-flights .flex-dates-toggle { display: none !important; }
       .mobile-search-form { display: flex; flex-direction: column; gap: 12px; width: 100%; }
       .mobile-search-form .m-field { display: flex; flex-direction: column; gap: 8px; }
       .mobile-search-form label { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.70); text-transform: uppercase; letter-spacing: 1px; }
@@ -1935,6 +1936,7 @@
         <option value="AED">🇦🇪 AED</option>
         <option value="JPY">🇯🇵 JPY</option>
       </select>
+      <button onclick="openPriceAlertModal()" style="background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);color:#fff;border-radius:99px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px">🔔 Alert</button>
       <button class="wishlist-nav-btn" id="wishlist-btn" onclick="openWishlist()">
         ❤️ Saved
         <span class="wishlist-badge" id="wishlist-count" style="display:none">0</span>
@@ -2056,11 +2058,11 @@
         <div class="mobile-search-form" id="mobile-search">
           <div class="m-field">
             <label>✈ From</label>
-            <input id="m-from-input" type="text" placeholder="City or airport" autocomplete="off" />
+            <input id="m-from-input" type="text" placeholder="Airport code (e.g. JFK)" autocomplete="off" />
           </div>
           <div class="m-field">
             <label>📍 To</label>
-            <input id="m-to-input" type="text" placeholder="City or airport" autocomplete="off" />
+            <input id="m-to-input" type="text" placeholder="Airport code (e.g. JFK)" autocomplete="off" />
           </div>
           <div class="m-row">
             <div class="m-field"><label>Depart</label><input id="m-depart" type="date" /></div>
@@ -2406,8 +2408,13 @@ document.addEventListener('DOMContentLoaded',async()=>{
 });
 
 function mobileFlight() {
-  document.getElementById('from-input').value = document.getElementById('m-from-input').value;
-  document.getElementById('to-input').value = document.getElementById('m-to-input').value;
+  const mFrom = document.getElementById('m-from-input').value.trim();
+  const mTo = document.getElementById('m-to-input').value.trim();
+  const extractIata = (val) => val ? val.split(/[\s\-—]/)[0].trim().toUpperCase() : '';
+  state.fromIata = extractIata(mFrom);
+  state.toIata = extractIata(mTo);
+  document.getElementById('from-input').value = mFrom;
+  document.getElementById('to-input').value = mTo;
   document.getElementById('depart-input').value = document.getElementById('m-depart').value;
   document.getElementById('return-input').value = document.getElementById('m-return').value;
   document.getElementById('adults-count').textContent = document.getElementById('m-adults').value;
