@@ -8,7 +8,7 @@ const rateLimit = require('express-rate-limit');
 const session = require('express-session');
 const path = require('path');
 const fs = require('fs');
-const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 // ─── Auth Config ──────────────────────────────────────────────────────────────
 const AUTH_USER = process.env.AUTH_USER || 'gh';
@@ -51,24 +51,17 @@ function requireAuth(req, res, next) {
 }
 
 // ─── Auth Routes ──────────────────────────────────────────────────────────────
-app.post('/auth/login', async (req, res) => {
+app.post('/auth/login', (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password) return res.status(401).json({ error: 'Invalid credentials' });
   if (username !== AUTH_USER) return res.status(401).json({ error: 'Invalid credentials' });
-  try {
-    let passOk = false;
-    if (AUTH_PASS_HASH.startsWith('$2')) {
-      // bcrypt hash
-      passOk = await bcrypt.compare(password, AUTH_PASS_HASH);
-    } else {
-      // plain text fallback (Render env may have plain value)
-      passOk = (password === AUTH_PASS_HASH);
-    }
-    if (passOk) {
-      req.session.authenticated = true;
-      return res.json({ ok: true });
-    }
-  } catch(e) { /* hash compare error — fall through */ }
+  // Support plain text or SHA256 hash comparison
+  const passOk = (password === AUTH_PASS_HASH) ||
+    (crypto.createHash('sha256').update(password).digest('hex') === AUTH_PASS_HASH);
+  if (passOk) {
+    req.session.authenticated = true;
+    return res.json({ ok: true });
+  }
   return res.status(401).json({ error: 'Invalid credentials' });
 });
 
