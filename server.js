@@ -16,6 +16,7 @@ const AUTH_PASS_HASH = process.env.AUTH_PASS || '';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'voyage-secret-2026-vip';
 
 const app = express();
+app.set('trust proxy', 1); // Required for Render reverse proxy — enables correct HTTPS detection
 const PORT = process.env.PORT || 3030;
 const DEMO_MODE = !process.env.AMADEUS_CLIENT_ID;
 
@@ -38,7 +39,11 @@ app.use(session({
   secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 8 * 60 * 60 * 1000 }
+  cookie: {
+    maxAge: 8 * 60 * 60 * 1000,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
+  }
 }));
 
 // ─── Auth Middleware ──────────────────────────────────────────────────────────
