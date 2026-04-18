@@ -2058,11 +2058,13 @@
         <div class="mobile-search-form" id="mobile-search">
           <div class="m-field">
             <label>✈ From</label>
-            <input id="m-from-input" type="text" placeholder="Airport code (e.g. JFK)" autocomplete="off" />
+            <input id="m-from-input" type="text" placeholder="City or airport" autocomplete="off" />
+            <div class="autocomplete-dropdown" id="m-from-ac"></div>
           </div>
           <div class="m-field">
             <label>📍 To</label>
-            <input id="m-to-input" type="text" placeholder="Airport code (e.g. JFK)" autocomplete="off" />
+            <input id="m-to-input" type="text" placeholder="City or airport" autocomplete="off" />
+            <div class="autocomplete-dropdown" id="m-to-ac"></div>
           </div>
           <div class="m-row">
             <div class="m-field"><label>Depart</label><input id="m-depart" type="date" /></div>
@@ -2400,6 +2402,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
   setDefaultDates();initCurrency();initTabs();initTripType();initPaxPicker();
   initAutocomplete('from-input','from-ac',iata=>{state.fromIata=iata;});
   initAutocomplete('to-input','to-ac',iata=>{state.toIata=iata;});
+  initAutocomplete('m-from-input','m-from-ac',iata=>{state.fromIata=iata;});
+  initAutocomplete('m-to-input','m-to-ac',iata=>{state.toIata=iata;});
   initAutocomplete('b-from-input','b-from-ac',iata=>{state.bFromIata=iata;});
   initAutocomplete('b-to-input','b-to-ac',iata=>{state.bToIata=iata;});
   initSortPills();initDepartTiles();initWishlist();
