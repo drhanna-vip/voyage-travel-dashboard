@@ -47,21 +47,6 @@
     input, select { font-family: 'Inter', sans-serif; }
     a { text-decoration: none; color: inherit; }
 
-    /* ─── Demo Banner ────────────────────────────────────────────────── */
-    #demo-banner {
-      display: block;
-      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
-      color: rgba(255,255,255,0.9);
-      text-align: center;
-      padding: 10px 20px;
-      font-size: 13.5px;
-      font-weight: 500;
-      letter-spacing: 0.2px;
-      position: relative;
-      z-index: 100;
-    }
-    #demo-banner strong { color: var(--gold-light); font-weight: 700; }
-
     /* ─── Hero ───────────────────────────────────────────────────────── */
     #hero {
       position: relative;
@@ -155,9 +140,14 @@
       padding: 4px;
       border-radius: 14px;
       width: fit-content;
+      max-width: 100%;
       margin-bottom: 20px;
       border-bottom: none;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .search-tabs::-webkit-scrollbar { display: none; }
     .tab-btn {
       background: none;
       border: none;
@@ -169,6 +159,8 @@
       transition: all 0.2s;
       letter-spacing: 0.2px;
       cursor: pointer;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     .tab-btn.active {
       background: rgba(255,255,255,0.18);
@@ -1289,6 +1281,7 @@
       .filter-sidebar { display: none; }
     }
     @media (max-width: 768px) {
+      .search-card { margin-bottom: 80px; }
       .search-grid, .search-grid.hotels-grid, .search-grid.bundles-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -1558,7 +1551,6 @@
     .wishlist-badge{background:#ef4444;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;min-width:18px;}
     .nav-logout-btn{background:none;border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.55);transition:all 0.2s;cursor:pointer;}
     .nav-logout-btn:hover{color:#fff;border-color:rgba(255,255,255,0.4);}
-    #demo-banner{margin-top:60px;}
     #hero{padding-top:100px;}
     /* ─── Flexible dates toggle ────────────────────────────── */
     .flex-dates-toggle{display:flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:20px;color:rgba(255,255,255,0.7);font-size:12.5px;font-weight:600;cursor:pointer;transition:all 0.2s;}
@@ -1721,7 +1713,7 @@
     .wishlist-remove-btn:hover{color:var(--red);}
     .wishlist-type-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin:14px 0 8px;}
     /* ─── AI Planner ───────────────────────────────────────── */
-    .ai-fab{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,var(--navy),#2a4a7a);color:#fff;border:1px solid rgba(212,168,71,0.3);border-radius:28px;padding:14px 22px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;z-index:900;box-shadow:0 8px 32px rgba(27,46,75,0.45);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);cursor:pointer;}
+    .ai-fab{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,#1B2E4B,#2a4a72);color:#fff;border:1px solid rgba(212,168,71,0.4);border-radius:28px;padding:14px 22px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;z-index:900;box-shadow:0 4px 20px rgba(0,0,0,0.4),0 0 0 1px rgba(212,168,71,0.2);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);cursor:pointer;}
     .ai-fab:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 40px rgba(27,46,75,0.55);}
     .ai-fab-icon{font-size:20px;animation:pulse 2s infinite;}
     @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
@@ -1784,7 +1776,7 @@
     .empty-dest-btn:hover{background:var(--navy);transform:translateY(-2px);}
     /* ─── Responsive additions ─────────────────────────────── */
     @media(max-width:1024px){.bsc-main-row{grid-template-columns:1fr 1fr;}}
-    @media(max-width:768px){.search-grid.cars-grid{grid-template-columns:1fr 1fr;}.ai-panel{width:calc(100vw - 20px);right:10px;bottom:80px;}.ai-fab{bottom:20px;right:16px;}.wishlist-drawer{width:100%;right:-100%;}.flex-dates-grid-wrap{grid-template-columns:repeat(4,1fr);}.nav-logout-btn{display:none;}.cars-grid{grid-template-columns:1fr;}}
+    @media(max-width:768px){.search-grid.cars-grid{grid-template-columns:1fr 1fr;}.ai-panel{width:calc(100vw - 20px);right:10px;bottom:80px;}.ai-fab{bottom:16px;right:16px;}.wishlist-drawer{width:100%;right:-100%;}.flex-dates-grid-wrap{grid-template-columns:repeat(4,1fr);}.nav-logout-btn{font-size:11px;padding:5px 10px;}.cars-grid{grid-template-columns:1fr;}}
     @media(max-width:480px){.flex-dates-grid-wrap{grid-template-columns:repeat(3,1fr);}.currency-select{min-width:80px;font-size:12px;}.bsc-main-row{grid-template-columns:1fr;}}
 
     /* ─── Mobile Search Fix (≤600px) — flex column, large FROM/TO ─── */
@@ -1962,11 +1954,6 @@
     </div>
   </div>
 </nav>
-
-<!-- Demo Banner -->
-<div id="demo-banner">
-  ⚡ <strong>DEMO MODE</strong> — Sample data shown. Live Amadeus search available when credentials are configured.
-</div>
 
 <!-- Hero -->
 <section id="hero">
@@ -2424,7 +2411,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   initAutocomplete('b-from-input','b-from-ac',iata=>{state.bFromIata=iata;});
   initAutocomplete('b-to-input','b-to-ac',iata=>{state.bToIata=iata;});
   initSortPills();initDepartTiles();initWishlist();
-  checkDemoMode();rotateHeroImages();checkMobileFilters();
+  rotateHeroImages();checkMobileFilters();
   window.addEventListener('resize',checkMobileFilters);
 });
 
@@ -2443,24 +2430,9 @@ function mobileFlight() {
   searchFlights();
 }
 
-async function checkDemoMode(){
-  try{
-    const r=await fetch('/health');const d=await r.json();
-    const banner=document.getElementById('demo-banner');
-    if(banner){
-      if(d.demo){
-        banner.style.display='block';
-        banner.innerHTML='⚡ <strong>DEMO MODE</strong> — Sample data shown. Live Amadeus search available when credentials are configured.';
-      } else {
-        banner.style.display='none';
-      }
-    }
-  }catch(e){}
-}
-
 function setDefaultDates(){
-  const today=new Date(),dep=new Date(today),ret=new Date();
-  dep.setDate(dep.getDate()+14);ret.setDate(dep.getDate()+7);
+  const today=new Date(),dep=new Date(today),ret=new Date(today);
+  dep.setDate(today.getDate()+14);ret.setDate(today.getDate()+21);
   const fmt=d=>d.toISOString().split('T')[0];
   ['depart-input','hotel-checkin','b-depart','b-checkin','car-pickup-date'].forEach(id=>{const el=document.getElementById(id);if(el){el.value=fmt(dep);el.min=fmt(today);}});
   ['return-input','hotel-checkout','b-return','b-checkout','car-dropoff-date'].forEach(id=>{const el=document.getElementById(id);if(el){el.value=fmt(ret);el.min=fmt(today);}});
@@ -3203,5 +3175,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
+<footer style="text-align:center;padding:24px 20px;color:rgba(255,255,255,0.25);font-size:11px;letter-spacing:1.5px;border-top:1px solid rgba(255,255,255,0.06);margin-top:40px">
+  ✈ VOYAGE &nbsp;·&nbsp; PRIVATE BETA &nbsp;·&nbsp; POWERED BY AMADEUS
+</footer>
 </body>
 </html>
