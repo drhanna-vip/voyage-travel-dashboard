@@ -932,8 +932,11 @@ app.get('/api/flights', async (req, res) => {
   if (DEMO_MODE) {
     const flights = MOCK_FLIGHTS.map(f => ({
       ...f,
-      departure: { ...f.departure, date: departure },
-      arrival:   { ...f.arrival, date: departure }
+      // Override airport codes to match the actual search query
+      from: origin.toUpperCase(),
+      to: destination.toUpperCase(),
+      departure: { ...f.departure, iata: origin.toUpperCase(), date: departure },
+      arrival:   { ...f.arrival,   iata: destination.toUpperCase(), date: departure }
     }));
     return res.json({ flights, demo: true });
   }
