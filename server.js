@@ -76,7 +76,11 @@ app.post('/auth/logout', (req, res) => {
   res.redirect('/login.html');
 });
 
-app.use(requireAuth);
+// Public routes — no auth required
+app.use((req, res, next) => {
+  if (req.path === '/login.html' || req.path === '/api/airports' || req.path.startsWith('/auth/')) return next();
+  return requireAuth(req, res, next);
+});
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
