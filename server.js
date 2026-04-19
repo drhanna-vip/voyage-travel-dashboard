@@ -1093,15 +1093,25 @@ app.delete('/api/watchlist/:id', requireAuth, (req, res) => {
 app.get('/api/watchlist/check', requireAuth, (req, res) => {
   const list = loadWatchlist().filter(w => w.active);
   const results = list.map(w => {
-    // In demo mode: compare target against mock flight prices for that route
-    const routeFlights = MOCK_FLIGHTS.filter(f =>
-      (!w.origin || f.departure.iata === w.origin) &&
-      (!w.destination || f.arrival.iata === w.destination)
-    );
-    const bestPrice = routeFlights.length ? Math.min(...routeFlights.map(f => f.price)) : null;
-    const triggered = bestPrice !== null && bestPrice <= w.targetPrice;
-    return { ...w, bestPrice, triggered };
+    // Demo mode: check against all mock flights (airport codes are overridden at search time,
+    // but alerts store the user's airport. Use the full price range generically.)
+    const allPrices = MOCK_FLIGHTS.map(f => f.price);
+    const bestPrice = allPrices.length ? Math.min(...allPrices) : null;
+    const triggered = bestPrice !== null && w.targetPrice >= bestPrice;
+    // Update lastChecked
+    w.lastChecked = new Date().toISOString();
+    return { ...w, bestPrice, triggered,
+      note: triggered
+        ? `🔔 Price dropped to $${bestPrice} — below your $${w.targetPrice} target!`
+        : `Best price found: $${bestPrice}. Target: $${w.targetPrice}.` };
   });
+  // Persist updated lastChecked timestamps
+  const all = loadWatchlist();
+  const updated = all.map(item => {
+    const r = results.find(x => x.id === item.id);
+    return r ? { ...item, lastChecked: r.lastChecked } : item;
+  });
+  saveWatchlist(updated);
   res.json({ results, checkedAt: new Date().toISOString() });
 });
 

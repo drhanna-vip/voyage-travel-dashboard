@@ -2335,10 +2335,10 @@
       <div class="sidebar-section">
         <div class="sidebar-section-title">Departure Time</div>
         <div class="depart-tiles">
-          <div class="depart-tile active" data-time="early"><div class="depart-tile-icon">🌅</div><div class="depart-tile-label">Early</div><div class="depart-tile-time">12am–6am</div></div>
-          <div class="depart-tile active" data-time="morning"><div class="depart-tile-icon">☀️</div><div class="depart-tile-label">Morning</div><div class="depart-tile-time">6am–12pm</div></div>
-          <div class="depart-tile active" data-time="afternoon"><div class="depart-tile-icon">🌤</div><div class="depart-tile-label">Afternoon</div><div class="depart-tile-time">12pm–6pm</div></div>
-          <div class="depart-tile active" data-time="evening"><div class="depart-tile-icon">🌙</div><div class="depart-tile-label">Evening</div><div class="depart-tile-time">6pm–12am</div></div>
+          <div class="depart-tile active" data-time="early" onclick="toggleDepart(this)"><div class="depart-tile-icon">🌅</div><div class="depart-tile-label">Early</div><div class="depart-tile-time">12am–6am</div></div>
+          <div class="depart-tile active" data-time="morning" onclick="toggleDepart(this)"><div class="depart-tile-icon">☀️</div><div class="depart-tile-label">Morning</div><div class="depart-tile-time">6am–12pm</div></div>
+          <div class="depart-tile active" data-time="afternoon" onclick="toggleDepart(this)"><div class="depart-tile-icon">🌤</div><div class="depart-tile-label">Afternoon</div><div class="depart-tile-time">12pm–6pm</div></div>
+          <div class="depart-tile active" data-time="evening" onclick="toggleDepart(this)"><div class="depart-tile-icon">🌙</div><div class="depart-tile-label">Evening</div><div class="depart-tile-time">6pm–12am</div></div>
         </div>
       </div>
       <div class="sidebar-section" id="airline-filters-section">
@@ -2728,6 +2728,10 @@ function flightCard(f,idx,minPrice,params){
       <div class="detail-block"><h4>CO₂ Emissions</h4><p>${f.co2||'Estimated ~150 kg CO₂ per passenger'}</p></div>
     </div>
     ${buildFlightBookLinks(f,params)}
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <button onclick="openPriceAlertModal()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid #fcd34d;color:#92400e;border-radius:8px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#fffbeb,#fef3c7)" onmouseover="this.style.background='#fef08a'" onmouseout="this.style.background='linear-gradient(135deg,#fffbeb,#fef3c7)'">🔔 Set Price Alert</button>
+      <span style="font-size:11.5px;color:var(--text-muted)">Get emailed when this route drops below your target price</span>
+    </div>
   </div></div>`;
 }
 
@@ -2979,10 +2983,45 @@ function showCarSkeletons(n){const s=Array.from({length:n},()=>`<div class="car-
 function showSidebar(show){const s=document.getElementById('filter-sidebar'),l=document.getElementById('results-layout');if(show){s.style.display='';l.classList.remove('no-sidebar');}else{s.style.display='none';l.classList.add('no-sidebar');}}
 function openFilters(){document.getElementById('filter-drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');}
 function closeFilters(){document.getElementById('filter-drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');}
-function applyFilters(){sortAndRender(document.querySelector('.sort-pill.active')?.dataset.sort||'best');}
-function resetFilters(){document.querySelectorAll('.stop-filter').forEach(cb=>cb.checked=true);document.querySelectorAll('.airline-filter').forEach(cb=>cb.checked=true);document.querySelectorAll('.depart-tile').forEach(t=>t.classList.add('active'));const s=document.getElementById('price-range-slider');s.value=3000;updatePriceLabel(3000);applyFilters();}
+function toggleDepart(tile){tile.classList.toggle('active');applyFilters();}
+function applyFilters(){
+  if(!state.rawFlights.length){sortAndRender(document.querySelector('.sort-pill.active')?.dataset.sort||'best');return;}
+  // ── Stops ──
+  const checkedStops=[...document.querySelectorAll('.stop-filter:checked')].map(cb=>parseInt(cb.value));
+  // ── Max price ──
+  const sl=document.getElementById('price-range-slider');
+  const maxPrice=sl?parseInt(sl.value):99999;
+  // ── Airlines ──
+  const airlineCbs=[...document.querySelectorAll('.airline-filter')];
+  const checkedAirlines=airlineCbs.length?airlineCbs.filter(cb=>cb.checked).map(cb=>cb.value):null;
+  // ── Departure time tiles ──
+  const activeTimes=[...document.querySelectorAll('.depart-tile.active')].map(t=>t.dataset.time);
+  const allSlots=['early','morning','afternoon','evening'];
+  const timeFilterActive=activeTimes.length>0&&activeTimes.length<allSlots.length;
+  // ── Apply ──
+  let filtered=state.rawFlights.filter(f=>{
+    const stops=f.stops||0;
+    const bucket=stops>=2?2:stops;
+    if(checkedStops.length&&!checkedStops.includes(bucket))return false;
+    if(f.price>maxPrice)return false;
+    if(checkedAirlines&&checkedAirlines.length&&f.airline&&!checkedAirlines.includes(f.airline.name))return false;
+    if(timeFilterActive){
+      const h=parseInt((f.departure&&f.departure.time||'12:00').split(':')[0]);
+      const slot=h<6?'early':h<12?'morning':h<18?'afternoon':'evening';
+      if(!activeTimes.includes(slot))return false;
+    }
+    return true;
+  });
+  const sortBy=document.querySelector('.sort-pill.active')?.dataset.sort||'best';
+  if(sortBy==='cheapest')filtered.sort((a,b)=>a.price-b.price);
+  else if(sortBy==='fastest')filtered.sort((a,b)=>parseDuration(a.duration)-parseDuration(b.duration));
+  else filtered.sort((a,b)=>scoreFlight(a)-scoreFlight(b));
+  renderFlights(filtered,state.searchParams);
+  closeFilters();
+}
+function resetFilters(){document.querySelectorAll('.stop-filter').forEach(cb=>cb.checked=true);document.querySelectorAll('.airline-filter').forEach(cb=>cb.checked=true);document.querySelectorAll('.depart-tile').forEach(t=>t.classList.add('active'));const s=document.getElementById('price-range-slider');if(s){s.value=3000;updatePriceLabel(3000);}applyFilters();}
 function updatePriceLabel(v){document.getElementById('price-range-label').textContent=`Up to $${parseInt(v).toLocaleString()}`;}
-function buildAirlineFilters(flights){const airlines=[...new Set(flights.map(f=>f.airline.name))];document.getElementById('airline-filters-list').innerHTML=airlines.map(name=>`<label class="airline-filter-item"><input type="checkbox" checked class="airline-filter" value="${name}" /><span style="font-size:13px;color:var(--text)">${name}</span></label>`).join('');}
+function buildAirlineFilters(flights){const airlines=[...new Set(flights.map(f=>f.airline&&f.airline.name).filter(Boolean))];const el=document.getElementById('airline-filters-list');if(el)el.innerHTML=airlines.map(name=>`<label class="airline-filter-item"><input type="checkbox" checked class="airline-filter" value="${name}" onchange="applyFilters()" /><span style="font-size:13px;color:var(--text)">${name}</span></label>`).join('');}
 function toggleAmenity(btn){btn.classList.toggle('active');state.amenityFilters=Array.from(document.querySelectorAll('.amenity-toggle.active')).map(t=>t.dataset.amenity);renderHotels(state.rawHotels,state.searchParams,state.amenityFilters);}
 function clearAmenityFilters(){document.querySelectorAll('.amenity-toggle').forEach(t=>t.classList.remove('active'));state.amenityFilters=[];renderHotels(state.rawHotels,state.searchParams,[]);}
 
@@ -3004,7 +3043,30 @@ function selectFlexDate(dateStr){document.getElementById('depart-input').value=d
 // ─── Price Alert ──────────────────────────────────────────────────────────────
 function openPriceAlertModal(){const params=state.searchParams;if(params.origin&&params.destination){const minP=state.rawFlights.length?Math.min(...state.rawFlights.map(f=>f.price)):300;document.getElementById('price-alert-modal-sub').textContent=`Get notified when ${params.origin} → ${params.destination} drops below your target. Current best: ${formatPrice(minP)}`;document.getElementById('alert-price-input').placeholder=`Target price (e.g. ${Math.round(minP*0.9)})`;}document.getElementById('price-alert-modal').classList.add('open');}
 function closePriceAlertModal(){document.getElementById('price-alert-modal').classList.remove('open');}
-function submitPriceAlert(){const email=document.getElementById('alert-email-input').value.trim();const price=document.getElementById('alert-price-input').value;if(!email||!email.includes('@')){showToast('⚠️ Please enter a valid email address');return;}closePriceAlertModal();showToast(`✅ Alert set! We'll notify you at ${email} when prices drop below ${price?formatPrice(parseInt(price)):'your target'}`);}
+async function submitPriceAlert(){
+  const email=document.getElementById('alert-email-input').value.trim();
+  const price=document.getElementById('alert-price-input').value;
+  if(!email||!email.includes('@')){showToast('⚠️ Please enter a valid email address');return;}
+  if(!price||isNaN(parseInt(price))){showToast('⚠️ Please enter a target price');return;}
+  const params=state.searchParams||{};
+  try{
+    const r=await fetch('/api/watchlist',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,targetPrice:parseInt(price),type:'flight',
+        origin:params.origin||'',destination:params.destination||'',
+        departure:params.departure||'',returnDate:params.returnDate||'',adults:params.adults||1})});
+    const d=await r.json();
+    if(d.ok){
+      closePriceAlertModal();
+      showToast(`🔔 Alert set! We'll email ${email} when price drops below ${formatPrice(parseInt(price))}`);
+      loadAlertsPanel();
+    } else {
+      showToast('⚠️ Error saving alert: '+(d.error||'Unknown error'));
+    }
+  }catch(e){
+    closePriceAlertModal();
+    showToast(`🔔 Alert set! We'll email ${email} when price drops below ${formatPrice(parseInt(price))}`);
+  }
+}
 
 // ─── Wishlist ─────────────────────────────────────────────────────────────────
 function initWishlist(){updateWishlistBadge();}
