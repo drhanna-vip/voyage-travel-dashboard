@@ -2736,29 +2736,84 @@ function flightCard(f,idx,minPrice,params){
 }
 
 function buildFlightBookLinks(f,params){
-  const origin=params.origin||f.from||'';
-  const destination=params.destination||f.to||'';
+  const origin=(params.origin||f.from||'').toUpperCase().trim();
+  const destination=(params.destination||f.to||'').toUpperCase().trim();
   const departure=params.departure||'';
-  const returnDate=state.tripType==='roundtrip'?(params.returnDate||''):'';
-  const adults=(params.pax&&params.pax.adults)||params.adults||1;
-  const cabin=params.travelClass||'economy';
+  // Use params.returnDate directly — more reliable than checking state.tripType
+  const returnDate=(state.tripType==='roundtrip'&&params.returnDate)?params.returnDate:'';
+  const adults=parseInt((params.pax&&params.pax.adults)||params.adults||1)||1;
+  const rawCabin=(params.travelClass||'ECONOMY').toUpperCase();
+
+  // ── Cabin class mappings per platform ──
+  const skyMap={ECONOMY:'economy',PREMIUM_ECONOMY:'premiumeconomy',BUSINESS:'business',FIRST:'first'};
+  const kayakMap={ECONOMY:'economy',PREMIUM_ECONOMY:'premiumeconomy',BUSINESS:'business',FIRST:'first'};
+  const skyCabin=skyMap[rawCabin]||'economy';
+  const kayakCabin=kayakMap[rawCabin]||'economy';
+  const pricelineCabin={ECONOMY:'ECONOMY',PREMIUM_ECONOMY:'PREMIUM_ECONOMY',BUSINESS:'BUSINESS',FIRST:'FIRST'}[rawCabin]||'ECONOMY';
+
+  // ── Date helpers ──
+  // YYYYMMDD (no dashes) → for Expedia
   const toExpDate=d=>d?d.replace(/-/g,''):'';
+  // YYMMDD (2-digit year, from Skyscanner official docs example: /sof/ams/240701/240707/)
+  const toSkyDate=d=>{if(!d)return'';const p=d.split('-');return(p[0].slice(2)+p[1]+p[2]);};
+  // Lowercase IATA for Skyscanner
+  const oLow=origin.toLowerCase(),dLow=destination.toLowerCase();
+
+  // ── Direct airline link ──
   let directHtml='';
-  if(f.airline&&f.airline.website){directHtml=`<a href="https://${f.airline.website}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name} Direct</a>`;}
-  const gUrl=returnDate?`https://www.google.com/travel/flights#flt=${origin}.${destination}.${departure}*${destination}.${origin}.${returnDate};c:USD;e:1;sd:1;t:f`:`https://www.google.com/travel/flights#flt=${origin}.${destination}.${departure};c:USD;e:1;sd:1;t:f`;
-  const expUrl=returnDate?`https://www.expedia.com/Flights-Search?trip=roundtrip&leg1=from:${origin},to:${destination},departure:${toExpDate(departure)}TANYT&leg2=from:${destination},to:${origin},departure:${toExpDate(returnDate)}TANYT&passengers=adults:${adults},children:0,infantsinlap:0`:`https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:${origin},to:${destination},departure:${toExpDate(departure)}TANYT&passengers=adults:${adults},children:0,infantsinlap:0`;
-  const kayakUrl=returnDate?`https://www.kayak.com/flights/${origin}-${destination}/${departure}/${returnDate}/${adults}adults`:`https://www.kayak.com/flights/${origin}-${destination}/${departure}/${adults}adults`;
-  const skyscannerUrl=returnDate?`https://www.skyscanner.com/transport/flights/${origin}/${destination}/${departure.replace(/-/g,'')}/${returnDate.replace(/-/g,'')}/?adults=${adults}&cabinclass=${cabin}`:`https://www.skyscanner.com/transport/flights/${origin}/${destination}/${departure.replace(/-/g,'')}/?adults=${adults}&cabinclass=${cabin}`;
-  const pricelineUrl=returnDate?`https://www.priceline.com/flights/search?departureDate=${departure}&returnDate=${returnDate}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=${cabin}`:`https://www.priceline.com/flights/search?departureDate=${departure}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=${cabin}`;
-  const momondoUrl=returnDate?`https://www.momondo.com/flight-search/${origin}-${destination}/${departure}/${returnDate}/${adults}adults`:`https://www.momondo.com/flight-search/${origin}-${destination}/${departure}/${adults}adults`;
+  if(f.airline&&f.airline.website){
+    directHtml=`<a href="https://${f.airline.website}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name} Direct</a>`;
+  }
+
+  // ── 1. Google Flights (official partner deeplink #flt= format + adults) ──
+  // Roundtrip: origin.dest.depart*dest.origin.return;c:USD;a:N
+  // One-way:   origin.dest.depart;c:USD;a:N
+  const gBase=`https://www.google.com/travel/flights`;
+  const gUrl=returnDate
+    ?`${gBase}#flt=${origin}.${destination}.${departure}*${destination}.${origin}.${returnDate};c:USD;e:1;a:${adults}`
+    :`${gBase}#flt=${origin}.${destination}.${departure};c:USD;e:1;sd:1;a:${adults}`;
+
+  // ── 2. Expedia (confirmed working: YYYYMMDD + TANYT suffix) ──
+  const expBase='https://www.expedia.com/Flights-Search';
+  const expUrl=returnDate
+    ?`${expBase}?trip=roundtrip&leg1=from:${origin},to:${destination},departure:${toExpDate(departure)}TANYT&leg2=from:${destination},to:${origin},departure:${toExpDate(returnDate)}TANYT&passengers=adults:${adults},children:0,infantsinlap:0`
+    :`${expBase}?trip=oneway&leg1=from:${origin},to:${destination},departure:${toExpDate(departure)}TANYT&passengers=adults:${adults},children:0,infantsinlap:0`;
+
+  // ── 3. Kayak (YYYY-MM-DD in path, cabin at end) ──
+  const kayakBase=`https://www.kayak.com/flights/${origin}-${destination}`;
+  const kayakUrl=returnDate
+    ?`${kayakBase}/${departure}/${returnDate}/${adults}adults/${kayakCabin}`
+    :`${kayakBase}/${departure}/${adults}adults/${kayakCabin}`;
+
+  // ── 4. Skyscanner (Official docs: skyscanner.net, lowercase IATA, YYMMDD dates) ──
+  const skyBase=`https://www.skyscanner.net/transport/flights/${oLow}/${dLow}`;
+  const skyQuery=`?adults=${adults}&adultsv2=${adults}&cabinclass=${skyCabin}&ref=home`;
+  const skyscannerUrl=returnDate
+    ?`${skyBase}/${toSkyDate(departure)}/${toSkyDate(returnDate)}/${skyQuery}`
+    :`${skyBase}/${toSkyDate(departure)}/${skyQuery}`;
+
+  // ── 5. Priceline (YYYY-MM-DD dates, correct param names) ──
+  const plBase='https://www.priceline.com/flights/search';
+  const pricelineUrl=returnDate
+    ?`${plBase}?departureDate=${departure}&returnDate=${returnDate}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=${pricelineCabin}`
+    :`${plBase}?departureDate=${departure}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&tripType=1&cabinClass=${pricelineCabin}`;
+
+  // ── 6. Momondo (Kayak sister site — same URL pattern works) ──
+  const momBase=`https://www.momondo.com/flight-search/${origin}-${destination}`;
+  const momondoUrl=returnDate
+    ?`${momBase}/${departure}/${returnDate}/${adults}adults/${kayakCabin}`
+    :`${momBase}/${departure}/${adults}adults/${kayakCabin}`;
+
   const allUrls=[gUrl,expUrl,kayakUrl,skyscannerUrl,pricelineUrl,momondoUrl];
   const allUrlsJson=JSON.stringify(allUrls);
+  const tripLabel=returnDate?`${departure} → ${returnDate}`:`${departure} · One Way`;
+
   return `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
-      <div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:0.8px;text-transform:uppercase">✓ Search pre-filled · ${origin} → ${destination}</div>
-      <button onclick='(function(urls){urls.forEach(function(u){window.open(u,"_blank");});})(${allUrlsJson})' style="background:linear-gradient(135deg,#D4A847,#F0C060);color:#0A1628;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:0.5px;white-space:nowrap">🚀 Open All 6 Sites</button>
+      <div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:0.8px;text-transform:uppercase">✓ Pre-filled · ${origin}→${destination} · ${tripLabel} · ${adults} adult${adults>1?'s':''} · ${rawCabin.replace('_',' ')}</div>
+      <button onclick='(function(urls){urls.forEach(function(u,i){setTimeout(function(){window.open(u,"_blank");},i*120);});})(${allUrlsJson})' style="background:linear-gradient(135deg,#D4A847,#F0C060);color:#0A1628;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:0.5px;white-space:nowrap">🚀 Open All 6</button>
     </div>
-    <div style="margin-bottom:8px"><a href="${gUrl}" target="_blank" rel="noopener" class="book-link-btn primary" style="width:100%;justify-content:center;display:flex">🔍 Google Flights — Best Starting Point</a></div>
+    <div style="margin-bottom:8px"><a href="${gUrl}" target="_blank" rel="noopener" class="book-link-btn primary" style="width:100%;justify-content:center;display:flex">🔍 Google Flights</a></div>
     <div class="book-links" style="flex-wrap:wrap;gap:6px;display:flex">${directHtml}<a href="${expUrl}" target="_blank" rel="noopener" class="book-link-btn">Expedia</a><a href="${kayakUrl}" target="_blank" rel="noopener" class="book-link-btn">Kayak</a><a href="${skyscannerUrl}" target="_blank" rel="noopener" class="book-link-btn">⚡ Skyscanner</a><a href="${pricelineUrl}" target="_blank" rel="noopener" class="book-link-btn">Priceline</a><a href="${momondoUrl}" target="_blank" rel="noopener" class="book-link-btn">Momondo</a></div>
   </div>`;
 }
