@@ -925,18 +925,15 @@
     .book-links-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
     .book-autofill-note { font-size: 11px; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 4px; }
     .book-link-btn {
-      background: #fff;
-      border: 1.5px solid #d1d5db;
-      border-radius: 10px;
-      padding: 9px 16px;
-      font-size: 13.5px; font-weight: 700;
-      color: var(--text);
-      transition: all 0.18s;
-      display: flex; align-items: center; gap: 6px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+      border: 1.5px solid var(--border); color: var(--text-muted); background: var(--card-bg);
+      text-decoration: none; transition: all 0.18s; white-space: nowrap; cursor: pointer;
     }
-    .book-link-btn:hover { border-color: var(--navy); background: var(--navy); color: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(10,22,40,0.20); }
-    .book-link-btn.direct { border-color: var(--gold); color: #0A1628; background: linear-gradient(135deg,rgba(212,168,71,0.12),rgba(240,192,96,0.08)); font-weight: 800; }
+    .book-link-btn:hover { border-color: var(--navy); background: var(--navy); color: #fff; transform: translateY(-1px); }
+    .book-link-btn.primary { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: #fff; border-color: #1a73e8; font-size: 13px; padding: 9px 18px; }
+    .book-link-btn.primary:hover { background: linear-gradient(135deg, #1557b0, #0a3577); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,115,232,0.4); }
+    .book-link-btn.direct { border-color: var(--gold); color: #0A1628; background: linear-gradient(135deg,rgba(212,168,71,0.15),rgba(240,192,96,0.10)); font-weight: 800; }
     .book-link-btn.direct:hover { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #0A1628; border-color: var(--gold); }
 
     /* ─── Hotel Cards ────────────────────────────────────────────────── */
@@ -1778,6 +1775,12 @@
     @keyframes toastOut{from{opacity:1}to{opacity:0}}
     /* ─── Hero pattern ─────────────────────────────────────── */
     .hero-pattern{position:absolute;inset:0;z-index:2;background-image:radial-gradient(rgba(212,168,71,0.12) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;}
+    /* ─── Popular Routes chips ──────────────────────────────────── */
+    #popular-routes-wrap{margin-top:16px;text-align:left;}
+    .popular-routes-label{font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:9px;}
+    .popular-route-chips{display:flex;flex-wrap:wrap;gap:7px;}
+    .popular-route-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.14);border-radius:20px;padding:6px 13px;font-size:12.5px;color:rgba(255,255,255,0.82);cursor:pointer;transition:all 0.2s ease;font-weight:500;}
+    .popular-route-chip:hover{background:rgba(212,168,71,0.18);border-color:var(--gold);color:var(--gold-light);transform:translateY(-1px);}
     /* ─── Empty state with suggestions ────────────────────── */
     .empty-suggest{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px;}
     .empty-dest-btn{background:var(--navy-dark);color:var(--gold);border:none;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
@@ -2191,6 +2194,11 @@
       </div>
 
     </div><!-- /search-card -->
+    <!-- Popular Routes (shown before search) -->
+    <div id="popular-routes-wrap">
+      <div class="popular-routes-label">✈ Popular Routes</div>
+      <div class="popular-route-chips" id="popular-route-chips"></div>
+    </div>
   </div><!-- /hero-content -->
 </section>
 
@@ -2416,7 +2424,7 @@ const state={
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',async()=>{
-  setDefaultDates();initCurrency();initTabs();initTripType();initPaxPicker();
+  setDefaultDates();initCurrency();initTabs();initTripType();initPaxPicker();initPopularRoutes();
   initAutocomplete('from-input','from-ac',iata=>{state.fromIata=iata;});
   initAutocomplete('to-input','to-ac',iata=>{state.toIata=iata;});
   initAutocomplete('m-from-input','m-from-ac',iata=>{state.fromIata=iata;});
@@ -2474,7 +2482,7 @@ function rotateHeroImages(){const imgs=document.querySelectorAll('.hero-img');le
 function initTabs(){document.querySelectorAll('.tab-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('tab-'+btn.dataset.tab).classList.add('active');state.activeTab=btn.dataset.tab;});});}
 
 // ─── Trip Type ────────────────────────────────────────────────────────────────
-function initTripType(){document.querySelectorAll('.trip-pill').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.trip-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.tripType=btn.dataset.trip;const rf=document.getElementById('return-field');rf.style.opacity=state.tripType==='oneway'?'0.4':'1';rf.style.pointerEvents=state.tripType==='oneway'?'none':'';});});}
+function initTripType(){document.querySelectorAll('.trip-pill').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.trip-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.tripType=btn.dataset.trip;const rf=document.getElementById('return-field');if(state.tripType==='oneway'){rf.style.display='none';}else{rf.style.display='';rf.style.opacity='1';rf.style.pointerEvents='';}});});}
 function initDepartTiles(){document.querySelectorAll('.depart-tile').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('active')));}
 
 // ─── Pax Picker ───────────────────────────────────────────────────────────────
@@ -2678,7 +2686,7 @@ function flightCard(f,idx,minPrice,params){
         <span class="badge seats">⚡ ${seats} seat${seats!==1?'s':''} left</span>
       </div>
       <span class="deal-score-badge ${f.dealCls}">${f.dealEmoji} ${f.dealLabel}</span>
-      <div class="price-history-tag ${phD.cls}">${phD.icon} ${phD.text}</div>
+      ${(()=>{const pp=getPricePrediction(f);return `<div style="display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:10.5px;font-weight:700;color:${pp.color}">${pp.icon} ${pp.text}</div>`;})()}
     </div>
     <div class="flight-stops">${stopsHTML}</div>
     <div class="flight-class-badge">${formatClass(f.class)}</div>
@@ -2693,24 +2701,32 @@ function flightCard(f,idx,minPrice,params){
       <div class="detail-block"><h4>Seat Amenities</h4><div>${amenHTML}</div></div>
       <div class="detail-block"><h4>CO₂ Emissions</h4><p>${f.co2||'Estimated ~150 kg CO₂ per passenger'}</p></div>
     </div>
-    <div class="book-links"><span class="book-links-label">Book on:</span><span class="book-autofill-note">✓ Search pre-filled</span>${buildFlightBookLinks(f,params)}</div>
+    ${buildFlightBookLinks(f,params)}
   </div></div>`;
 }
 
 function buildFlightBookLinks(f,params){
-  const{origin,destination,departure,returnDate,adults,travelClass}=params;
-  function toExpDate(d){const p=d.split('-');return p[1]+'/'+p[2]+'/'+p[0];}
-  const links=[];
-  if(f.airline.website)links.push(`<a href="https://${f.airline.website}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name}</a>`);
+  const origin=params.origin||f.from||'';
+  const destination=params.destination||f.to||'';
+  const departure=params.departure||'';
+  const returnDate=state.tripType==='roundtrip'?(params.returnDate||''):'';
+  const adults=(params.pax&&params.pax.adults)||params.adults||1;
+  const cabin=params.travelClass||'economy';
+  const toExpDate=d=>d?d.replace(/-/g,''):'';
+  let directHtml='';
+  if(f.airline&&f.airline.website){directHtml=`<a href="https://${f.airline.website}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name} Direct</a>`;}
   const gUrl=returnDate?`https://www.google.com/travel/flights#flt=${origin}.${destination}.${departure}*${destination}.${origin}.${returnDate};c:USD;e:1;sd:1;t:f`:`https://www.google.com/travel/flights#flt=${origin}.${destination}.${departure};c:USD;e:1;sd:1;t:f`;
-  links.push(`<a href="${gUrl}" target="_blank" rel="noopener" class="book-link-btn">🔍 Google Flights</a>`);
   const expUrl=returnDate?`https://www.expedia.com/Flights-Search?trip=roundtrip&leg1=from:${origin},to:${destination},departure:${toExpDate(departure)}TANYT&leg2=from:${destination},to:${origin},departure:${toExpDate(returnDate)}TANYT&passengers=adults:${adults},children:0,infantsinlap:0`:`https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:${origin},to:${destination},departure:${toExpDate(departure)}TANYT&passengers=adults:${adults},children:0,infantsinlap:0`;
-  links.push(`<a href="${expUrl}" target="_blank" rel="noopener" class="book-link-btn">Expedia</a>`);
   const kayakUrl=returnDate?`https://www.kayak.com/flights/${origin}-${destination}/${departure}/${returnDate}/${adults}adults`:`https://www.kayak.com/flights/${origin}-${destination}/${departure}/${adults}adults`;
-  links.push(`<a href="${kayakUrl}" target="_blank" rel="noopener" class="book-link-btn">Kayak</a>`);
-  const pricelineUrl=returnDate?`https://www.priceline.com/flights/search?departureDate=${departure}&returnDate=${returnDate}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=economy`:`https://www.priceline.com/flights/search?departureDate=${departure}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=economy`;
-  links.push(`<a href="${pricelineUrl}" target="_blank" rel="noopener" class="book-link-btn">Priceline</a>`);
-  return links.join('');
+  const skyscannerUrl=returnDate?`https://www.skyscanner.com/transport/flights/${origin}/${destination}/${departure.replace(/-/g,'')}/${returnDate.replace(/-/g,'')}/?adults=${adults}&cabinclass=${cabin}`:`https://www.skyscanner.com/transport/flights/${origin}/${destination}/${departure.replace(/-/g,'')}/?adults=${adults}&cabinclass=${cabin}`;
+  const pricelineUrl=returnDate?`https://www.priceline.com/flights/search?departureDate=${departure}&returnDate=${returnDate}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=${cabin}`:`https://www.priceline.com/flights/search?departureDate=${departure}&departureAirport=${origin}&arrivalAirport=${destination}&numAdults=${adults}&cabinClass=${cabin}`;
+  return `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">✓ Book with search pre-filled</div><div style="margin-bottom:8px"><a href="${gUrl}" target="_blank" rel="noopener" class="book-link-btn primary" style="width:100%;justify-content:center;display:flex">🔍 Book on Google Flights</a></div><div class="book-links" style="flex-wrap:wrap;gap:6px;display:flex">${directHtml}<a href="${expUrl}" target="_blank" rel="noopener" class="book-link-btn">Expedia</a><a href="${kayakUrl}" target="_blank" rel="noopener" class="book-link-btn">Kayak</a><a href="${skyscannerUrl}" target="_blank" rel="noopener" class="book-link-btn">⚡ Skyscanner</a><a href="${pricelineUrl}" target="_blank" rel="noopener" class="book-link-btn">Priceline</a></div></div>`;
+}
+
+function getPricePrediction(f){
+  if(f.priceHistory==='lower')return{icon:'📉',text:'Prices dropping — buy soon',color:'#22c55e'};
+  if(f.priceHistory==='higher')return{icon:'📈',text:'Prices rising — book now',color:'#f59e0b'};
+  return{icon:'➡️',text:'Price stable',color:'#94a3b8'};
 }
 
 // ─── Render Hotels ────────────────────────────────────────────────────────────
@@ -3023,7 +3039,7 @@ function sendAIMessage(preset){
 function showToast(msg){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className='toast';t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3200);}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function hidePoppularDests(){document.getElementById('popular-destinations').classList.add('hidden');}
+function hidePoppularDests(){document.getElementById('popular-destinations').classList.add('hidden');const pr=document.getElementById('popular-routes-wrap');if(pr)pr.style.display='none';}
 function showResults(){const s=document.getElementById('results-section');s.classList.add('visible');setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'start'}),100);}
 function hideSectionExtras(){
   ['price-alert-banner','flex-dates-section','amenity-filter-bar','bundle-summary-card','progress-steps'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.remove('visible');if(id==='price-alert-banner'||id==='flex-dates-section')el.classList.remove('visible');}});
@@ -3064,6 +3080,36 @@ function openBundleLinks(btn, info) {
   menu.style.left = Math.max(8, rect.left - 60) + 'px';
   document.body.appendChild(menu);
   setTimeout(() => document.addEventListener('click', function rm(e){ if(!menu.contains(e.target)){menu.remove();document.removeEventListener('click',rm);} }), 100);
+}
+
+// ─── Popular Routes ───────────────────────────────────────────────────────────
+const POPULAR_ROUTES=[
+  {from:'JFK',to:'LAX',label:'New York → LA',fromLabel:'JFK — New York',toLabel:'LAX — Los Angeles'},
+  {from:'JFK',to:'MIA',label:'New York → Miami',fromLabel:'JFK — New York',toLabel:'MIA — Miami'},
+  {from:'JFK',to:'LHR',label:'New York → London',fromLabel:'JFK — New York',toLabel:'LHR — London'},
+  {from:'EWR',to:'CDG',label:'Newark → Paris',fromLabel:'EWR — Newark',toLabel:'CDG — Paris'},
+  {from:'JFK',to:'CUN',label:'New York → Cancún',fromLabel:'JFK — New York',toLabel:'CUN — Cancún'},
+  {from:'JFK',to:'DXB',label:'New York → Dubai',fromLabel:'JFK — New York',toLabel:'DXB — Dubai'},
+];
+function initPopularRoutes(){
+  const wrap=document.getElementById('popular-routes-wrap');
+  const chips=document.getElementById('popular-route-chips');
+  if(!chips)return;
+  chips.innerHTML=POPULAR_ROUTES.map(r=>`<button class="popular-route-chip" onclick="fillPopularRoute('${r.from}','${r.to}','${r.fromLabel}','${r.toLabel}')">✈ ${r.label}</button>`).join('');
+  // Hide when results are shown
+  document.getElementById('results-section').addEventListener('transitionend',()=>{});
+}
+function fillPopularRoute(from,to,fromLabel,toLabel){
+  document.getElementById('from-input').value=fromLabel;
+  document.getElementById('to-input').value=toLabel;
+  state.fromIata=from;state.toIata=to;
+  // Switch to flights tab if not already
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('[data-tab="flights"]').classList.add('active');
+  document.getElementById('tab-flights').classList.add('active');
+  state.activeTab='flights';
+  document.getElementById('hero').scrollIntoView({behavior:'smooth'});
 }
 
 // ─── Keyboard ─────────────────────────────────────────────────────────────────
