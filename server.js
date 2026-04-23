@@ -34,7 +34,7 @@ app.use(helmet({
     },
   },
 }));
-app.use(cors());
+app.use(cors({ origin: false }));
 app.use(express.json());
 app.use(session({
   secret: SESSION_SECRET,
