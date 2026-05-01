@@ -978,7 +978,20 @@ app.get('/api/hotels', async (req, res) => {
   if (DEMO_MODE) {
     const nights = checkin && checkout
       ? Math.max(1, (new Date(checkout) - new Date(checkin)) / 86400000) : 2;
-    const hotels = MOCK_HOTELS.map(h => ({ ...h, nights, totalPrice: h.pricePerNight * nights }));
+    // Map city name/code to mock city code
+    const cityNormMap = {
+      'new york': 'NYC', 'nyc': 'NYC', 'jfk': 'NYC', 'lga': 'NYC', 'ewr': 'NYC', 'manhattan': 'NYC',
+      'los angeles': 'LAX', 'lax': 'LAX', 'la': 'LAX',
+      'miami': 'MIA', 'mia': 'MIA', 'south beach': 'MIA',
+      'paris': 'CDG', 'cdg': 'CDG', 'france': 'CDG',
+      'tokyo': 'NRT', 'nrt': 'NRT', 'japan': 'NRT',
+      'dubai': 'DXB', 'dxb': 'DXB', 'uae': 'DXB'
+    };
+    const cityKey = city.toLowerCase().trim();
+    const cityCode = cityNormMap[cityKey] || city.toUpperCase().slice(0, 3);
+    const filtered = MOCK_HOTELS.filter(h => h.city === cityCode);
+    const hotels = (filtered.length ? filtered : MOCK_HOTELS.slice(0, 4))
+      .map(h => ({ ...h, nights, totalPrice: h.pricePerNight * nights }));
     return res.json({ hotels, demo: true });
   }
 
