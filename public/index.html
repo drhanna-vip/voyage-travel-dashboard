@@ -2763,10 +2763,35 @@ function buildFlightBookLinks(f,params){
   // Lowercase IATA for Skyscanner
   const oLow=origin.toLowerCase(),dLow=destination.toLowerCase();
 
-  // ── Direct airline link ──
+  // ── Direct airline deep link (pre-populated per airline) ──
   let directHtml='';
-  if(f.airline&&f.airline.website){
-    directHtml=`<a href="https://${f.airline.website}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name} Direct</a>`;
+  if(f.airline&&f.airline.code){
+    const ac=f.airline.code;
+    const dep=departure,ret=returnDate,orig=origin,dest=destination,pax=adults;
+    const tripType=returnDate?'roundtrip':'oneway';
+    let airlineUrl='';
+    if(ac==='B6'){
+      // JetBlue: /booking/flights?from=JFK&to=MIA&depart=YYYY-MM-DD&return=YYYY-MM-DD&adults=1
+      airlineUrl=`https://www.jetblue.com/booking/flights?from=${orig}&to=${dest}&depart=${dep}`+(ret?`&return=${ret}`:'')+`&adults=${pax}&children=0&infants=0`;
+    } else if(ac==='AA'){
+      // American Airlines deeplink
+      airlineUrl=`https://www.aa.com/booking/find-flights?flightType=${tripType==='roundtrip'?'r':'o'}&paxCount=${pax}&cabin=Y&fromCity=${orig}&toCity=${dest}&departDate=${dep}`+(ret?`&returnDate=${ret}`:'');
+    } else if(ac==='DL'){
+      // Delta deeplink
+      airlineUrl=`https://www.delta.com/us/en/flight-search/book-a-flight?paxCount=${pax}&adult=${pax}&child=0&infant=0&originCity=${orig}&destinationCity=${dest}&departureDate=${dep}`+(ret?`&returnDate=${ret}&tripType=ROUND_TRIP`:'&tripType=ONE_WAY');
+    } else if(ac==='UA'){
+      // United Airlines deeplink
+      airlineUrl=`https://www.united.com/en/us/flightsearch/book-a-flight?f=${orig}&t=${dest}&d=${dep}`+(ret?`&r=${ret}&tt=2`:'&tt=1')+`&sc=7&ct=${pax}`;
+    } else if(ac==='WN'){
+      // Southwest deeplink
+      airlineUrl=`https://www.southwest.com/air/booking/select.html?originationAirportCode=${orig}&destinationAirportCode=${dest}&departureDate=${dep}`+(ret?`&returnDate=${ret}&tripType=roundtrip`:'&tripType=oneway')+`&adultPassengersCount=${pax}&seniorPassengersCount=0`;
+    } else if(ac==='AS'){
+      airlineUrl=`https://www.alaskaair.com/booking/choose-flights?O=${orig}&D=${dest}&D1=${dep.replace(/-/g,'/')}${ret?'&RT=true&D2='+ret.replace(/-/g,'/'):''}&A=${pax}&C=0&L=0&IN=0`;
+    } else {
+      // Generic — homepage
+      airlineUrl=`https://www.${f.airline.website}`;
+    }
+    directHtml=`<a href="${airlineUrl}" target="_blank" rel="noopener" class="book-link-btn direct">✈ ${f.airline.name}</a>`;
   }
 
   // ── 1. Google Flights (official partner deeplink #flt= format + adults) ──
