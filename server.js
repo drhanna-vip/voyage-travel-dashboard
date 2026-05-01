@@ -15,7 +15,7 @@ const AUTH_USER = process.env.AUTH_USER || 'gh';
 const AUTH_PASS_HASH = process.env.AUTH_PASS || '';
 // Guest access credential (separate revocable login for shared access)
 const GUEST_USER = process.env.GUEST_USER || 'guest';
-const GUEST_PASS = process.env.GUEST_PASS || 'Voyage2026!';
+const GUEST_PASS = process.env.GUEST_PASS || 'voyage';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'voyage-secret-2026-vip';
 
 const app = express();
