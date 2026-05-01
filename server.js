@@ -13,6 +13,9 @@ const crypto = require('crypto');
 // ─── Auth Config ──────────────────────────────────────────────────────────────
 const AUTH_USER = process.env.AUTH_USER || 'gh';
 const AUTH_PASS_HASH = process.env.AUTH_PASS || '';
+// Guest access credential (separate revocable login for shared access)
+const GUEST_USER = process.env.GUEST_USER || 'guest';
+const GUEST_PASS = process.env.GUEST_PASS || 'Voyage2026!';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'voyage-secret-2026-vip';
 
 const app = express();
@@ -60,11 +63,18 @@ function requireAuth(req, res, next) {
 app.post('/auth/login', (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password) return res.status(401).json({ error: 'Invalid credentials' });
-  if (username.toLowerCase().trim() !== AUTH_USER.toLowerCase()) return res.status(401).json({ error: 'Invalid credentials' });
-  // Support plain text or SHA256 hash comparison
-  const passOk = (password === AUTH_PASS_HASH) ||
-    (crypto.createHash('sha256').update(password).digest('hex') === AUTH_PASS_HASH);
-  if (passOk) {
+  const user = username.toLowerCase().trim();
+  // Main credential (supports plain text or SHA256 hash)
+  if (user === AUTH_USER.toLowerCase()) {
+    const passOk = (password === AUTH_PASS_HASH) ||
+      (crypto.createHash('sha256').update(password).digest('hex') === AUTH_PASS_HASH);
+    if (passOk) {
+      req.session.authenticated = true;
+      return res.json({ ok: true });
+    }
+  }
+  // Guest credential (revocable shared access)
+  if (user === GUEST_USER.toLowerCase() && password === GUEST_PASS) {
     req.session.authenticated = true;
     return res.json({ ok: true });
   }
