@@ -1918,6 +1918,28 @@
       }
       .mobile-search-form .m-search-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(212,168,71,0.55); }
     }
+/* ─── AI Search Tab ─────────────────────────────────────── */
+.ai-panel{padding:20px 0 4px}
+.ai-textarea{width:100%;min-height:80px;padding:16px 18px;border:2px solid var(--border);border-radius:14px;font-family:'Inter',sans-serif;font-size:15px;color:var(--text);background:var(--card-bg);resize:none;outline:none;transition:border-color .2s;line-height:1.5}
+.ai-textarea:focus{border-color:var(--gold)}
+.ai-textarea.ai-error{border-color:#ef4444}
+.ai-examples{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.ai-chip{background:var(--border-light);border:1px solid var(--border);border-radius:99px;padding:5px 13px;font-size:12px;color:var(--text-muted);cursor:pointer;transition:all .15s}
+.ai-chip:hover{border-color:var(--gold);color:var(--text);background:#fff}
+.ai-actions{display:flex;justify-content:flex-end;margin-top:12px}
+.ai-search-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy-dark);border:none;border-radius:12px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.ai-search-btn:hover{opacity:.88}
+.ai-result-card{display:none;background:var(--green-bg);border:1.5px solid #a7f3d0;border-radius:14px;padding:16px 18px;margin-top:14px}
+.ai-result-card.ai-visible{display:block;animation:aiFadeIn .25s}
+.ai-result-card.ai-fail{background:#fef2f2;border-color:#fca5a5}
+.ai-parsed-fields{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.ai-field-chip{background:#fff;border:1px solid #a7f3d0;border-radius:8px;padding:5px 12px;font-size:13px;font-weight:600}
+.ai-field-chip span{color:var(--text-muted);font-weight:400;margin-right:4px}
+.ai-result-actions{display:flex;gap:10px}
+.ai-fill-btn{background:var(--green);color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:14px;font-weight:600;cursor:pointer}
+.ai-edit-btn{background:#fff;color:var(--text);border:1.5px solid var(--border);border-radius:10px;padding:9px 20px;font-size:14px;font-weight:600;cursor:pointer}
+.ai-err-msg{color:#dc2626;font-size:13px;margin-top:6px}
+@keyframes aiFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   </style>
 </head>
 <body>
@@ -1998,6 +2020,7 @@
         <button class="tab-btn" data-tab="bundles">✈️🏨 Bundles</button>
         <button class="tab-btn" data-tab="cars">🚗 Cars</button>
         <button class="tab-btn" data-tab="alerts" id="alerts-tab-btn">🔔 Alerts <span id="alerts-badge" style="display:none;background:#ef4444;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px">0</span></button>
+        <button class="tab-btn" data-tab="ai" id="ai-tab-btn">✨ Ask AI</button>
       </div>
 
       <!-- FLIGHTS TAB -->
@@ -2199,6 +2222,31 @@
         <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
           <button class="search-btn" style="padding:12px 24px;font-size:14px" onclick="loadAlertsPanel()">🔄 Refresh</button>
           <button class="search-btn" style="padding:12px 24px;font-size:14px;background:linear-gradient(135deg,#059669,#047857)" onclick="checkAlertPrices()">⚡ Check Prices Now</button>
+        </div>
+      </div>
+
+      <!-- AI SEARCH TAB -->
+      <div class="tab-panel" id="tab-ai">
+        <div class="ai-panel">
+          <textarea class="ai-textarea" id="ai-query" placeholder="Describe your trip... e.g. &quot;NYC to Miami this weekend, 2 adults&quot;" rows="3"></textarea>
+          <div class="ai-examples">
+            <span class="ai-chip" onclick="document.getElementById('ai-query').value=this.textContent;aiSearch()">NYC to Miami this weekend</span>
+            <span class="ai-chip" onclick="document.getElementById('ai-query').value=this.textContent;aiSearch()">Round trip to London next month, business class</span>
+            <span class="ai-chip" onclick="document.getElementById('ai-query').value=this.textContent;aiSearch()">One way LAX to JFK Monday</span>
+            <span class="ai-chip" onclick="document.getElementById('ai-query').value=this.textContent;aiSearch()">Family of 4 to Orlando July 4th</span>
+            <span class="ai-chip" onclick="document.getElementById('ai-query').value=this.textContent;aiSearch()">Boston to Paris Aug 10-20, business</span>
+          </div>
+          <div class="ai-actions">
+            <button class="ai-search-btn" onclick="aiSearch()">Find My Trip ✨</button>
+          </div>
+          <div class="ai-result-card" id="ai-result">
+            <div class="ai-parsed-fields" id="ai-fields"></div>
+            <div class="ai-result-actions">
+              <button class="ai-fill-btn" onclick="aiApply(true)">🔍 Search Now</button>
+              <button class="ai-edit-btn" onclick="aiApply(false)">✏️ Edit Fields</button>
+            </div>
+          </div>
+          <div class="ai-err-msg" id="ai-error" style="display:none"></div>
         </div>
       </div>
 
@@ -3433,6 +3481,185 @@ document.addEventListener('DOMContentLoaded', () => {
   if (alertsBtn) {
     alertsBtn.addEventListener('click', () => { loadAlertsPanel(); });
   }
+});
+
+// ══════ VOYAGE AI SEARCH ══════
+const AIRPORTS={
+  'new york city':'JFK','new york':'JFK','nyc':'JFK','jfk':'JFK',
+  'laguardia':'LGA','lga':'LGA','newark':'EWR','ewr':'EWR',
+  'los angeles':'LAX','la':'LAX','lax':'LAX',
+  'chicago':'ORD','ord':'ORD','midway':'MDW','mdw':'MDW',
+  'miami':'MIA','mia':'MIA','fort lauderdale':'FLL','fll':'FLL',
+  'boston':'BOS','bos':'BOS',
+  'san francisco':'SFO','sf':'SFO','sfo':'SFO',
+  'seattle':'SEA','sea':'SEA',
+  'las vegas':'LAS','vegas':'LAS','las':'LAS',
+  'orlando':'MCO','mco':'MCO',
+  'atlanta':'ATL','atl':'ATL',
+  'dallas':'DFW','dfw':'DFW',
+  'houston':'IAH','iah':'IAH',
+  'denver':'DEN','den':'DEN',
+  'phoenix':'PHX','phx':'PHX',
+  'washington dc':'IAD','dc':'IAD','washington':'IAD','iad':'IAD','dulles':'IAD','reagan':'DCA','dca':'DCA',
+  'philadelphia':'PHL','philly':'PHL','phl':'PHL',
+  'minneapolis':'MSP','msp':'MSP',
+  'detroit':'DTW','dtw':'DTW',
+  'portland':'PDX','pdx':'PDX',
+  'salt lake city':'SLC','slc':'SLC',
+  'nashville':'BNA','bna':'BNA',
+  'austin':'AUS','aus':'AUS',
+  'san diego':'SAN',
+  'charlotte':'CLT','clt':'CLT',
+  'tampa':'TPA','tpa':'TPA',
+  'new orleans':'MSY','msy':'MSY',
+  'raleigh':'RDU','rdu':'RDU',
+  'kansas city':'MCI','mci':'MCI',
+  'pittsburgh':'PIT','pit':'PIT',
+  'cleveland':'CLE','cle':'CLE',
+  'indianapolis':'IND','ind':'IND',
+  'columbus':'CMH','cmh':'CMH',
+  'memphis':'MEM','mem':'MEM',
+  'hartford':'BDL','bdl':'BDL',
+  'buffalo':'BUF','buf':'BUF',
+  'london':'LHR','lhr':'LHR','heathrow':'LHR','gatwick':'LGW','lgw':'LGW',
+  'paris':'CDG','cdg':'CDG','orly':'ORY','ory':'ORY',
+  'tokyo':'NRT','nrt':'NRT','narita':'NRT','haneda':'HND','hnd':'HND',
+  'rome':'FCO','fco':'FCO',
+  'madrid':'MAD','mad':'MAD',
+  'barcelona':'BCN','bcn':'BCN',
+  'amsterdam':'AMS','ams':'AMS',
+  'dubai':'DXB','dxb':'DXB',
+  'singapore':'SIN','sin':'SIN',
+  'hong kong':'HKG','hkg':'HKG',
+  'sydney':'SYD','syd':'SYD',
+  'toronto':'YYZ','yyz':'YYZ',
+  'vancouver':'YVR','yvr':'YVR',
+  'mexico city':'MEX','mex':'MEX',
+  'cancun':'CUN','cun':'CUN',
+  'montreal':'YUL','yul':'YUL',
+  'frankfurt':'FRA','fra':'FRA',
+  'munich':'MUC','muc':'MUC',
+  'zurich':'ZRH','zrh':'ZRH',
+  'milan':'MXP','mxp':'MXP',
+  'seoul':'ICN','icn':'ICN',
+  'beijing':'PEK','pek':'PEK',
+  'shanghai':'PVG','pvg':'PVG',
+  'bangkok':'BKK','bkk':'BKK',
+  'bali':'DPS','dps':'DPS',
+  'istanbul':'IST','ist':'IST',
+  'home':'JFK'
+};
+
+function resolveAirport(t){
+  if(!t)return null;
+  const l=t.trim().toLowerCase();
+  if(AIRPORTS[l])return AIRPORTS[l];
+  for(const[k,v] of Object.entries(AIRPORTS)){if(l.includes(k)||k.includes(l))return v;}
+  if(/^[A-Z]{3}$/.test(t.trim().toUpperCase()))return t.trim().toUpperCase();
+  return null;
+}
+
+function resolveDate(t){
+  if(!t)return null;
+  const now=new Date();const l=t.trim().toLowerCase();
+  if(l.includes('weekend')){const d=new Date(now);d.setDate(d.getDate()+(6-d.getDay()+7)%7||7);return d.toISOString().split('T')[0];}
+  if(l==='next week'){const d=new Date(now);d.setDate(d.getDate()+(8-d.getDay())%7+1);return d.toISOString().split('T')[0];}
+  if(l==='next month'){const d=new Date(now);d.setDate(d.getDate()+28);return d.toISOString().split('T')[0];}
+  if(l==='tomorrow'){const d=new Date(now);d.setDate(d.getDate()+1);return d.toISOString().split('T')[0];}
+  const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  for(let i=0;i<days.length;i++){if(l.includes(days[i])){const d=new Date(now);const diff=(i-d.getDay()+7)%7||7;d.setDate(d.getDate()+diff);return d.toISOString().split('T')[0];}}
+  const months={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11,january:0,february:1,march:2,april:3,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
+  for(const[mn,mv] of Object.entries(months)){const re=new RegExp(mn+'\\s+(\\d{1,2})','i');const m=l.match(re);if(m){const dy=parseInt(m[1]);const yr=now.getFullYear();const d=new Date(yr,mv,dy);if(d<now)d.setFullYear(yr+1);return d.toISOString().split('T')[0];}}
+  return null;
+}
+
+function parseNL(q){
+  const l=q.toLowerCase();
+  const r={from:null,to:null,depart:null,returnDate:null,adults:1,children:0,cabinClass:'ECONOMY',tripType:'roundtrip',budget:null,confidence:'FAIL'};
+  if(/one.?way|fly(ing)? home|fly back/i.test(q))r.tripType='oneway';
+  if(/round.?trip|return|coming back/i.test(q))r.tripType='roundtrip';
+  if(/first class|\bfirst\b/i.test(q))r.cabinClass='FIRST';
+  else if(/business class|business|\bbiz\b/i.test(q))r.cabinClass='BUSINESS';
+  else if(/premium economy|premium/i.test(q))r.cabinClass='PREMIUM_ECONOMY';
+  const px=q.match(/(\d+)\s*(adults?|people|persons?|passengers?)/i);if(px)r.adults=Math.min(parseInt(px[1]),9);
+  const kx=q.match(/(\d+)\s*(kids?|children|child)/i);if(kx)r.children=Math.min(parseInt(kx[1]),6);
+  if(/\bcouple\b|just the two/i.test(q))r.adults=2;
+  if(/\bsolo\b|just me|by myself/i.test(q))r.adults=1;
+  const fx=q.match(/family of (\d+)/i);if(fx){const n=parseInt(fx[1]);r.adults=Math.min(2,n);r.children=Math.max(0,n-2);}
+  const bx=q.match(/under\s*\$?(\d+)|budget\s*\$?(\d+)/i);if(bx)r.budget=parseInt(bx[1]||bx[2]);
+  const noise=/\s*(this|next|\d{4}|weekend|week|month|monday|tuesday|wednesday|thursday|friday|saturday|sunday|january|february|march|april|may|june|july|august|september|october|november|december|\d+\s*nights?|round|one.?way|back|return|business|first|economy|premium|\d+\s*adult|\d+\s*people|\d+\s*passenger).*$/i;
+  let ft=null,tt=null;
+  let m=q.match(/(?:fly(?:ing)?|travel(?:ling)?|going|trip|flight)?\s*from\s+(.+?)\s+to\s+(.+?)(?=\s+(?:this|next|on|in|,|\d|one|round|back|return|[A-Z][a-z])|$)/i);
+  if(m){ft=m[1].trim();tt=m[2].trim();}
+  if(!ft||!tt){m=q.match(/^(.+?)\s+to\s+(.+?)(?=\s+(?:this|next|on|in|,|\d|one|round|[A-Z][a-z])|$)/i);if(m&&!/fly|travel|trip|going|flight/i.test(m[1])){ft=m[1].trim();tt=m[2].trim();}}
+  if(!tt){m=q.match(/(?:to|visiting?|going to|heading? to)\s+(.+?)\s+from\s+(.+?)(?:\s|$)/i);if(m){tt=m[1].trim();ft=m[2].trim();}}
+  if(!tt){m=q.match(/(?:to|visiting?|going to|heading? to)\s+([A-Za-z\s]+?)(?:\s+(?:this|next|in|on|,|\d)|$)/i);if(m)tt=m[1].trim();}
+  if(ft)ft=ft.replace(noise,'').trim();
+  if(tt)tt=tt.replace(noise,'').trim();
+  r.from=resolveAirport(ft);r.to=resolveAirport(tt);
+  const rx=q.match(/([a-z]+\s+\d{1,2})\s*(?:to|-|through)\s*(?:[a-z]+\s+)?(\d{1,2})/i);
+  if(rx){r.depart=resolveDate(rx[1]);const dm=rx[1].match(/([a-z]+)/i)?.[1];if(dm)r.returnDate=resolveDate(dm+' '+rx[2]);if(r.returnDate)r.tripType='roundtrip';}
+  if(!r.depart){
+    for(const p of['this weekend','next weekend','next week','next month','tomorrow','monday','tuesday','wednesday','thursday','friday','saturday','sunday','january','february','march','april','may','june','july','august','september','october','november','december']){
+      if(l.includes(p)){const d=resolveDate(p);if(d){r.depart=d;break;}}
+    }
+    if(!r.depart){const md=l.match(/(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})/i);if(md)r.depart=resolveDate(md[0]);}
+  }
+  let score=0;if(r.from)score++;if(r.to)score++;if(r.depart)score++;
+  r.confidence=score>=2?'HIGH':score===1?'LOW':'FAIL';
+  return r;
+}
+
+function aiSearch(){
+  const query=document.getElementById('ai-query').value.trim();
+  const rc=document.getElementById('ai-result');
+  const ed=document.getElementById('ai-error');
+  const ta=document.getElementById('ai-query');
+  rc.className='ai-result-card';ed.style.display='none';ta.classList.remove('ai-error');
+  if(!query){ed.textContent='Please describe your trip first.';ed.style.display='block';return;}
+  const p=parseNL(query);window._aiParsed=p;
+  if(p.confidence==='FAIL'){
+    ta.classList.add('ai-error');
+    ed.textContent='I couldn\'t find a destination. Try: "NYC to Miami this weekend" or "fly from Boston to London"';
+    ed.style.display='block';return;
+  }
+  const fc=document.getElementById('ai-fields');fc.innerHTML='';
+  const chips=[];
+  if(p.from)chips.push({l:'✈ From',v:p.from});
+  if(p.to)chips.push({l:'📍 To',v:p.to});
+  if(p.depart)chips.push({l:'📅 Depart',v:p.depart});
+  if(p.returnDate)chips.push({l:'↩ Return',v:p.returnDate});
+  chips.push({l:'👤',v:p.adults+(p.children?'+'+p.children+' kids':'')+' adult'+(p.adults>1?'s':'')});
+  chips.push({l:'💺',v:{ECONOMY:'Economy',PREMIUM_ECONOMY:'Prem. Economy',BUSINESS:'Business',FIRST:'First'}[p.cabinClass]});
+  if(p.budget)chips.push({l:'💰',v:'Under $'+p.budget});
+  chips.forEach(c=>{const s=document.createElement('span');s.className='ai-field-chip';s.innerHTML='<span>'+c.l+'</span>'+c.v;fc.appendChild(s);});
+  if(p.confidence==='LOW'){const w=document.createElement('div');w.style.cssText='width:100%;font-size:12px;color:#d97706;margin-top:4px';w.textContent='⚠️ Some fields missing — fill in after.';fc.appendChild(w);}
+  rc.classList.add('ai-visible');
+}
+
+function aiApply(doSearch){
+  const p=window._aiParsed;if(!p)return;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(b=>b.classList.remove('active'));
+  document.querySelector('[data-tab="flights"]').classList.add('active');
+  document.getElementById('tab-flights').classList.add('active');
+  if(p.from){const e=document.getElementById('from-input');if(e){e.value=p.from;e.dispatchEvent(new Event('input'));}}
+  if(p.to){const e=document.getElementById('to-input');if(e){e.value=p.to;e.dispatchEvent(new Event('input'));}}
+  if(p.depart){const e=document.getElementById('depart-input');if(e)e.value=p.depart;}
+  if(p.returnDate){const e=document.getElementById('return-input');if(e)e.value=p.returnDate;}
+  document.querySelectorAll('.trip-pill').forEach(b=>b.classList.toggle('active',b.dataset.trip===p.tripType));
+  const rf=document.getElementById('return-field');if(rf)rf.style.display=p.tripType==='oneway'?'none':'';
+  const ce=document.getElementById('class-select');if(ce)ce.value=p.cabinClass;
+  const at=document.getElementById('pax-trigger');if(at){const tot=p.adults+p.children;at.textContent=tot+' Passenger'+(tot>1?'s':'');}
+  const ac=document.getElementById('adults-count');if(ac)ac.textContent=p.adults;
+  const cc=document.getElementById('children-count');if(cc)cc.textContent=p.children;
+  ['from-input','to-input','depart-input','return-input'].forEach(id=>{const e=document.getElementById(id);if(e&&e.value){e.style.transition='background .3s';e.style.background='#fffbeb';setTimeout(()=>{e.style.background='';},1200);}});
+  if(doSearch)setTimeout(()=>{if(typeof searchFlights==='function')searchFlights();},300);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const ta=document.getElementById('ai-query');
+  if(ta)ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSearch();}});
 });
 </script>
 </body>
