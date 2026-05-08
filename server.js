@@ -9,6 +9,19 @@ const session = require('express-session');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+// ─── Email Transporter (Gmail SMTP) ──────────────────────────────────────────
+// Requires EMAIL_USER (Gmail address, e.g. yourapp@gmail.com) and
+// EMAIL_PASS (Gmail App Password) in .env
+// Generate App Password: https://myaccount.google.com/apppasswords
+const emailTransporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || '',
+    pass: process.env.EMAIL_PASS || ''
+  }
+});
 
 // ─── Auth Config ──────────────────────────────────────────────────────────────
 const AUTH_USER = process.env.AUTH_USER || 'gh';
@@ -328,6 +341,83 @@ const MOCK_FLIGHTS = [
     baggage: '2 checked bags included.',
     amenities: ['Meal service', 'Power outlets', 'Oryx One entertainment', 'Wi-Fi'],
     co2: '710 kg CO₂ per passenger', priceHistory: 'lower'
+  },
+  // LAX → SEA (Alaska Airlines — home route)
+  {
+    id: 'f17', route: 'LAX-SEA',
+    airline: { code: 'AS', name: 'Alaska Airlines', website: 'alaskaair.com', logo: 'https://logo.clearbit.com/alaskaair.com' },
+    flightNumber: 'AS324',
+    departure: { iata: 'LAX', time: '07:00', date: '' },
+    arrival:   { iata: 'SEA', time: '09:32', date: '' },
+    duration: '2h 32m', stops: 0, stopAirports: [],
+    price: 159, currency: 'USD', class: 'ECONOMY', seatsLeft: 11,
+    baggage: 'Carry-on included. Checked bag $30.',
+    amenities: ['Power outlets', 'In-flight entertainment', 'Snacks', 'Wi-Fi available'],
+    co2: '72 kg CO₂ per passenger', priceHistory: 'lower'
+  },
+  // SEA → JFK (Alaska Airlines)
+  {
+    id: 'f18', route: 'SEA-JFK',
+    airline: { code: 'AS', name: 'Alaska Airlines', website: 'alaskaair.com', logo: 'https://logo.clearbit.com/alaskaair.com' },
+    flightNumber: 'AS10',
+    departure: { iata: 'SEA', time: '06:15', date: '' },
+    arrival:   { iata: 'JFK', time: '14:42', date: '' },
+    duration: '5h 27m', stops: 0, stopAirports: [],
+    price: 229, currency: 'USD', class: 'ECONOMY', seatsLeft: 7,
+    baggage: 'Carry-on included. Checked bag $30.',
+    amenities: ['Power outlets', 'In-flight entertainment', 'Wi-Fi available'],
+    co2: '138 kg CO₂ per passenger', priceHistory: 'typical'
+  },
+  // JFK → LHR (British Airways — missing international route)
+  {
+    id: 'f19', route: 'JFK-LHR',
+    airline: { code: 'BA', name: 'British Airways', website: 'britishairways.com', logo: 'https://logo.clearbit.com/britishairways.com' },
+    flightNumber: 'BA178',
+    departure: { iata: 'JFK', time: '19:00', date: '' },
+    arrival:   { iata: 'LHR', time: '07:00', date: '+1' },
+    duration: '7h 00m', stops: 0, stopAirports: [],
+    price: 724, currency: 'USD', class: 'ECONOMY', seatsLeft: 13,
+    baggage: '1 checked bag included.',
+    amenities: ['Meal service', 'Power outlets', 'In-flight entertainment', 'Wi-Fi available'],
+    co2: '310 kg CO₂ per passenger', priceHistory: 'typical'
+  },
+  {
+    id: 'f20', route: 'JFK-LHR',
+    airline: { code: 'BA', name: 'British Airways', website: 'britishairways.com', logo: 'https://logo.clearbit.com/britishairways.com' },
+    flightNumber: 'BA114',
+    departure: { iata: 'JFK', time: '21:45', date: '' },
+    arrival:   { iata: 'LHR', time: '09:55', date: '+1' },
+    duration: '7h 10m', stops: 0, stopAirports: [],
+    price: 2190, currency: 'USD', class: 'BUSINESS', seatsLeft: 4,
+    baggage: '3 checked bags included. Priority boarding.',
+    amenities: ['Lie-flat seat', 'Premium meal', 'Lounge access', 'Wi-Fi', 'Amenity kit'],
+    co2: '298 kg CO₂ per passenger', priceHistory: 'higher'
+  },
+  // LAX → LAS (Southwest — budget domestic)
+  {
+    id: 'f21', route: 'LAX-LAS',
+    airline: { code: 'WN', name: 'Southwest Airlines', website: 'southwest.com', logo: 'https://logo.clearbit.com/southwest.com' },
+    flightNumber: 'WN1247',
+    departure: { iata: 'LAX', time: '08:30', date: '' },
+    arrival:   { iata: 'LAS', time: '09:55', date: '' },
+    duration: '1h 25m', stops: 0, stopAirports: [],
+    price: 59, currency: 'USD', class: 'ECONOMY', seatsLeft: 22,
+    baggage: '2 free checked bags. No change fees.',
+    amenities: ['Free snacks', 'Wi-Fi available', 'Free same-day standby'],
+    co2: '45 kg CO₂ per passenger', priceHistory: 'lower'
+  },
+  // JFK → LAX (Southwest — now serves transcontinental)
+  {
+    id: 'f22', route: 'JFK-LAX',
+    airline: { code: 'WN', name: 'Southwest Airlines', website: 'southwest.com', logo: 'https://logo.clearbit.com/southwest.com' },
+    flightNumber: 'WN3421',
+    departure: { iata: 'JFK', time: '14:00', date: '' },
+    arrival:   { iata: 'LAX', time: '20:05', date: '' },
+    duration: '6h 05m', stops: 1, stopAirports: ['PHX'],
+    price: 179, currency: 'USD', class: 'ECONOMY', seatsLeft: 18,
+    baggage: '2 free checked bags. No change fees.',
+    amenities: ['Free snacks', 'Wi-Fi available', 'Free same-day standby'],
+    co2: '168 kg CO₂ per passenger', priceHistory: 'lower'
   }
 ];
 
@@ -518,6 +608,90 @@ const MOCK_HOTELS = [
     pricePerNight: 650, currency: 'USD',
     image: 'https://images.unsplash.com/photo-1549294413-26f195200c16?w=600&q=80',
     brand: null
+  },
+  // NYC — Marriott & Hilton (added per Dr. Billy feedback + Kayak/Expedia cross-reference)
+  {
+    id: 'h19', city: 'NYC',
+    name: 'New York Marriott Marquis',
+    stars: 4, rating: 8.8, ratingLabel: 'Excellent',
+    location: '1535 Broadway, Times Square',
+    amenities: ['Restaurant', 'Gym', 'Wi-Fi', 'Bar', 'Business Center', 'Concierge'],
+    pricePerNight: 399, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80',
+    brand: 'Marriott'
+  },
+  {
+    id: 'h20', city: 'NYC',
+    name: 'New York Hilton Midtown',
+    stars: 4, rating: 8.6, ratingLabel: 'Excellent',
+    location: '1335 Avenue of the Americas, Midtown',
+    amenities: ['Restaurant', 'Gym', 'Wi-Fi', 'Bar', 'Business Center', 'Concierge'],
+    pricePerNight: 329, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=80',
+    brand: 'Hilton'
+  },
+  // Seattle — for Alaska Airlines SEA routes
+  {
+    id: 'h21', city: 'SEA',
+    name: 'Seattle Marriott Waterfront',
+    stars: 4, rating: 9.0, ratingLabel: 'Excellent',
+    location: '2100 Alaskan Way, Downtown Seattle',
+    amenities: ['Restaurant', 'Gym', 'Wi-Fi', 'Bar', 'Water Views', 'Concierge'],
+    pricePerNight: 289, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80',
+    brand: 'Marriott'
+  },
+  {
+    id: 'h22', city: 'SEA',
+    name: 'Hilton Seattle',
+    stars: 4, rating: 8.7, ratingLabel: 'Excellent',
+    location: '1301 6th Ave, Downtown Seattle',
+    amenities: ['Restaurant', 'Gym', 'Wi-Fi', 'Bar', 'Business Center'],
+    pricePerNight: 249, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=600&q=80',
+    brand: 'Hilton'
+  },
+  // London — Marriott & Hilton (cross-referenced Expedia/Kayak)
+  {
+    id: 'h23', city: 'LHR',
+    name: 'London Marriott Hotel County Hall',
+    stars: 5, rating: 9.2, ratingLabel: 'Exceptional',
+    location: 'Westminster Bridge Rd, South Bank',
+    amenities: ['Spa', 'Restaurant', 'Gym', 'Wi-Fi', 'Thames Views', 'Concierge'],
+    pricePerNight: 520, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=80',
+    brand: 'Marriott'
+  },
+  {
+    id: 'h24', city: 'LHR',
+    name: 'Hilton London Bankside',
+    stars: 4, rating: 8.9, ratingLabel: 'Excellent',
+    location: '2-8 Great Suffolk St, Southwark',
+    amenities: ['Restaurant', 'Gym', 'Wi-Fi', 'Bar', 'Business Center'],
+    pricePerNight: 345, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1549294413-26f195200c16?w=600&q=80',
+    brand: 'Hilton'
+  },
+  // Las Vegas — for Southwest LAX-LAS route
+  {
+    id: 'h25', city: 'LAS',
+    name: 'The Venetian Resort Las Vegas',
+    stars: 5, rating: 9.3, ratingLabel: 'Exceptional',
+    location: '3355 Las Vegas Blvd S, The Strip',
+    amenities: ['Casino', 'Spa', 'Pool', 'Restaurants', 'Wi-Fi', 'Shows'],
+    pricePerNight: 289, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80',
+    brand: null
+  },
+  {
+    id: 'h26', city: 'LAS',
+    name: 'Hilton Grand Vacations on the Las Vegas Strip',
+    stars: 4, rating: 8.5, ratingLabel: 'Excellent',
+    location: '2650 Las Vegas Blvd S, The Strip',
+    amenities: ['Casino', 'Pool', 'Restaurant', 'Wi-Fi', 'Gym'],
+    pricePerNight: 179, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=80',
+    brand: 'Hilton'
   }
 ];
 
@@ -1138,11 +1312,137 @@ app.get('/api/watchlist/check', requireAuth, (req, res) => {
   res.json({ results, checkedAt: new Date().toISOString() });
 });
 
+// ─── Email Price Alert Delivery ───────────────────────────────────────────────
+async function sendPriceAlert(alert, currentPrice) {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log('[PriceAlert] EMAIL_USER/EMAIL_PASS not set in .env — skipping email delivery');
+    return;
+  }
+  const route = alert.type === 'flight'
+    ? `${alert.origin || ''}→${alert.destination || ''}`
+    : (alert.hotelName || alert.city || 'Hotel');
+  const subject = `✈️ Price Drop! ${route} now $${currentPrice}`;
+  const html = `
+    <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;background:#F7F8FA;border-radius:16px;overflow:hidden;border:1px solid #E5E7EB">
+      <div style="background:linear-gradient(135deg,#0A1628,#1B2E4B);padding:32px 28px;text-align:center">
+        <div style="font-size:40px;margin-bottom:8px">✈️</div>
+        <h1 style="color:#D4A847;font-size:22px;margin:0;font-weight:800">Price Drop Alert</h1>
+        <p style="color:rgba(255,255,255,0.7);margin:8px 0 0;font-size:14px">Voyage — Your Travel Dashboard</p>
+      </div>
+      <div style="padding:28px">
+        <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:20px;border:1px solid #E5E7EB">
+          <div style="font-size:24px;font-weight:800;color:#0A1628;margin-bottom:4px">${route}</div>
+          <div style="font-size:14px;color:#6B7280">${alert.departure ? `Departure: ${alert.departure}` : (alert.checkin ? `Check-in: ${alert.checkin}` : '')}</div>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:24px">
+          <div style="flex:1;background:#ECFDF5;border-radius:10px;padding:16px;text-align:center">
+            <div style="font-size:12px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px">Current Price</div>
+            <div style="font-size:32px;font-weight:800;color:#059669">$${currentPrice}</div>
+          </div>
+          <div style="flex:1;background:#FEF3C7;border-radius:10px;padding:16px;text-align:center">
+            <div style="font-size:12px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px">Your Target</div>
+            <div style="font-size:32px;font-weight:800;color:#D97706">$${alert.targetPrice}</div>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <a href="https://voyage-travel-dashboard.onrender.com"
+             style="display:inline-block;background:linear-gradient(135deg,#D4A847,#F0C060);color:#0A1628;text-decoration:none;padding:14px 32px;border-radius:100px;font-weight:800;font-size:15px">
+            View Flights →
+          </a>
+        </div>
+        <p style="font-size:12px;color:#9CA3AF;text-align:center;margin-top:20px">
+          You're receiving this because you set a price alert on Voyage.<br>
+          Prices may vary — book quickly before they change!
+        </p>
+      </div>
+    </div>
+  `;
+  await emailTransporter.sendMail({
+    from: `"Voyage Price Alerts" <${process.env.EMAIL_USER}>`,
+    to: alert.email,
+    subject,
+    html
+  });
+  console.log(`[PriceAlert] ✅ Sent to ${alert.email} for ${route} @ $${currentPrice}`);
+}
+
+async function checkAllAlerts() {
+  const list = loadWatchlist();
+  const flightAlerts = list.filter(w => {
+    if (!w.active) return false;
+    if (w.type !== 'flight') return false;
+    if (!w.lastNotified) return true;
+    const hoursAgo = (Date.now() - new Date(w.lastNotified).getTime()) / 3600000;
+    return hoursAgo > 24;
+  });
+  console.log(`[checkAllAlerts] Checking ${flightAlerts.length} flight alert(s)…`);
+  let notified = 0;
+  for (const alert of flightAlerts) {
+    try {
+      let prices;
+      if (DEMO_MODE) {
+        // Demo: use mock price range (filter by route if stored, else use all mock prices)
+        const origin = (alert.origin || '').toUpperCase();
+        const dest   = (alert.destination || '').toUpperCase();
+        const route  = origin && dest ? `${origin}-${dest}` : null;
+        const matched = route ? MOCK_FLIGHTS.filter(f => f.route === route) : [];
+        prices = (matched.length ? matched : MOCK_FLIGHTS).map(f => f.price);
+      } else {
+        // Live: call Amadeus for current prices
+        const origin      = (alert.origin || '').toUpperCase();
+        const destination = (alert.destination || '').toUpperCase();
+        const departure   = alert.departure || new Date().toISOString().split('T')[0];
+        try {
+          const params = {
+            originLocationCode:      origin,
+            destinationLocationCode: destination,
+            departureDate:           departure,
+            adults:                  parseInt(alert.adults || 1),
+            max: 5
+          };
+          const response = await amadeus.shopping.flightOffersSearch.get(params);
+          prices = (response.data || []).map(o => parseFloat(o.price.total)).filter(p => !isNaN(p));
+        } catch (e) {
+          console.error(`[checkAllAlerts] Amadeus error for alert ${alert.id}:`, e.message);
+          prices = MOCK_FLIGHTS.map(f => f.price);
+        }
+      }
+      if (!prices.length) continue;
+      const lowestPrice = Math.min(...prices);
+      if (lowestPrice <= alert.targetPrice) {
+        await sendPriceAlert(alert, lowestPrice);
+        const idx = list.findIndex(i => i.id === alert.id);
+        if (idx !== -1) list[idx].lastNotified = new Date().toISOString();
+        notified++;
+      }
+    } catch (err) {
+      console.error(`[checkAllAlerts] Error for alert ${alert.id}:`, err.message);
+    }
+  }
+  saveWatchlist(list);
+  console.log(`[checkAllAlerts] Done — ${notified} of ${flightAlerts.length} alert(s) triggered`);
+  return flightAlerts.length;
+}
+
+// Manual alert trigger endpoint
+app.post('/api/alerts/trigger', requireAuth, async (req, res) => {
+  try {
+    const checked = await checkAllAlerts();
+    res.json({ ok: true, checked });
+  } catch (err) {
+    console.error('[alerts/trigger] Error:', err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 // ─── Static Files ─────────────────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+// ─── Periodic Price Alert Check (every 6 hours) ───────────────────────────────
+setInterval(() => checkAllAlerts(), 6 * 60 * 60 * 1000);
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 app.listen(PORT, '0.0.0.0', () => {

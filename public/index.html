@@ -1069,6 +1069,12 @@
     .view-deal-btn.booking:hover { background: #002a66; }
     .view-deal-btn.hotelscom { background: #D81F2A; }
     .view-deal-btn.hotelscom:hover { background: #b81824; }
+    .view-deal-btn.trivago { background: #007a87; }
+    .view-deal-btn.trivago:hover { background: #006370; }
+    .view-deal-btn.hilton { background: #002D6E; }
+    .view-deal-btn.hilton:hover { background: #001d4a; }
+    .view-deal-btn.hyatt { background: #8B2026; }
+    .view-deal-btn.hyatt:hover { background: #6d181d; }
     /* Brand-color dots for OTA source labels */
     .compare-source-dot {
       display: inline-block; width: 9px; height: 9px;
@@ -2350,6 +2356,19 @@
       <button class="amenity-toggle" data-amenity="Bar" onclick="toggleAmenity(this)">🍸 Bar</button>
     </div>
   </div>
+  <!-- Price Comparison Banner -->
+  <div id="price-comparison-banner" style="display:none;margin:0 24px 16px;padding:14px 22px;background:linear-gradient(135deg,rgba(10,22,40,0.92),rgba(27,46,75,0.92));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(212,168,71,0.35);border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,0.25);">
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:rgba(255,255,255,0.85)">
+      <span id="pcb-best" style="display:flex;align-items:center;gap:6px">⭐ Best value: <strong style="color:#F0C060;font-size:16px">—</strong></span>
+      <span style="color:rgba(255,255,255,0.25);font-size:18px">|</span>
+      <span id="pcb-cheap" style="display:flex;align-items:center;gap:6px">💰 Cheapest: <strong style="color:#34d399;font-size:16px">—</strong></span>
+      <span id="pcb-save-wrap" style="display:none;align-items:center;gap:6px">
+        <span style="color:rgba(255,255,255,0.25);font-size:18px">|</span>
+        <span id="pcb-save" style="color:#34d399;font-weight:600">Save <strong>—</strong> choosing cheapest</span>
+      </span>
+    </div>
+  </div>
+
   <!-- Sort Bar -->
   <div class="sort-bar">
     <div style="display:flex;align-items:center;gap:12px">
@@ -2429,11 +2448,11 @@
 <div class="ai-panel" id="ai-panel">
   <div class="ai-panel-header">
     <div class="ai-avatar">🤖</div>
-    <div><div class="ai-panel-title">Voyage AI Planner</div><div class="ai-panel-sub">Personalized itineraries in seconds</div></div>
+    <div><div class="ai-panel-title">Voyage AI Planner</div><div class="ai-panel-sub">Flight search · Itineraries · Travel advice</div></div>
     <button class="ai-close-btn" onclick="closeAIPlanner()">✕</button>
   </div>
   <div class="ai-messages" id="ai-messages">
-    <div class="ai-msg bot">👋 Hi! I'm your AI trip planner. Tell me your destination and how many days — I'll build a full itinerary with flights, hotels &amp; activities.<br><br>Try: <em>"Paris 5 days"</em> or <em>"Tokyo 7 days"</em></div>
+    <div class="ai-msg bot">👋 Hi! I'm your Voyage AI assistant. I can search flights or build full itineraries.<br><br>Try: <em>"flights JFK to Miami next Friday"</em> or <em>"Paris 5 days"</em></div>
   </div>
   <div class="ai-typing" id="ai-typing"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>
   <div class="ai-suggestions" id="ai-suggestions">
@@ -2443,9 +2462,11 @@
     <button class="ai-suggestion-chip" onclick="sendAIMessage('Bali 6 days')">🇮🇩 Bali</button>
     <button class="ai-suggestion-chip" onclick="sendAIMessage('Rome 5 days')">🇮🇹 Rome</button>
     <button class="ai-suggestion-chip" onclick="sendAIMessage('London 4 days')">🇬🇧 London</button>
+    <button class="ai-suggestion-chip" onclick="sendAIMessage('flights from JFK to MIA this weekend')">✈️ JFK→MIA weekend</button>
+    <button class="ai-suggestion-chip" onclick="sendAIMessage('cheap flights to Paris')">🔍 Cheap flights to Paris</button>
   </div>
   <div class="ai-input-row">
-    <input class="ai-input" id="ai-input" type="text" placeholder="Where do you want to go?" onkeydown="if(event.key==='Enter')sendAIMessage()" />
+    <input class="ai-input" id="ai-input" type="text" placeholder="Ask anything — &quot;flights JFK to Miami next Friday&quot; or &quot;Paris 5 days&quot;" onkeydown="if(event.key==='Enter')sendAIMessage()" />
     <button class="ai-send-btn" onclick="sendAIMessage()">→</button>
   </div>
 </div>
@@ -2647,7 +2668,7 @@ async function searchFlights(){
   const adults=state.pax.adults,travelClass=document.getElementById('class-select').value;
   if(!origin||!destination||!departure){showToast('⚠️ Please fill in origin, destination, and departure date');return;}
   state.currentMode='flights';state.searchParams={origin,destination,departure,returnDate,adults,travelClass};
-  hidePoppularDests();showResults();showSidebar(true);hideSectionExtras();showSkeletons(6);
+  hidePriceComparisonBanner();hidePoppularDests();showResults();showSidebar(true);hideSectionExtras();showSkeletons(6);
   try{
     let url=`/api/flights?origin=${origin}&destination=${destination}&departure=${departure}&adults=${adults}&class=${travelClass}`;
     if(returnDate)url+=`&return=${returnDate}`;
@@ -2735,6 +2756,8 @@ function renderFlights(flights,params){
   const minP=Math.min(...flights.map(f=>f.price));
   container.innerHTML=`<div class="flights-list">${ws.map((f,i)=>flightCard(f,i,minP,params)).join('')}</div>`;
   container.querySelectorAll('.flight-card-main').forEach(el=>{el.addEventListener('click',()=>{const d=el.nextElementSibling;if(d)d.classList.toggle('open');});});
+  // Show price comparison banner when 2+ results
+  if(flights.length>=2)showPriceComparisonBanner();
 }
 
 function flightCard(f,idx,minPrice,params){
@@ -2972,8 +2995,14 @@ function buildHotelBookingUrl(site, h, params) {
       return `https://www.hotels.com/search?q-destination=${name}&q-check-in=${cin}&q-check-out=${cout}&q-rooms=1&q-adult-guests=${adults}`;
     case 'marriott.com':
       return `https://www.marriott.com/search/findHotels.mi?roomCount=1&numAdultsPerRoom=${adults}&fromDate=${cin}&toDate=${cout}`;
+    case 'hilton.com':
+      return `https://www.hilton.com/en/search/?arrivalDate=${cin}&departureDate=${cout}&numAdults=${adults}&numRooms=1&query=${city}`;
+    case 'hyatt.com':
+      return `https://www.hyatt.com/search?checkinDate=${cin}&checkoutDate=${cout}&adults=${adults}&destination=${city}`;
     case 'hotwire.com':
       return `https://www.hotwire.com/Hotel/search?destination=${city}&checkInDate=${cin}&checkOutDate=${cout}&numRooms=1&numGuests=${adults}`;
+    case 'trivago.com':
+      return `https://www.trivago.com/?aDateRange[arr]=${cin}&aDateRange[dep]=${cout}&iRoomType=7&iPersons[0]=${adults}&sQuery=${name}`;
     default:
       return `https://www.${site}/search?q=${name}`;
   }
@@ -2982,12 +3011,15 @@ function buildHotelBookingUrl(site, h, params) {
 function buildPriceComparePanel(h, params){
   if(!h.pricePerNight)return'<p style="font-size:13px;color:var(--text-muted)">Price comparison not available.</p>';
   const base=h.pricePerNight;
+  // Pick direct booking site based on hotel brand
+  const brandSite = h.brand==='Marriott'?'marriott.com':h.brand==='Hilton'?'hilton.com':h.brand==='Hyatt'?'hyatt.com':null;
   const sources=[
     {name:'Expedia',    site:'expedia.com',  mult:1.00, icon:'🟦'},
     {name:'Booking.com',site:'booking.com',  mult:1.07, icon:'🟦'},
     {name:'Hotels.com', site:'hotels.com',   mult:1.04, icon:'🔴'},
-    {name:'Direct',     site:'marriott.com', mult:1.12, icon:'⭐'},
-    {name:'Hotwire',    site:'hotwire.com',  mult:0.93, icon:'🔥'}
+    {name:'Trivago',    site:'trivago.com',  mult:0.98, icon:'🔍'},
+    {name:'Hotwire',    site:'hotwire.com',  mult:0.93, icon:'🔥'},
+    ...(brandSite?[{name:'Book Direct',site:brandSite,mult:1.12,icon:'⭐'}]:[])
   ];
   const seed=(base*100+(h.id.charCodeAt?h.id.charCodeAt(0):42))%100;
   const priced=sources.map((s,i)=>({...s,price:Math.round(base*s.mult*(0.96+((seed+i*7)%20)/100))})).sort((a,b)=>a.price-b.price);
@@ -3241,6 +3273,66 @@ const AI={
   nyc:(d)=>`<div class="ai-itinerary"><div class="ai-dest-header"><span class="ai-dest-flag">🗽</span><h3>New York City — ${d} Days</h3></div><div class="ai-day"><div class="ai-day-label">Day 1 — Manhattan</div><div class="ai-day-item">🏙️ Check in at citizenM Times Square (~$249/night)</div><div class="ai-day-item">🗽 Statue of Liberty ferry · Ellis Island</div><div class="ai-day-item">🍕 Joe's Pizza in Greenwich Village — NYC must-do</div></div><div class="ai-day"><div class="ai-day-label">Day 2 — Park & Culture</div><div class="ai-day-item">🌳 Central Park bike ride · The Metropolitan Museum</div><div class="ai-day-item">🛍️ Fifth Avenue · Rockefeller Center · High Line</div><div class="ai-day-item">🌃 Dinner at Le Bernardin — 4 decades of Michelin stars</div></div><div class="ai-budget"><div class="ai-budget-row"><span>✈️ Domestic flights</span><strong>$150–$400</strong></div><div class="ai-budget-row"><span>🏨 Hotel/night</span><strong>$199–$895</strong></div><div class="ai-budget-row"><span>🍽️ Food & activities/day</span><strong>$80–$200</strong></div><div class="ai-budget-row total"><span>💰 Est. total (${d} days)</span><strong>$800–$3,500</strong></div></div></div>`
 };
 
+// ─── AI Flight Search Helpers ─────────────────────────────────────────────────
+const AIRPORT_CODE_MAP={
+  'nyc':'JFK','new york':'JFK','jfk':'JFK',
+  'miami':'MIA','mia':'MIA',
+  'la':'LAX','los angeles':'LAX','lax':'LAX',
+  'chicago':'ORD','ord':'ORD',
+  'london':'LHR','lhr':'LHR',
+  'paris':'CDG','cdg':'CDG',
+  'tokyo':'NRT','nrt':'NRT',
+  'dubai':'DXB','dxb':'DXB',
+  'boston':'BOS','bos':'BOS',
+  'sf':'SFO','san francisco':'SFO','sfo':'SFO',
+  'dallas':'DFW','dfw':'DFW',
+  'atlanta':'ATL','atl':'ATL',
+  'seattle':'SEA','sea':'SEA',
+  'denver':'DEN','den':'DEN',
+  'las vegas':'LAS','vegas':'LAS','las':'LAS'
+};
+function resolveAirportCode(text){
+  const t=(text||'').toLowerCase().trim().replace(/[.,!?]$/,'');
+  if(AIRPORT_CODE_MAP[t])return AIRPORT_CODE_MAP[t];
+  for(const[key,code]of Object.entries(AIRPORT_CODE_MAP)){if(t.includes(key))return code;}
+  if(/^[a-z]{3}$/.test(t))return t.toUpperCase();
+  return null;
+}
+function parseFlightDate(text){
+  const t=text.toLowerCase();
+  if(t.includes('tomorrow'))return'2026-05-04';
+  if(t.includes('this weekend')||t.includes('weekend'))return'2026-05-09';
+  if(t.includes('next friday')||t.includes('next fri'))return'2026-05-08';
+  if(t.includes('next week'))return'2026-05-10';
+  // Absolute: "May 10", "May 10 2026", "5/10"
+  const mdy=text.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})(?:\s+(\d{4}))?/i);
+  if(mdy){const months={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};const mo=months[mdy[1].toLowerCase().slice(0,3)];const day=parseInt(mdy[2]);const yr=mdy[3]?parseInt(mdy[3]):2026;return`${yr}-${String(mo).padStart(2,'0')}-${String(day).padStart(2,'0')}`;}
+  const numDate=text.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{4}))?/);
+  if(numDate){const yr=numDate[3]||'2026';return`${yr}-${numDate[1].padStart(2,'0')}-${numDate[2].padStart(2,'0')}`;}
+  return null;
+}
+function detectFlightIntent(q){
+  return/\b(fly|flight|flights|find me a flight|book a flight|flights? from|✈)\b/i.test(q)||/\b[a-z]{3}\s*(?:→|->|to)\s*[a-z]{3}\b/i.test(q)||q.toLowerCase().includes('cheap flights');
+}
+function parseFlightQuery(q){
+  const lower=q.toLowerCase();
+  let origin=null,dest=null;
+  // "from X to Y ..."
+  const m1=lower.match(/from\s+([\w\s]+?)\s+to\s+([\w\s]+?)(?:\s+on\s|\s+next\s|\s+this\s|\s+tomorrow|\s+\d|\s*$)/);
+  if(m1){origin=resolveAirportCode(m1[1].trim());dest=resolveAirportCode(m1[2].trim());}
+  // "flights X to Y" or "flights from X to Y"
+  if(!origin||!dest){const m2=lower.match(/flights?\s+(?:from\s+)?([\w\s]+?)\s+to\s+([\w\s]+?)(?:\s+on\s|\s+next\s|\s+this\s|\s+tomorrow|\s+\d|\s*$)/);if(m2){origin=resolveAirportCode(m2[1].trim());dest=resolveAirportCode(m2[2].trim());}}
+  // "cheap flights to X" — use JFK as default origin
+  if(!origin&&dest){origin='JFK';}
+  if(!dest&&origin){/* can't resolve dest */}
+  // "AAA→BBB" or "AAA to BBB" (3-letter codes)
+  if(!origin||!dest){const m3=lower.match(/\b([a-z]{3})\s*(?:→|->|to)\s*([a-z]{3})\b/);if(m3){origin=resolveAirportCode(m3[1]);dest=resolveAirportCode(m3[2]);}}
+  // "cheap flights to Paris" pattern
+  if(!dest){const m4=lower.match(/(?:flights?\s+to|fly\s+to)\s+([\w\s]+?)(?:\s+on\s|\s+next\s|\s+this\s|\s+\d|\s*$)/);if(m4){dest=resolveAirportCode(m4[1].trim());if(!origin)origin='JFK';}}
+  const date=parseFlightDate(q);
+  return{origin,dest,date};
+}
+
 function getAIResponse(query){
   const q=query.toLowerCase();const dm=q.match(/(\d+)\s*days?/);const d=dm?parseInt(dm[1]):5;
   if(q.includes('paris')||q.includes('france'))return AI.paris(d);
@@ -3262,11 +3354,73 @@ function sendAIMessage(preset){
   const msgs=document.getElementById('ai-messages');
   const userEl=document.createElement('div');userEl.className='ai-msg user';userEl.textContent=msg;msgs.appendChild(userEl);
   const typing=document.getElementById('ai-typing');typing.classList.add('visible');msgs.scrollTop=msgs.scrollHeight;
+
+  // ── Flight search intent detection ───────────────────────────────────────
+  if(detectFlightIntent(msg)){
+    const parsed=parseFlightQuery(msg);
+    if(!parsed.origin||!parsed.dest){
+      setTimeout(()=>{typing.classList.remove('visible');const botEl=document.createElement('div');botEl.className='ai-msg bot';botEl.innerHTML="I couldn't find that route. Try: <em>'flights from JFK to Miami on May 10'</em> — or use the search form above.";msgs.appendChild(botEl);msgs.scrollTop=msgs.scrollHeight;},1000);
+      return;
+    }
+    // Show "Searching for flights…" message
+    setTimeout(()=>{
+      typing.classList.remove('visible');
+      const botEl=document.createElement('div');botEl.className='ai-msg bot';botEl.innerHTML=`✈️ Searching for flights <strong>${parsed.origin} → ${parsed.dest}</strong>${parsed.date?' on '+parsed.date:''}…`;
+      msgs.appendChild(botEl);msgs.scrollTop=msgs.scrollHeight;
+      // After 1.2s: populate form, close panel, trigger search
+      setTimeout(()=>{
+        // Switch to flights tab
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+        const flightsTab=document.querySelector('[data-tab="flights"]');
+        if(flightsTab)flightsTab.classList.add('active');
+        document.getElementById('tab-flights').classList.add('active');
+        state.activeTab='flights';
+        // Populate origin field
+        document.getElementById('from-input').value=parsed.origin;
+        state.fromIata=parsed.origin;
+        // Populate destination field
+        document.getElementById('to-input').value=parsed.dest;
+        state.toIata=parsed.dest;
+        // Populate date if parsed
+        if(parsed.date){document.getElementById('depart-input').value=parsed.date;}
+        // Close AI panel
+        closeAIPlanner();
+        // Trigger search
+        searchFlights();
+      },1200);
+    },900);
+    return;
+  }
+
+  // ── Default: itinerary / travel planner ──────────────────────────────────
   setTimeout(()=>{typing.classList.remove('visible');const botEl=document.createElement('div');botEl.className='ai-msg bot rich';botEl.innerHTML=getAIResponse(msg);msgs.appendChild(botEl);msgs.scrollTop=msgs.scrollHeight;},1400+Math.random()*700);
 }
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
 function showToast(msg){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className='toast';t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3200);}
+
+// ─── Price Comparison Banner ──────────────────────────────────────────────────
+function showPriceComparisonBanner(){
+  const banner=document.getElementById('price-comparison-banner');
+  if(!banner||state.rawFlights.length<2)return;
+  // Best value = top-scored flight (index 0 of 'best' sort)
+  const bestSorted=[...state.rawFlights].sort((a,b)=>scoreFlight(a)-scoreFlight(b));
+  const bestPrice=bestSorted[0]?bestSorted[0].price:null;
+  const cheapestPrice=Math.min(...state.rawFlights.map(f=>f.price));
+  if(bestPrice===null)return;
+  document.getElementById('pcb-best').innerHTML=`⭐ Best value: <strong style="color:#F0C060;font-size:16px">${formatPrice(bestPrice)}</strong>`;
+  document.getElementById('pcb-cheap').innerHTML=`💰 Cheapest: <strong style="color:#34d399;font-size:16px">${formatPrice(cheapestPrice)}</strong>`;
+  const saveWrap=document.getElementById('pcb-save-wrap');
+  const diff=Math.round(bestPrice-cheapestPrice);
+  if(diff>5){document.getElementById('pcb-save').innerHTML=`Save <strong>${formatPrice(diff)}</strong> choosing cheapest`;saveWrap.style.display='inline-flex';}
+  else{saveWrap.style.display='none';}
+  banner.style.display='block';
+}
+function hidePriceComparisonBanner(){
+  const el=document.getElementById('price-comparison-banner');
+  if(el)el.style.display='none';
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function hidePoppularDests(){document.getElementById('popular-destinations').classList.add('hidden');const pr=document.getElementById('popular-routes-wrap');if(pr)pr.style.display='none';}
