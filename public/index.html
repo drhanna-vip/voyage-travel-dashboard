@@ -2849,7 +2849,7 @@ function buildFlightBookLinks(f,params){
       airlineUrl=`https://www.aa.com/booking/find-flights?flightType=${tripType==='roundtrip'?'r':'o'}&paxCount=${pax}&cabin=Y&fromCity=${orig}&toCity=${dest}&departDate=${dep}`+(ret?`&returnDate=${ret}`:'');
     } else if(ac==='DL'){
       // Delta deeplink
-      airlineUrl=`https://www.delta.com/us/en/flight-search/book-a-flight?paxCount=${pax}&adult=${pax}&child=0&infant=0&originCity=${orig}&destinationCity=${dest}&departureDate=${dep}`+(ret?`&returnDate=${ret}&tripType=ROUND_TRIP`:'&tripType=ONE_WAY');
+      airlineUrl=`https://www.delta.com/flightsearch/book-a-flight?paxCount=${pax}&adult=${pax}&child=0&infant=0&originCity=${orig}&destinationCity=${dest}&departureDate=${dep}`+(ret?`&returnDate=${ret}&tripType=ROUND_TRIP`:'&tripType=ONE_WAY');
     } else if(ac==='UA'){
       // United Airlines deeplink
       airlineUrl=`https://www.united.com/en/us/flightsearch/book-a-flight?f=${orig}&t=${dest}&d=${dep}`+(ret?`&r=${ret}&tt=2`:'&tt=1')+`&sc=7&ct=${pax}`;
