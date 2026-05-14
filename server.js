@@ -1435,6 +1435,124 @@ app.post('/api/alerts/trigger', requireAuth, async (req, res) => {
   }
 });
 
+// ─── Price Drop Alerts — Feature 1 (alerts.json) ──────────────────────────────
+const ALERTS_FILE = path.join(__dirname, 'alerts.json');
+
+function loadAlerts() {
+  try { return JSON.parse(fs.readFileSync(ALERTS_FILE, 'utf8')); } catch(e) { return []; }
+}
+function saveAlerts(list) {
+  fs.writeFileSync(ALERTS_FILE, JSON.stringify(list, null, 2));
+}
+
+app.get('/api/alerts', requireAuth, (req, res) => {
+  res.json(loadAlerts());
+});
+
+app.post('/api/alerts', requireAuth, (req, res) => {
+  const { origin, destination, targetPrice, label } = req.body;
+  if (!origin || !destination || !targetPrice) {
+    return res.status(400).json({ error: 'origin, destination, and targetPrice are required' });
+  }
+  const alerts = loadAlerts();
+  const orig = origin.trim().toUpperCase();
+  const dest = destination.trim().toUpperCase();
+  const tp   = parseFloat(targetPrice);
+
+  // Simulate best current price check against mock data
+  const route   = `${orig}-${dest}`;
+  const matched = MOCK_FLIGHTS.filter(f => f.route === route);
+  const prices  = (matched.length ? matched : MOCK_FLIGHTS).map(f => f.price);
+  const bestPrice = prices.length ? Math.min(...prices) : null;
+
+  const alert = {
+    id:               Date.now().toString(),
+    origin:           orig,
+    destination:      dest,
+    targetPrice:      tp,
+    label:            (label || '').trim(),
+    createdAt:        new Date().toISOString(),
+    currentBestPrice: bestPrice,
+    status:           (bestPrice !== null && bestPrice <= tp) ? 'triggered' : 'watching',
+    lastChecked:      new Date().toISOString()
+  };
+  alerts.push(alert);
+  saveAlerts(alerts);
+  res.json({ ok: true, alert });
+});
+
+app.delete('/api/alerts/:id', requireAuth, (req, res) => {
+  const updated = loadAlerts().filter(a => a.id !== req.params.id);
+  saveAlerts(updated);
+  res.json({ ok: true });
+});
+
+// ─── Price Calendar — Feature 2 ───────────────────────────────────────────────
+app.get('/api/price-calendar', requireAuth, (req, res) => {
+  const { origin, destination, month, year } = req.query;
+  const y = parseInt(year)  || new Date().getFullYear();
+  const m = parseInt(month) || (new Date().getMonth() + 1);
+  const daysInMonth = new Date(y, m, 0).getDate();
+  const orig = (origin      || 'JFK').toUpperCase();
+  const dest = (destination || 'LAX').toUpperCase();
+
+  // Derive base price from mock flights for this route (or global average)
+  const routeKey   = `${orig}-${dest}`;
+  const matched    = MOCK_FLIGHTS.filter(f => f.route === routeKey);
+  const basePrices = (matched.length ? matched : MOCK_FLIGHTS.slice(0, 8)).map(f => f.price);
+  const basePrice  = basePrices.reduce((a, b) => a + b, 0) / basePrices.length;
+
+  // US holidays (MM-DD) — drive premium pricing
+  const holidays = new Set([
+    '01-01','01-20','02-17','05-26','06-19','07-04',
+    '09-01','10-13','11-11','11-27','11-28','12-24','12-25','12-26','12-31'
+  ]);
+
+  const days = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date      = new Date(y, m - 1, d);
+    const dow       = date.getDay(); // 0=Sun 6=Sat
+    const mmdd      = `${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isHoliday = holidays.has(mmdd);
+    const isWeekend = dow === 0 || dow === 6;
+
+    // Deterministic pseudo-random variation seeded by date
+    const seed = ((d * 17 + m * 31 + (y % 100) * 7) % 100);
+    let mult = 1.0;
+    if      (isHoliday) mult = 1.22 + (seed % 20) / 100;
+    else if (isWeekend) mult = 1.10 + (seed % 18) / 100;
+    else                mult = 0.82 + (seed % 30) / 100;
+
+    days.push({
+      date:       `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,
+      day:        d,
+      dow,
+      price:      Math.round(basePrice * mult),
+      isWeekend,
+      isHoliday
+    });
+  }
+
+  // Assign cheap/moderate/expensive tiers by percentile
+  const sorted = [...days.map(d => d.price)].sort((a, b) => a - b);
+  const p33 = sorted[Math.floor(sorted.length * 0.33)];
+  const p66 = sorted[Math.floor(sorted.length * 0.66)];
+
+  const result = days.map(d => ({
+    ...d,
+    tier: d.price <= p33 ? 'cheap' : d.price <= p66 ? 'moderate' : 'expensive'
+  }));
+
+  res.json({
+    days: result,
+    origin: orig,
+    destination: dest,
+    month: m,
+    year:  y,
+    estimated: true
+  });
+});
+
 // ─── Static Files ─────────────────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('*', (req, res) => {

@@ -1924,6 +1924,50 @@
       }
       .mobile-search-form .m-search-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(212,168,71,0.55); }
     }
+/* ─── Price Drop Alerts Form ───────────────────────────── */
+.alert-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr auto;gap:10px;align-items:end;margin-bottom:16px}
+.alert-form-field{display:flex;flex-direction:column;gap:6px}
+.alert-form-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px}
+.alert-form-input{height:48px;background:rgba(10,20,50,0.75);border:1.5px solid rgba(255,255,255,0.25);border-radius:12px;padding:0 14px;font-size:14px;font-weight:500;color:#fff;outline:none;transition:all 0.2s;width:100%}
+.alert-form-input::placeholder{color:rgba(255,255,255,0.40)}
+.alert-form-input:focus{border-color:var(--gold);background:rgba(255,255,255,0.15);box-shadow:0 0 0 3px rgba(212,168,71,0.18)}
+.alert-add-btn{height:48px;padding:0 22px;background:linear-gradient(135deg,#D4A847,#F0C060);color:#0A1628;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.22s;white-space:nowrap}
+.alert-add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(212,168,71,0.45)}
+.alert-divider{border:none;border-top:1px solid rgba(255,255,255,0.12);margin:16px 0}
+.alert-status-watching{padding:4px 12px;background:rgba(212,168,71,0.2);color:#F0C060;border-radius:99px;font-size:11px;font-weight:700}
+.alert-status-triggered{padding:4px 12px;background:rgba(5,150,105,0.2);color:#34d399;border-radius:99px;font-size:11px;font-weight:700}
+@media(max-width:768px){.alert-form-grid{grid-template-columns:1fr 1fr;}}
+
+/* ─── Price Calendar ────────────────────────────────────── */
+.price-cal-toggle{background:rgba(255,255,255,0.10);border:1.5px solid rgba(255,255,255,0.22);color:rgba(255,255,255,0.82);border-radius:99px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.price-cal-toggle:hover,.price-cal-toggle.cal-open{background:rgba(212,168,71,0.18);border-color:var(--gold);color:var(--gold-light)}
+.price-calendar-section{background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px;margin-top:14px;display:none}
+.price-calendar-section.cal-visible{display:block;animation:aiFadeIn 0.2s ease}
+.cal-controls{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:16px}
+.cal-controls .alert-form-input{height:44px;font-size:14px}
+.cal-load-btn{height:44px;padding:0 18px;background:linear-gradient(135deg,#D4A847,#F0C060);color:#0A1628;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.cal-load-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(212,168,71,0.4)}
+.cal-header-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.cal-day-name{text-align:center;font-size:10px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.5px;padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-cell{border-radius:10px;padding:6px 4px;text-align:center;cursor:pointer;transition:all 0.18s;border:1.5px solid transparent;position:relative}
+.cal-cell:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,0.3);border-color:rgba(255,255,255,0.3)}
+.cal-cell.empty{background:transparent;cursor:default;pointer-events:none}
+.cal-cell.cheap{background:rgba(5,150,105,0.25);border-color:rgba(5,150,105,0.35)}
+.cal-cell.cheap .cal-price{color:#34d399}
+.cal-cell.moderate{background:rgba(217,119,6,0.22);border-color:rgba(217,119,6,0.32)}
+.cal-cell.moderate .cal-price{color:#fbbf24}
+.cal-cell.expensive{background:rgba(220,38,38,0.2);border-color:rgba(220,38,38,0.28)}
+.cal-cell.expensive .cal-price{color:#f87171}
+.cal-cell.holiday::after{content:'★';position:absolute;top:2px;right:4px;font-size:8px;color:var(--gold)}
+.cal-day-num{font-size:12px;font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:2px}
+.cal-price{font-size:11px;font-weight:700;line-height:1}
+.cal-legend{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.cal-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,0.6)}
+.cal-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.cal-est-badge{background:rgba(212,168,71,0.15);border:1px solid rgba(212,168,71,0.3);color:var(--gold);border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;letter-spacing:0.5px}
+@media(max-width:768px){.cal-controls{grid-template-columns:1fr 1fr;}.cal-cell{padding:4px 2px}.cal-price{font-size:9px}}
+
 /* ─── AI Search Tab ─────────────────────────────────────── */
 .ai-panel{padding:20px 0 4px}
 .ai-textarea{width:100%;min-height:80px;padding:16px 18px;border:2px solid var(--border);border-radius:14px;font-family:'Inter',sans-serif;font-size:15px;color:var(--text);background:var(--card-bg);resize:none;outline:none;transition:border-color .2s;line-height:1.5}
@@ -2036,11 +2080,53 @@
             <button class="trip-pill active" data-trip="roundtrip">⇄ Round Trip</button>
             <button class="trip-pill" data-trip="oneway">→ One Way</button>
           </div>
-          <button class="flex-dates-toggle" id="flex-dates-toggle" onclick="toggleFlexDates()">
-            <span class="toggle-switch" id="flex-toggle-sw"></span>
-            📅 Flexible Dates?
-          </button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="flex-dates-toggle" id="flex-dates-toggle" onclick="toggleFlexDates()">
+              <span class="toggle-switch" id="flex-toggle-sw"></span>
+              📅 Flexible Dates?
+            </button>
+            <button class="price-cal-toggle" id="price-cal-toggle" onclick="togglePriceCalendar()">📅 Price Calendar</button>
+          </div>
         </div>
+
+        <!-- Price Calendar Panel -->
+        <div class="price-calendar-section" id="price-calendar-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:14px;font-weight:700;color:#fff">📅 Price Calendar</span>
+              <span class="cal-est-badge">ESTIMATED</span>
+            </div>
+            <span style="font-size:11px;color:rgba(255,255,255,0.45)">Click any date to auto-fill your departure</span>
+          </div>
+          <div class="cal-controls">
+            <div class="alert-form-field">
+              <span class="alert-form-label">From</span>
+              <input class="alert-form-input" id="cal-origin" type="text" placeholder="e.g. JFK" />
+            </div>
+            <div class="alert-form-field">
+              <span class="alert-form-label">To</span>
+              <input class="alert-form-input" id="cal-destination" type="text" placeholder="e.g. LAX" />
+            </div>
+            <div class="alert-form-field">
+              <span class="alert-form-label">Month</span>
+              <input class="alert-form-input" id="cal-month-input" type="month" />
+            </div>
+            <button class="cal-load-btn" onclick="loadPriceCalendar()">Load →</button>
+          </div>
+          <div id="cal-status" style="font-size:13px;color:rgba(255,255,255,0.55);text-align:center;padding:8px 0;display:none">Loading calendar…</div>
+          <div id="cal-grid-wrap" style="display:none">
+            <div class="cal-header-row" id="cal-header-row"></div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="cal-legend">
+              <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(5,150,105,0.6)"></div>Cheapest days</div>
+              <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(217,119,6,0.6)"></div>Moderate</div>
+              <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(220,38,38,0.5)"></div>Expensive</div>
+              <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(212,168,71,0.4)"></div>★ Holiday</div>
+              <div class="cal-legend-item" style="margin-left:auto;font-style:italic;opacity:0.6">Prices are simulated estimates — not live fares</div>
+            </div>
+          </div>
+        </div>
+
         <div class="search-grid">
           <div class="search-field" id="from-field">
             <label>From</label>
@@ -2219,15 +2305,45 @@
 
       <!-- ─── Alerts Panel ─────────────────────────────────────── -->
       <div class="tab-panel" id="tab-alerts">
-        <div style="margin-bottom:14px"><span style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:600">🔔 Your active price alerts — we'll notify you when prices drop to your target</span></div>
-        <div id="alerts-panel-content" style="min-height:120px">
-          <div id="alerts-loading" style="text-align:center;padding:32px;color:rgba(255,255,255,0.5);font-size:15px">Loading alerts…</div>
-          <div id="alerts-empty" style="display:none;text-align:center;padding:32px;color:rgba(255,255,255,0.5);font-size:15px">No active price alerts.<br><span style="font-size:13px;opacity:0.7">Search for flights or hotels, then click 🔔 to set a target price.</span></div>
+        <div style="margin-bottom:14px"><span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85)">🔔 Price Drop Alerts</span> <span style="font-size:12px;color:rgba(255,255,255,0.5)">— get notified when fares hit your target</span></div>
+
+        <!-- Add Alert Form -->
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:18px 20px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">➕ Add New Alert</div>
+          <div class="alert-form-grid">
+            <div class="alert-form-field">
+              <span class="alert-form-label">Origin</span>
+              <input class="alert-form-input" id="new-alert-origin" type="text" placeholder="e.g. JFK" />
+            </div>
+            <div class="alert-form-field">
+              <span class="alert-form-label">Destination</span>
+              <input class="alert-form-input" id="new-alert-dest" type="text" placeholder="e.g. LAX" />
+            </div>
+            <div class="alert-form-field">
+              <span class="alert-form-label">Target Price ($)</span>
+              <input class="alert-form-input" id="new-alert-price" type="number" placeholder="e.g. 250" min="1" />
+            </div>
+            <div class="alert-form-field">
+              <span class="alert-form-label">Label (optional)</span>
+              <input class="alert-form-input" id="new-alert-label" type="text" placeholder="e.g. Summer vacation" />
+            </div>
+            <button class="alert-add-btn" onclick="submitNewAlert()">+ Add Alert</button>
+          </div>
+          <div id="new-alert-msg" style="font-size:13px;margin-top:8px;display:none"></div>
+        </div>
+
+        <hr class="alert-divider" />
+
+        <!-- Active Alerts List -->
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Active Alerts</div>
+        <div id="alerts-panel-content" style="min-height:80px">
+          <div id="alerts-loading" style="text-align:center;padding:24px;color:rgba(255,255,255,0.5);font-size:14px">Loading alerts…</div>
+          <div id="alerts-empty" style="display:none;text-align:center;padding:24px;color:rgba(255,255,255,0.5);font-size:14px">No alerts yet — add one above!<br><span style="font-size:12px;opacity:0.6">You can also click 🔔 on any flight result to set a target price.</span></div>
           <div id="alerts-list" style="display:none"></div>
         </div>
-        <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
-          <button class="search-btn" style="padding:12px 24px;font-size:14px" onclick="loadAlertsPanel()">🔄 Refresh</button>
-          <button class="search-btn" style="padding:12px 24px;font-size:14px;background:linear-gradient(135deg,#059669,#047857)" onclick="checkAlertPrices()">⚡ Check Prices Now</button>
+        <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap">
+          <button class="search-btn" style="padding:10px 20px;font-size:13px" onclick="loadAlertsPanel()">🔄 Refresh</button>
+          <button class="search-btn" style="padding:10px 20px;font-size:13px;background:linear-gradient(135deg,#059669,#047857)" onclick="checkAlertPrices()">⚡ Check Prices Now</button>
         </div>
       </div>
 
@@ -3568,8 +3684,28 @@ async function loadAlertsPanel() {
   document.getElementById('alerts-empty').style.display='none';
   document.getElementById('alerts-list').style.display='none';
   try {
-    const r = await fetch('/api/watchlist');
-    const list = await r.json();
+    // Load from both /api/alerts (new) and /api/watchlist (existing)
+    const [rNew, rWatch] = await Promise.all([fetch('/api/alerts'), fetch('/api/watchlist')]);
+    const newAlerts  = await rNew.json();
+    const watchAlerts = await rWatch.json();
+
+    // Merge: new alerts first, then watchlist (deduplication by id not needed — separate systems)
+    // Map watchlist items to a compatible display format
+    const watchMapped = watchAlerts.map(a => ({
+      id:              'wl-' + a.id,
+      _watchlistId:    a.id,
+      origin:          a.origin || '',
+      destination:     a.destination || '',
+      targetPrice:     a.targetPrice,
+      label:           a.email ? `Email: ${a.email}` : '',
+      status:          'watching',
+      currentBestPrice: null,
+      type:            a.type || 'flight',
+      createdAt:       a.createdAt
+    }));
+
+    const list = [...newAlerts, ...watchMapped];
+
     document.getElementById('alerts-loading').style.display='none';
     const badge = document.getElementById('alerts-badge');
     if (!list.length) {
@@ -3579,39 +3715,111 @@ async function loadAlertsPanel() {
     }
     badge.style.display='inline';
     badge.textContent = list.length;
+
     const container = document.getElementById('alerts-list');
-    container.innerHTML = list.map(a => `
-      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <div style="flex:1;min-width:200px">
-          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px">
-            ${a.type === 'flight' ? '✈️' : '🏨'} 
-            ${a.type === 'flight' ? `${a.origin||''} → ${a.destination||''}` : (a.hotelName||a.city||'Hotel')}
+    container.innerHTML = list.map(a => {
+      const isTriggered = a.status === 'triggered';
+      const statusHtml  = isTriggered
+        ? `<span class="alert-status-triggered">✅ Triggered</span>`
+        : `<span class="alert-status-watching">👁 Watching</span>`;
+      const routeLabel  = a.type === 'hotel'
+        ? `🏨 ${a.hotelName || a.city || 'Hotel'}`
+        : `✈️ ${a.origin || '—'} → ${a.destination || '—'}`;
+      const bestPriceHtml = a.currentBestPrice
+        ? `<div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px">Best found: <strong style="color:#fff">$${a.currentBestPrice}</strong></div>`
+        : '';
+      const deleteAction = a._watchlistId
+        ? `deleteLegacyAlert('${a._watchlistId}')`
+        : `deletePriceAlert('${a.id}')`;
+      return `
+        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:14px 18px;margin-bottom:8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="flex:1;min-width:180px">
+            <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px">${routeLabel}</div>
+            ${a.label ? `<div style="font-size:12px;color:rgba(255,255,255,0.5)">${a.label}</div>` : ''}
+            ${bestPriceHtml}
           </div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.55)">
-            ${a.departure ? `Depart: ${a.departure} · ` : ''}
-            ${a.checkin ? `Check-in: ${a.checkin} · ` : ''}
-            Alert email: ${a.email}
+          <div style="text-align:center;min-width:80px">
+            <div style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;text-transform:uppercase;letter-spacing:0.6px">Target</div>
+            <div style="font-size:20px;font-weight:800;color:#D4A847">$${a.targetPrice}</div>
           </div>
-        </div>
-        <div style="text-align:center;min-width:90px">
-          <div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.6px">Target</div>
-          <div style="font-size:22px;font-weight:800;color:#D4A847">$${a.targetPrice}</div>
-        </div>
-        <div style="display:flex;gap:8px">
-          <span style="padding:4px 12px;background:rgba(5,150,105,0.2);color:#34d399;border-radius:99px;font-size:12px;font-weight:700">🟢 Active</span>
-          <button onclick="deleteAlert('${a.id}')" style="padding:6px 14px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:99px;font-size:12px;font-weight:600;cursor:pointer">✕ Remove</button>
-        </div>
-      </div>`).join('');
+          <div style="display:flex;align-items:center;gap:8px">
+            ${statusHtml}
+            <button onclick="${deleteAction}" style="padding:5px 12px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:99px;font-size:11px;font-weight:600;cursor:pointer">✕</button>
+          </div>
+        </div>`;
+    }).join('');
     container.style.display='block';
   } catch(e) {
     document.getElementById('alerts-loading').textContent = 'Error loading alerts.';
+    console.error('loadAlertsPanel error:', e);
   }
+}
+
+async function deletePriceAlert(id) {
+  try {
+    await fetch('/api/alerts/'+id, {method:'DELETE'});
+    showToast('Alert removed');
+    loadAlertsPanel();
+  } catch(e) { showToast('Error removing alert'); }
+}
+
+async function deleteLegacyAlert(id) {
+  await fetch('/api/watchlist/'+id, {method:'DELETE'});
+  loadAlertsPanel();
+  showToast('Alert removed');
 }
 
 async function deleteAlert(id) {
   await fetch('/api/watchlist/'+id, {method:'DELETE'});
   loadAlertsPanel();
   showToast('Alert removed');
+}
+
+async function submitNewAlert() {
+  const origin      = document.getElementById('new-alert-origin').value.trim().toUpperCase();
+  const destination = document.getElementById('new-alert-dest').value.trim().toUpperCase();
+  const targetPrice = document.getElementById('new-alert-price').value.trim();
+  const label       = document.getElementById('new-alert-label').value.trim();
+  const msgEl       = document.getElementById('new-alert-msg');
+
+  if (!origin || !destination || !targetPrice) {
+    msgEl.textContent = '⚠️ Origin, destination, and target price are required.';
+    msgEl.style.color = '#f87171';
+    msgEl.style.display = 'block';
+    return;
+  }
+  try {
+    const r = await fetch('/api/alerts', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ origin, destination, targetPrice: parseFloat(targetPrice), label })
+    });
+    const data = await r.json();
+    if (data.ok) {
+      msgEl.textContent = `✅ Alert set — watching ${origin} → ${destination} for under $${targetPrice}`;
+      msgEl.style.color = '#34d399';
+      msgEl.style.display = 'block';
+      document.getElementById('new-alert-origin').value = '';
+      document.getElementById('new-alert-dest').value   = '';
+      document.getElementById('new-alert-price').value  = '';
+      document.getElementById('new-alert-label').value  = '';
+      setTimeout(() => { msgEl.style.display='none'; }, 4000);
+      loadAlertsPanel();
+      if (data.alert && data.alert.status === 'triggered') {
+        showToast(`🔔 Alert triggered immediately! Best price $${data.alert.currentBestPrice} is already at/below your target!`);
+      } else {
+        showToast('🔔 Price alert added!');
+      }
+    } else {
+      msgEl.textContent = 'Error: ' + (data.error || 'Unknown error');
+      msgEl.style.color = '#f87171';
+      msgEl.style.display = 'block';
+    }
+  } catch(e) {
+    msgEl.textContent = 'Network error — please try again.';
+    msgEl.style.color = '#f87171';
+    msgEl.style.display = 'block';
+  }
 }
 
 async function checkAlertPrices() {
@@ -3635,7 +3843,101 @@ document.addEventListener('DOMContentLoaded', () => {
   if (alertsBtn) {
     alertsBtn.addEventListener('click', () => { loadAlertsPanel(); });
   }
+  // Pre-fill calendar month to current month
+  const calMonthInput = document.getElementById('cal-month-input');
+  if (calMonthInput) {
+    const now = new Date();
+    calMonthInput.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  }
 });
+
+// ─── Price Calendar ───────────────────────────────────────────────────────────
+function togglePriceCalendar() {
+  const section = document.getElementById('price-calendar-section');
+  const btn     = document.getElementById('price-cal-toggle');
+  const isOpen  = section.classList.contains('cal-visible');
+  if (isOpen) {
+    section.classList.remove('cal-visible');
+    btn.classList.remove('cal-open');
+  } else {
+    section.classList.add('cal-visible');
+    btn.classList.add('cal-open');
+    // Auto-sync from/to fields if filled
+    const fromInput = document.getElementById('from-input');
+    const toInput   = document.getElementById('to-input');
+    const calOrig   = document.getElementById('cal-origin');
+    const calDest   = document.getElementById('cal-destination');
+    if (fromInput && fromInput.value && !calOrig.value) {
+      calOrig.value = (window.state && window.state.fromIata) || fromInput.value.split(' ')[0].replace(/[^A-Z]/gi,'').toUpperCase().slice(0,3);
+    }
+    if (toInput && toInput.value && !calDest.value) {
+      calDest.value = (window.state && window.state.toIata) || toInput.value.split(' ')[0].replace(/[^A-Z]/gi,'').toUpperCase().slice(0,3);
+    }
+  }
+}
+
+async function loadPriceCalendar() {
+  const origin      = document.getElementById('cal-origin').value.trim().toUpperCase() || 'JFK';
+  const destination = document.getElementById('cal-destination').value.trim().toUpperCase() || 'LAX';
+  const monthVal    = document.getElementById('cal-month-input').value; // YYYY-MM
+  let   year = new Date().getFullYear(), month = new Date().getMonth() + 1;
+  if (monthVal) { const parts = monthVal.split('-'); year = parseInt(parts[0]); month = parseInt(parts[1]); }
+
+  const statusEl  = document.getElementById('cal-status');
+  const gridWrap  = document.getElementById('cal-grid-wrap');
+  statusEl.textContent = 'Loading calendar…';
+  statusEl.style.display = 'block';
+  gridWrap.style.display = 'none';
+
+  try {
+    const r    = await fetch(`/api/price-calendar?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&month=${month}&year=${year}`);
+    const data = await r.json();
+    statusEl.style.display = 'none';
+    renderPriceCalendar(data);
+    gridWrap.style.display = 'block';
+  } catch(e) {
+    statusEl.textContent = 'Error loading calendar. Please try again.';
+    statusEl.style.color = '#f87171';
+  }
+}
+
+function renderPriceCalendar(data) {
+  const { days, origin, destination, month, year } = data;
+  const headerRow = document.getElementById('cal-header-row');
+  const grid      = document.getElementById('cal-grid');
+
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  headerRow.innerHTML = dayNames.map(n => `<div class="cal-day-name">${n}</div>`).join('');
+
+  // Get day-of-week for first day to add blank cells
+  const firstDow = days[0] ? days[0].dow : 0;
+  let html = '';
+  // Empty cells before month start
+  for (let i = 0; i < firstDow; i++) {
+    html += `<div class="cal-cell empty"></div>`;
+  }
+  // Day cells
+  days.forEach(d => {
+    const holidayClass = d.isHoliday ? ' holiday' : '';
+    html += `<div class="cal-cell ${d.tier}${holidayClass}" onclick="calSelectDate('${d.date}')" title="${d.date} — Estimated $${d.price}${d.isHoliday?' (holiday)':d.isWeekend?' (weekend)':''}">
+      <div class="cal-day-num">${d.day}</div>
+      <div class="cal-price">$${d.price}</div>
+    </div>`;
+  });
+  grid.innerHTML = html;
+}
+
+function calSelectDate(dateStr) {
+  // Auto-fill the departure date input
+  const departInput = document.getElementById('depart-input');
+  if (departInput) {
+    departInput.value = dateStr;
+    showToast(`📅 Departure set to ${dateStr}`);
+    // Close calendar
+    document.getElementById('price-calendar-section').classList.remove('cal-visible');
+    document.getElementById('price-cal-toggle').classList.remove('cal-open');
+  }
+}
 
 // ══════ VOYAGE AI SEARCH ══════
 const AIRPORTS={
