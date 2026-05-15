@@ -41,12 +41,13 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
       scriptSrcAttr: ["'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://unpkg.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", "https://unpkg.com", "https://*.basemaps.cartocdn.com"],
+      workerSrc: ["blob:"],
     },
   },
 }));
@@ -180,7 +181,8 @@ const MOCK_FLIGHTS = [
     price: 219, currency: 'USD', class: 'ECONOMY', seatsLeft: 12,
     baggage: 'Carry-on included. Checked bag $35.',
     amenities: ['Power outlets'],
-    co2: '162 kg CO₂ per passenger', priceHistory: 'lower'
+    co2: '162 kg CO₂ per passenger', priceHistory: 'lower',
+    isBasicEconomy: true
   },
   {
     id: 'f4', route: 'JFK-LAX',
@@ -229,7 +231,8 @@ const MOCK_FLIGHTS = [
     price: 189, currency: 'USD', class: 'ECONOMY', seatsLeft: 9,
     baggage: 'Carry-on included. Checked bag $30.',
     amenities: ['Power outlets', 'In-flight entertainment'],
-    co2: '89 kg CO₂ per passenger', priceHistory: 'lower'
+    co2: '89 kg CO₂ per passenger', priceHistory: 'lower',
+    isBasicEconomy: true
   },
   {
     id: 'f8', route: 'JFK-MIA',
@@ -253,7 +256,8 @@ const MOCK_FLIGHTS = [
     price: 167, currency: 'USD', class: 'ECONOMY', seatsLeft: 6,
     baggage: 'First bag free. Carry-on included.',
     amenities: ['Free Wi-Fi', 'Power outlets', 'Snacks', 'Live TV'],
-    co2: '85 kg CO₂ per passenger', priceHistory: 'lower'
+    co2: '85 kg CO₂ per passenger', priceHistory: 'lower',
+    isBasicEconomy: true
   },
   // JFK → CDG (Paris)
   {
@@ -353,7 +357,8 @@ const MOCK_FLIGHTS = [
     price: 159, currency: 'USD', class: 'ECONOMY', seatsLeft: 11,
     baggage: 'Carry-on included. Checked bag $30.',
     amenities: ['Power outlets', 'In-flight entertainment', 'Snacks', 'Wi-Fi available'],
-    co2: '72 kg CO₂ per passenger', priceHistory: 'lower'
+    co2: '72 kg CO₂ per passenger', priceHistory: 'lower',
+    isBasicEconomy: true
   },
   // SEA → JFK (Alaska Airlines)
   {
@@ -404,7 +409,8 @@ const MOCK_FLIGHTS = [
     price: 59, currency: 'USD', class: 'ECONOMY', seatsLeft: 22,
     baggage: '2 free checked bags. No change fees.',
     amenities: ['Free snacks', 'Wi-Fi available', 'Free same-day standby'],
-    co2: '45 kg CO₂ per passenger', priceHistory: 'lower'
+    co2: '45 kg CO₂ per passenger', priceHistory: 'lower',
+    isBasicEconomy: true
   },
   // JFK → LAX (Southwest — now serves transcontinental)
   {
@@ -417,7 +423,8 @@ const MOCK_FLIGHTS = [
     price: 179, currency: 'USD', class: 'ECONOMY', seatsLeft: 18,
     baggage: '2 free checked bags. No change fees.',
     amenities: ['Free snacks', 'Wi-Fi available', 'Free same-day standby'],
-    co2: '168 kg CO₂ per passenger', priceHistory: 'lower'
+    co2: '168 kg CO₂ per passenger', priceHistory: 'lower',
+    isBasicEconomy: true
   }
 ];
 
@@ -1114,7 +1121,8 @@ app.get('/api/flights', async (req, res) => {
   }
 
   if (DEMO_MODE) {
-    const flights = MOCK_FLIGHTS.map(f => ({
+    const { excludeBasicEconomy } = req.query;
+    let flights = MOCK_FLIGHTS.map(f => ({
       ...f,
       // Override airport codes to match the actual search query
       from: origin.toUpperCase(),
@@ -1122,6 +1130,9 @@ app.get('/api/flights', async (req, res) => {
       departure: { ...f.departure, iata: origin.toUpperCase(), date: departure },
       arrival:   { ...f.arrival,   iata: destination.toUpperCase(), date: departure }
     }));
+    if (excludeBasicEconomy === 'true') {
+      flights = flights.filter(f => !f.isBasicEconomy);
+    }
     return res.json({ flights, demo: true });
   }
 
@@ -1551,6 +1562,115 @@ app.get('/api/price-calendar', requireAuth, (req, res) => {
     year:  y,
     estimated: true
   });
+});
+
+// ─── Deal Map Endpoint ────────────────────────────────────────────────────────
+const AIRPORT_COORDS = {
+  LAX: {lat:33.9425,lng:-118.4081,city:'Los Angeles'},
+  ORD: {lat:41.9742,lng:-87.9073,city:'Chicago'},
+  MIA: {lat:25.7959,lng:-80.2870,city:'Miami'},
+  DFW: {lat:32.8998,lng:-97.0403,city:'Dallas'},
+  SEA: {lat:47.4502,lng:-122.3088,city:'Seattle'},
+  DEN: {lat:39.8561,lng:-104.6737,city:'Denver'},
+  BOS: {lat:42.3656,lng:-71.0096,city:'Boston'},
+  ATL: {lat:33.6407,lng:-84.4277,city:'Atlanta'},
+  LAS: {lat:36.0840,lng:-115.1537,city:'Las Vegas'},
+  SFO: {lat:37.6213,lng:-122.3790,city:'San Francisco'},
+  MCO: {lat:28.4312,lng:-81.3081,city:'Orlando'},
+  MSP: {lat:44.8848,lng:-93.2223,city:'Minneapolis'},
+  DTW: {lat:42.2162,lng:-83.3554,city:'Detroit'},
+  PHL: {lat:39.8744,lng:-75.2424,city:'Philadelphia'},
+  PHX: {lat:33.4373,lng:-112.0078,city:'Phoenix'},
+  CDG: {lat:49.0097,lng:2.5479,city:'Paris'},
+  LHR: {lat:51.4775,lng:-0.4614,city:'London'},
+  NRT: {lat:35.7720,lng:140.3929,city:'Tokyo'},
+  DXB: {lat:25.2532,lng:55.3657,city:'Dubai'},
+  SYD: {lat:-33.9399,lng:151.1753,city:'Sydney'},
+  CUN: {lat:21.0365,lng:-86.8771,city:'Cancún'},
+  LIS: {lat:38.7813,lng:-9.1359,city:'Lisbon'},
+  FCO: {lat:41.8003,lng:12.2389,city:'Rome'},
+  BCN: {lat:41.2974,lng:2.0833,city:'Barcelona'},
+  AMS: {lat:52.3105,lng:4.7683,city:'Amsterdam'},
+  JFK: {lat:40.6413,lng:-73.7781,city:'New York (JFK)'},
+  EWR: {lat:40.6895,lng:-74.1745,city:'New York (EWR)'},
+  LGA: {lat:40.7769,lng:-73.8740,city:'New York (LGA)'}
+};
+
+app.get('/api/deal-map', requireAuth, (req, res) => {
+  const origin = (req.query.origin || 'JFK').toUpperCase();
+  const budget = parseInt(req.query.budget) || 800;
+
+  // Build map of cheapest flight per destination from this origin
+  const destMap = {};
+  MOCK_FLIGHTS.forEach(f => {
+    const dep = f.departure.iata || f.route.split('-')[0];
+    const arr = f.arrival.iata || f.route.split('-')[1];
+    if (dep !== origin) return;
+    if (!AIRPORT_COORDS[arr]) return;
+    if (!destMap[arr] || f.price < destMap[arr].price) {
+      destMap[arr] = {
+        iata: arr,
+        city: AIRPORT_COORDS[arr].city,
+        lat:  AIRPORT_COORDS[arr].lat,
+        lng:  AIRPORT_COORDS[arr].lng,
+        price: f.price,
+        airline: f.airline.name,
+        duration: f.duration
+      };
+    }
+  });
+
+  // Also try matching by route string
+  MOCK_FLIGHTS.forEach(f => {
+    const parts = f.route.split('-');
+    if (parts[0] !== origin) return;
+    const arr = parts[1];
+    if (!AIRPORT_COORDS[arr]) return;
+    if (!destMap[arr] || f.price < destMap[arr].price) {
+      destMap[arr] = {
+        iata: arr,
+        city: AIRPORT_COORDS[arr].city,
+        lat:  AIRPORT_COORDS[arr].lat,
+        lng:  AIRPORT_COORDS[arr].lng,
+        price: f.price,
+        airline: f.airline.name,
+        duration: f.duration
+      };
+    }
+  });
+
+  // If no real routes found for this origin, generate synthetic deals using base pricing
+  if (Object.keys(destMap).length === 0) {
+    const syntheticDests = Object.entries(AIRPORT_COORDS).filter(([iata]) => iata !== origin);
+    syntheticDests.forEach(([iata, info]) => {
+      const seed = iata.charCodeAt(0) + iata.charCodeAt(1) + iata.charCodeAt(2);
+      const price = 99 + (seed % 1200);
+      destMap[iata] = {
+        iata,
+        city: info.city,
+        lat: info.lat,
+        lng: info.lng,
+        price,
+        airline: ['Delta','American','United','JetBlue','Alaska'][seed % 5],
+        duration: `${2 + (seed % 12)}h ${(seed * 3) % 60}m`
+      };
+    });
+  }
+
+  // Filter by budget and assign tiers
+  const allPrices = Object.values(destMap).map(d => d.price).sort((a,b)=>a-b);
+  const p33 = allPrices[Math.floor(allPrices.length * 0.33)] || 300;
+  const p66 = allPrices[Math.floor(allPrices.length * 0.66)] || 600;
+
+  const deals = Object.values(destMap)
+    .filter(d => d.price <= budget)
+    .map(d => ({
+      ...d,
+      tier: d.price <= p33 ? 'cheap' : d.price <= p66 ? 'moderate' : 'expensive'
+    }))
+    .sort((a,b) => a.price - b.price);
+
+  res.json({ deals, origin, budget });
 });
 
 // ─── Static Files ─────────────────────────────────────────────────────────────

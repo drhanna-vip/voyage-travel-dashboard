@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     /* ─── Reset & Base ───────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1990,6 +1992,62 @@
 .ai-edit-btn{background:#fff;color:var(--text);border:1.5px solid var(--border);border-radius:10px;padding:9px 20px;font-size:14px;font-weight:600;cursor:pointer}
 .ai-err-msg{color:#dc2626;font-size:13px;margin-top:6px}
 @keyframes aiFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ─── Flexible Dates Modal ──────────────────────────────────── */
+.flex-cal-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.62);z-index:3000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.flex-cal-modal-overlay.open{display:flex;animation:aiFadeIn 0.2s ease;}
+.flex-cal-modal{background:#fff;border-radius:20px;padding:28px 30px 24px;max-width:540px;width:94%;box-shadow:0 16px 64px rgba(0,0,0,0.28);position:relative;}
+.flex-cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.flex-cal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#0A1628;}
+.flex-cal-close{background:none;border:none;font-size:20px;cursor:pointer;color:#6B7280;line-height:1;padding:4px;}
+.flex-cal-nav{display:flex;align-items:center;gap:12px;background:#F7F8FA;border-radius:12px;padding:8px 16px;}
+.flex-cal-nav-btn{background:none;border:1.5px solid #E5E7EB;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.flex-cal-nav-btn:hover{border-color:#1B2E4B;background:#1B2E4B;color:#fff;}
+.flex-cal-month-label{font-size:14px;font-weight:700;color:#1B2E4B;min-width:120px;text-align:center;}
+.flex-cal-grid{margin-top:14px;}
+.flex-cal-dow-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;}
+.flex-cal-dow{text-align:center;font-size:11px;font-weight:700;color:#9CA3AF;padding:4px 0;text-transform:uppercase;}
+.flex-cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.flex-cal-day{border-radius:10px;padding:7px 4px;text-align:center;cursor:pointer;transition:all 0.15s;border:1.5px solid transparent;}
+.flex-cal-day:hover{transform:scale(1.06);box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.flex-cal-day.empty{cursor:default;pointer-events:none;}
+.flex-cal-day.cheap{background:#ECFDF5;border-color:#059669;}
+.flex-cal-day.moderate{background:#FFFBEB;border-color:#D97706;}
+.flex-cal-day.expensive{background:#FEF2F2;border-color:#DC2626;}
+.flex-cal-day.holiday{outline:2px solid #D4A847;outline-offset:1px;}
+.flex-cal-day-num{font-size:12px;font-weight:700;color:#1A1A2E;line-height:1;}
+.flex-cal-price{font-size:10px;font-weight:600;margin-top:2px;}
+.flex-cal-day.cheap .flex-cal-price{color:#059669;}
+.flex-cal-day.moderate .flex-cal-price{color:#D97706;}
+.flex-cal-day.expensive .flex-cal-price{color:#DC2626;}
+.flex-cal-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid #F0F2F5;justify-content:center;}
+.flex-cal-legend-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:#6B7280;}
+.flex-cal-legend-dot{width:10px;height:10px;border-radius:50%;}
+.flex-dates-btn{display:flex;align-items:center;gap:6px;padding:9px 18px;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);border-radius:12px;color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.flex-dates-btn:hover{background:rgba(212,168,71,0.22);border-color:var(--gold);color:var(--gold);}
+.flex-cal-loading{text-align:center;padding:40px 0;color:#6B7280;font-size:14px;}
+
+/* ─── Basic Economy Badge ───────────────────────────────────── */
+.basic-econ-badge{display:inline-flex;align-items:center;gap:4px;background:#FEF2F2;border:1px solid #FECACA;border-radius:6px;padding:2px 8px;font-size:10.5px;font-weight:700;color:#DC2626;cursor:default;position:relative;}
+.basic-econ-badge:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1A1A2E;color:#fff;font-size:11px;font-weight:500;border-radius:8px;padding:6px 10px;white-space:nowrap;z-index:100;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+#excl-basic-econ-wrap{padding:12px 0 4px;border-top:1px solid var(--border-light);margin-top:8px;}
+.excl-basic-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);user-select:none;}
+.excl-basic-toggle input{width:16px;height:16px;accent-color:#DC2626;cursor:pointer;}
+
+/* ─── Deal Map ──────────────────────────────────────────────── */
+.deal-map-section{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;box-shadow:var(--shadow);display:none;}
+.deal-map-section.visible{display:block;animation:aiFadeIn 0.25s ease;}
+.deal-map-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.deal-map-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--navy);}
+.deal-map-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.deal-map-select{border:1.5px solid var(--border);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:500;color:var(--text);background:#fff;outline:none;}
+.deal-map-select:focus{border-color:var(--navy);}
+.deal-map-budget-wrap{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--text);}
+.deal-map-budget-wrap input[type=range]{width:130px;accent-color:var(--navy);}
+#deal-map-container{height:450px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.deal-map-btn{display:flex;align-items:center;gap:6px;padding:9px 18px;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);border-radius:12px;color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.deal-map-btn:hover{background:rgba(212,168,71,0.22);border-color:var(--gold);color:var(--gold);}
+.deal-map-btn.active{background:rgba(212,168,71,0.22);border-color:var(--gold);color:var(--gold);}
   </style>
 </head>
 <body>
@@ -2005,6 +2063,34 @@
     <button class="wishlist-close-btn" onclick="closeWishlist()">✕</button>
   </div>
   <div class="wishlist-body"><div id="wishlist-items"></div></div>
+</div>
+
+<!-- Flexible Dates Calendar Modal -->
+<div class="flex-cal-modal-overlay" id="flex-cal-modal" onclick="if(event.target===this)closeFlexCalModal()">
+  <div class="flex-cal-modal">
+    <div class="flex-cal-header">
+      <div class="flex-cal-title">📅 Flexible Dates</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="flex-cal-nav">
+          <button class="flex-cal-nav-btn" onclick="flexCalChangeMonth(-1)">‹</button>
+          <span class="flex-cal-month-label" id="flex-cal-month-label">Loading…</span>
+          <button class="flex-cal-nav-btn" onclick="flexCalChangeMonth(1)">›</button>
+        </div>
+        <button class="flex-cal-close" onclick="closeFlexCalModal()">✕</button>
+      </div>
+    </div>
+    <div id="flex-cal-loading" class="flex-cal-loading">Loading prices…</div>
+    <div id="flex-cal-grid" class="flex-cal-grid" style="display:none">
+      <div class="flex-cal-dow-row" id="flex-cal-dow-row"></div>
+      <div class="flex-cal-days" id="flex-cal-days"></div>
+    </div>
+    <div class="flex-cal-legend">
+      <div class="flex-cal-legend-item"><div class="flex-cal-legend-dot" style="background:#059669"></div>🟢 Best price</div>
+      <div class="flex-cal-legend-item"><div class="flex-cal-legend-dot" style="background:#D97706"></div>🟡 Moderate</div>
+      <div class="flex-cal-legend-item"><div class="flex-cal-legend-dot" style="background:#DC2626"></div>🔴 Expensive</div>
+      <div class="flex-cal-legend-item"><div class="flex-cal-legend-dot" style="background:#D4A847"></div>★ Holiday</div>
+    </div>
+  </div>
 </div>
 
 <!-- Price Alert Modal -->
@@ -2080,12 +2166,14 @@
             <button class="trip-pill active" data-trip="roundtrip">⇄ Round Trip</button>
             <button class="trip-pill" data-trip="oneway">→ One Way</button>
           </div>
-          <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             <button class="flex-dates-toggle" id="flex-dates-toggle" onclick="toggleFlexDates()">
               <span class="toggle-switch" id="flex-toggle-sw"></span>
               📅 Flexible Dates?
             </button>
             <button class="price-cal-toggle" id="price-cal-toggle" onclick="togglePriceCalendar()">📅 Price Calendar</button>
+            <button class="flex-dates-btn" id="flex-cal-open-btn" onclick="openFlexCalModal()">📅 Flexible Dates</button>
+            <button class="deal-map-btn" id="deal-map-toggle-btn" onclick="toggleDealMap()">🗺️ Deal Map</button>
           </div>
         </div>
 
@@ -2486,6 +2574,33 @@
   </div>
 
   <!-- Sort Bar -->
+  <!-- Deal Map Panel -->
+  <div class="deal-map-section" id="deal-map-section">
+    <div class="deal-map-header">
+      <div class="deal-map-title">🗺️ Where Can I Fly?</div>
+      <div class="deal-map-controls">
+        <select class="deal-map-select" id="deal-map-origin" onchange="loadDealMap()">
+          <option value="JFK">JFK – New York</option>
+          <option value="LAX">LAX – Los Angeles</option>
+          <option value="ORD">ORD – Chicago</option>
+          <option value="MIA">MIA – Miami</option>
+          <option value="SEA">SEA – Seattle</option>
+          <option value="DFW">DFW – Dallas</option>
+          <option value="BOS">BOS – Boston</option>
+          <option value="ATL">ATL – Atlanta</option>
+          <option value="DEN">DEN – Denver</option>
+          <option value="SFO">SFO – San Francisco</option>
+        </select>
+        <div class="deal-map-budget-wrap">
+          <span>Budget:</span>
+          <input type="range" id="deal-map-budget-slider" min="100" max="2000" value="800" step="50" oninput="updateBudgetLabel(this.value)" onchange="loadDealMap()" />
+          <strong id="deal-map-budget-label" style="color:var(--navy);min-width:50px">$800</strong>
+        </div>
+      </div>
+    </div>
+    <div id="deal-map-container" style="height:450px;border-radius:12px;overflow:hidden;border:1px solid var(--border);"></div>
+  </div>
+
   <div class="sort-bar">
     <div style="display:flex;align-items:center;gap:12px">
       <div class="sort-pills">
@@ -2531,6 +2646,12 @@
       <div class="sidebar-section" id="airline-filters-section">
         <div class="sidebar-section-title">Airlines</div>
         <div class="airline-filters" id="airline-filters-list"></div>
+      </div>
+      <div id="excl-basic-econ-wrap">
+        <label class="excl-basic-toggle">
+          <input type="checkbox" id="excl-basic-econ-cb" onchange="toggleBasicEconFilter()" />
+          🚫 Hide Basic Economy
+        </label>
       </div>
       <button class="apply-filters-btn" onclick="applyFilters()">Apply Filters</button>
       <button class="reset-filters-btn" onclick="resetFilters()">Reset</button>
@@ -2901,6 +3022,7 @@ function flightCard(f,idx,minPrice,params){
         ${isCheapest?'<span class="badge cheapest">💚 Cheapest</span>':''}
         ${isBest?'<span class="badge best">⭐ Best Value</span>':''}
         <span class="badge seats">⚡ ${seats} seat${seats!==1?'s':''} left</span>
+        ${f.isBasicEconomy?'<span class="basic-econ-badge" data-tip="No seat selection, no changes, no refunds">🚫 Basic Economy</span>':''}
       </div>
       <span class="deal-score-badge ${f.dealCls}">${f.dealEmoji} ${f.dealLabel}</span>
       ${(()=>{const pp=getPricePrediction(f);return `<div style="display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:10.5px;font-weight:700;color:${pp.color}">${pp.icon} ${pp.text}</div>`;})()}
@@ -3319,6 +3441,218 @@ function showFlexDatesGrid(baseDateStr,flights){
   section.classList.add('visible');
 }
 function selectFlexDate(dateStr){document.getElementById('depart-input').value=dateStr;state.searchParams.departure=dateStr;showToast(`📅 Date updated to ${formatDateDisplay(dateStr)} — tap Search to refresh prices`);}
+
+// ─── Flexible Dates Calendar Modal ───────────────────────────────────────────
+const flexCalState = { month: new Date().getMonth() + 1, year: new Date().getFullYear(), origin: 'JFK', dest: 'LAX' };
+
+function openFlexCalModal() {
+  const origin = state.fromIata || document.getElementById('from-input').value.split('—')[0].trim().split(' ')[0].toUpperCase() || 'JFK';
+  const dest   = state.toIata  || document.getElementById('to-input').value.split('—')[0].trim().split(' ')[0].toUpperCase() || 'LAX';
+  if (!origin || !dest) { showToast('⚠️ Fill in origin and destination first'); return; }
+  flexCalState.origin = origin;
+  flexCalState.dest   = dest;
+  const now = new Date();
+  flexCalState.month = now.getMonth() + 1;
+  flexCalState.year  = now.getFullYear();
+  document.getElementById('flex-cal-modal').classList.add('open');
+  renderFlexCalModal();
+}
+
+function closeFlexCalModal() {
+  document.getElementById('flex-cal-modal').classList.remove('open');
+}
+
+function flexCalChangeMonth(delta) {
+  flexCalState.month += delta;
+  if (flexCalState.month > 12) { flexCalState.month = 1; flexCalState.year++; }
+  if (flexCalState.month < 1)  { flexCalState.month = 12; flexCalState.year--; }
+  renderFlexCalModal();
+}
+
+async function renderFlexCalModal() {
+  const { month, year, origin, dest } = flexCalState;
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('flex-cal-month-label').textContent = `${months[month-1]} ${year}`;
+  document.getElementById('flex-cal-loading').style.display = 'block';
+  document.getElementById('flex-cal-grid').style.display = 'none';
+  try {
+    const r = await fetch(`/api/price-calendar?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&month=${month}&year=${year}`);
+    const data = await r.json();
+    buildFlexCalGrid(data);
+    document.getElementById('flex-cal-loading').style.display = 'none';
+    document.getElementById('flex-cal-grid').style.display = 'block';
+  } catch(e) {
+    document.getElementById('flex-cal-loading').textContent = 'Error loading prices. Please try again.';
+  }
+}
+
+function buildFlexCalGrid(data) {
+  const { days } = data;
+  const dowEl = document.getElementById('flex-cal-dow-row');
+  const daysEl = document.getElementById('flex-cal-days');
+  dowEl.innerHTML = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="flex-cal-dow">${d}</div>`).join('');
+  // Empty cells before first day
+  const firstDow = days[0] ? days[0].dow : 0;
+  let html = '';
+  for (let i = 0; i < firstDow; i++) html += `<div class="flex-cal-day empty"></div>`;
+  days.forEach(d => {
+    const holidayCls = d.isHoliday ? ' holiday' : '';
+    html += `<div class="flex-cal-day ${d.tier}${holidayCls}" onclick="flexCalSelectDate('${d.date}')" title="${d.date}${d.isHoliday?' — Holiday':d.isWeekend?' — Weekend':''}">
+      <div class="flex-cal-day-num">${d.day}</div>
+      <div class="flex-cal-price">$${d.price}</div>
+    </div>`;
+  });
+  daysEl.innerHTML = html;
+}
+
+function flexCalSelectDate(dateStr) {
+  const departInput = document.getElementById('depart-input');
+  if (departInput) {
+    departInput.value = dateStr;
+    showToast(`📅 Departure set to ${formatDateDisplay(dateStr)}`);
+  }
+  closeFlexCalModal();
+}
+
+// ─── Basic Economy Filter ─────────────────────────────────────────────────────
+function toggleBasicEconFilter() {
+  const checked = document.getElementById('excl-basic-econ-cb').checked;
+  if (!state.rawFlights || !state.rawFlights.length) return;
+  if (checked) {
+    // Re-fetch with filter
+    refetchFlightsWithFilter();
+  } else {
+    // Re-fetch without filter
+    refetchFlightsWithFilter();
+  }
+}
+
+async function refetchFlightsWithFilter() {
+  const params = state.searchParams;
+  if (!params || !params.origin || !params.destination || !params.departure) return;
+  const excludeBasic = document.getElementById('excl-basic-econ-cb') && document.getElementById('excl-basic-econ-cb').checked;
+  let url = `/api/flights?origin=${params.origin}&destination=${params.destination}&departure=${params.departure}&adults=${params.adults||1}&class=${params.travelClass||'ECONOMY'}`;
+  if (params.returnDate) url += `&return=${params.returnDate}`;
+  if (excludeBasic) url += '&excludeBasicEconomy=true';
+  try {
+    const r = await fetch(url);
+    const d = await r.json();
+    state.rawFlights = d.flights || [];
+    buildAirlineFilters(state.rawFlights);
+    sortAndRender(document.querySelector('.sort-pill.active')?.dataset.sort || 'best');
+  } catch(e) { /* silent fail */ }
+}
+
+// ─── Deal Map ─────────────────────────────────────────────────────────────────
+let dealMap = null;
+let dealMapMarkers = [];
+
+function toggleDealMap() {
+  const section = document.getElementById('deal-map-section');
+  const btn = document.getElementById('deal-map-toggle-btn');
+  const isVisible = section.classList.contains('visible');
+  if (isVisible) {
+    section.classList.remove('visible');
+    btn.classList.remove('active');
+  } else {
+    section.classList.add('visible');
+    btn.classList.add('active');
+    // Sync origin from search if set
+    const origin = state.fromIata || document.getElementById('from-input').value.split('—')[0].trim().split(' ')[0].toUpperCase();
+    const sel = document.getElementById('deal-map-origin');
+    if (origin && sel) {
+      const opt = Array.from(sel.options).find(o => o.value === origin);
+      if (opt) sel.value = origin;
+    }
+    setTimeout(() => {
+      initDealMap();
+      loadDealMap();
+    }, 100);
+  }
+}
+
+function initDealMap() {
+  if (dealMap) return;
+  dealMap = L.map('deal-map-container', { zoomControl: true }).setView([30, -20], 2);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(dealMap);
+}
+
+function updateBudgetLabel(val) {
+  const el = document.getElementById('deal-map-budget-label');
+  if (el) el.textContent = `$${parseInt(val).toLocaleString()}`;
+}
+
+async function loadDealMap() {
+  if (!dealMap) { initDealMap(); }
+  const origin = document.getElementById('deal-map-origin').value || 'JFK';
+  const budget = document.getElementById('deal-map-budget-slider').value || 800;
+  try {
+    const r = await fetch(`/api/deal-map?origin=${encodeURIComponent(origin)}&budget=${budget}`);
+    const data = await r.json();
+    renderDealMapMarkers(data.deals || [], origin);
+  } catch(e) { console.error('Deal map error:', e); }
+}
+
+function renderDealMapMarkers(deals, origin) {
+  // Clear existing markers
+  dealMapMarkers.forEach(m => dealMap.removeLayer(m));
+  dealMapMarkers = [];
+
+  const tierColors = { cheap: '#059669', moderate: '#D97706', expensive: '#DC2626' };
+  const tierRadius = { cheap: 14, moderate: 11, expensive: 9 };
+
+  deals.forEach(d => {
+    const color = tierColors[d.tier] || '#6B7280';
+    const radius = tierRadius[d.tier] || 10;
+    const circle = L.circleMarker([d.lat, d.lng], {
+      radius,
+      fillColor: color,
+      color: '#fff',
+      weight: 1.5,
+      opacity: 0.9,
+      fillOpacity: 0.82
+    });
+    const popupHtml = `
+      <div style="font-family:'Inter',sans-serif;min-width:180px">
+        <div style="font-size:15px;font-weight:700;color:#0A1628;margin-bottom:4px">${d.city}</div>
+        <div style="font-size:12px;color:#6B7280;margin-bottom:6px">${d.iata}</div>
+        <div style="font-size:20px;font-weight:700;color:${color};margin-bottom:2px">$${d.price}</div>
+        <div style="font-size:12px;color:#6B7280;margin-bottom:2px">✈ ${d.airline}</div>
+        <div style="font-size:12px;color:#6B7280;margin-bottom:10px">⏱ ${d.duration}</div>
+        <button onclick="dealMapSearch('${origin}','${d.iata}')" style="width:100%;background:#1B2E4B;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer">Search this route →</button>
+      </div>`;
+    circle.bindPopup(popupHtml, { maxWidth: 220 });
+    circle.addTo(dealMap);
+    dealMapMarkers.push(circle);
+  });
+
+  // Fit bounds if we have markers
+  if (dealMapMarkers.length > 0) {
+    const group = L.featureGroup(dealMapMarkers);
+    dealMap.fitBounds(group.getBounds().pad(0.2));
+  }
+}
+
+function dealMapSearch(origin, dest) {
+  document.getElementById('from-input').value = origin;
+  document.getElementById('to-input').value = dest;
+  state.fromIata = origin;
+  state.toIata = dest;
+  // Switch to flights tab
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const flightsTab = document.querySelector('[data-tab="flights"]');
+  const flightsPanel = document.getElementById('tab-flights');
+  if (flightsTab) flightsTab.classList.add('active');
+  if (flightsPanel) flightsPanel.classList.add('active');
+  // Scroll to search form
+  document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
+  showToast(`✈️ Route set: ${origin} → ${dest} — set a date and search!`);
+}
 
 // ─── Price Alert ──────────────────────────────────────────────────────────────
 function openPriceAlertModal(){const params=state.searchParams;if(params.origin&&params.destination){const minP=state.rawFlights.length?Math.min(...state.rawFlights.map(f=>f.price)):300;document.getElementById('price-alert-modal-sub').textContent=`Get notified when ${params.origin} → ${params.destination} drops below your target. Current best: ${formatPrice(minP)}`;document.getElementById('alert-price-input').placeholder=`Target price (e.g. ${Math.round(minP*0.9)})`;}document.getElementById('price-alert-modal').classList.add('open');}
