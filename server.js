@@ -25,7 +25,7 @@ const emailTransporter = nodemailer.createTransport({
 
 // ─── Auth Config ──────────────────────────────────────────────────────────────
 const AUTH_USER = process.env.AUTH_USER || 'gh';
-const AUTH_PASS_HASH = process.env.AUTH_PASS || '';
+const AUTH_PASS_HASH = process.env.AUTH_PASS || 'vip41';
 // Guest access credential (separate revocable login for shared access)
 const GUEST_USER = process.env.GUEST_USER || 'guest';
 const GUEST_PASS = process.env.GUEST_PASS || 'voyage';
