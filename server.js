@@ -38,6 +38,7 @@ const DEMO_MODE = !process.env.AMADEUS_CLIENT_ID;
 
 // ─── Security & Middleware ────────────────────────────────────────────────────
 app.use(helmet({
+  hsts: { maxAge: 365 * 24 * 60 * 60 }, // F-002 fix: 365d (was 180d default)
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
