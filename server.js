@@ -680,6 +680,68 @@ const MOCK_HOTELS = [
     image: 'https://images.unsplash.com/photo-1549294413-26f195200c16?w=600&q=80',
     brand: 'Hilton'
   },
+  // Chicago — top US business travel hub 2026 (per GBTA / USTA intelligence)
+  {
+    id: 'h27', city: 'ORD',
+    name: 'The Langham Chicago',
+    stars: 5, rating: 9.5, ratingLabel: 'Exceptional',
+    location: '330 N Wabash Ave, River North',
+    amenities: ['Spa', 'Pool', 'Restaurant', 'Gym', 'Wi-Fi', 'River Views', 'Concierge'],
+    pricePerNight: 465, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=80',
+    brand: null
+  },
+  {
+    id: 'h28', city: 'ORD',
+    name: 'Four Seasons Hotel Chicago',
+    stars: 5, rating: 9.4, ratingLabel: 'Exceptional',
+    location: '120 E Delaware Pl, Magnificent Mile',
+    amenities: ['Spa', 'Pool', 'Restaurant', 'Gym', 'Wi-Fi', 'Concierge', 'Business Center'],
+    pricePerNight: 520, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80',
+    brand: null
+  },
+  {
+    id: 'h29', city: 'ORD',
+    name: 'Chicago Marriott Downtown Magnificent Mile',
+    stars: 4, rating: 8.8, ratingLabel: 'Excellent',
+    location: '540 N Michigan Ave, Magnificent Mile',
+    amenities: ['Restaurant', 'Gym', 'Wi-Fi', 'Bar', 'Business Center', 'Concierge'],
+    pricePerNight: 329, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80',
+    brand: 'Marriott'
+  },
+  // Singapore — global tech + financial executive hub 2026
+  {
+    id: 'h30', city: 'SIN',
+    name: 'Marina Bay Sands',
+    stars: 5, rating: 9.3, ratingLabel: 'Exceptional',
+    location: '10 Bayfront Ave, Marina Bay',
+    amenities: ['Infinity Pool', 'Spa', 'Casino', 'Restaurant', 'Wi-Fi', 'Sky Park', 'Concierge'],
+    pricePerNight: 680, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1549294413-26f195200c16?w=600&q=80',
+    brand: null
+  },
+  {
+    id: 'h31', city: 'SIN',
+    name: 'Raffles Hotel Singapore',
+    stars: 5, rating: 9.7, ratingLabel: 'Exceptional',
+    location: '1 Beach Rd, City Hall',
+    amenities: ['Spa', 'Pool', 'Restaurants', 'Wi-Fi', 'Concierge', 'Butler Service', 'Heritage Suites'],
+    pricePerNight: 920, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80',
+    brand: null
+  },
+  {
+    id: 'h32', city: 'SIN',
+    name: 'Andaz Singapore',
+    stars: 5, rating: 9.1, ratingLabel: 'Exceptional',
+    location: '5 Fraser St, Bugis',
+    amenities: ['Pool', 'Spa', 'Restaurant', 'Bar', 'Wi-Fi', 'Gym', 'City Views'],
+    pricePerNight: 410, currency: 'USD',
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=80',
+    brand: 'Hyatt'
+  },
   // Las Vegas — for Southwest LAX-LAS route
   {
     id: 'h25', city: 'LAS',
@@ -1171,7 +1233,9 @@ app.get('/api/hotels', async (req, res) => {
       'miami': 'MIA', 'mia': 'MIA', 'south beach': 'MIA',
       'paris': 'CDG', 'cdg': 'CDG', 'france': 'CDG',
       'tokyo': 'NRT', 'nrt': 'NRT', 'japan': 'NRT',
-      'dubai': 'DXB', 'dxb': 'DXB', 'uae': 'DXB'
+      'dubai': 'DXB', 'dxb': 'DXB', 'uae': 'DXB',
+      'chicago': 'ORD', 'ord': 'ORD', 'chi': 'ORD', 'mdw': 'ORD', 'illinois': 'ORD',
+      'singapore': 'SIN', 'sin': 'SIN', 'changi': 'SIN'
     };
     const cityKey = city.toLowerCase().trim();
     const cityCode = cityNormMap[cityKey] || city.toUpperCase().slice(0, 3);
